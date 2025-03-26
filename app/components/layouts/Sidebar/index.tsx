@@ -23,6 +23,10 @@ const items = [
     title: "Master Data",
     menus: [
       {
+        title: "Code",
+        link: "/code",
+      },
+      {
         title: "Color",
         link: "/color",
       },
