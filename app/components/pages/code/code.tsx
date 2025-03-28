@@ -1,8 +1,13 @@
 import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
+import { Form } from "~/components/ui/form";
+import { useCodeForm } from "~/hooks/useCodeForm";
 
 const CodePage = () => {
+  const { form, fields } = useCodeForm();
+  const { control } = form;
+
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction title="Code" />
@@ -17,13 +22,21 @@ const CodePage = () => {
           action={
             <div className="flex gap-2">
               <Cores.Popup
-                title="Edit Color"
+                title="Edit Code"
                 button={
                   <Cores.Button className="bg-lime-500 hover:bg-lime-600">
                     Edit
                   </Cores.Button>
                 }
-                content={<Fragments.Form />}
+                content={
+                  <Form {...form}>
+                    <Fragments.Form
+                      fields={fields}
+                      control={control}
+                      onSubmit={() => {}}
+                    />
+                  </Form>
+                }
               />
               <Cores.Button className="bg-red-500 hover:bg-red-600">
                 Delete
