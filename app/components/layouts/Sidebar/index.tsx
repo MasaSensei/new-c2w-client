@@ -30,6 +30,10 @@ const items = [
         title: "Model",
         link: "/model",
       },
+      {
+        title: "Size",
+        link: "/size",
+      },
     ],
   },
 ];
@@ -76,8 +80,11 @@ const Sidebar = () => {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       {item.menus.map((menu, idx) => (
-                        <SidebarMenuSub key={idx}>
-                          <Link className="w-full" to={menu.link}>
+                        <SidebarMenuSub
+                          className="hover:bg-gray-100 rounded"
+                          key={idx}
+                        >
+                          <Link className="w-full my-2" to={menu.link}>
                             <SidebarMenuSubItem>
                               {menu.title}
                             </SidebarMenuSubItem>

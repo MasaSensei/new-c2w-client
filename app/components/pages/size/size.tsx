@@ -2,20 +2,20 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
-import { useModelForm, useModelAction } from "~/hooks/useModel";
+import { useSizeForm, useSizeAction } from "~/hooks/useSize";
 
-const ModelPage = () => {
-  const { data, fetchData } = useModelAction();
+const SizePage = () => {
+  const { data, fetchData } = useSizeAction();
   const { form, fields, handleEdit, onSubmit, handleDelete } =
-    useModelForm(fetchData);
+    useSizeForm(fetchData);
   const { control, handleSubmit } = form;
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
-        title="Model"
+        title="Size"
         button={
           <Cores.Popup
-            title="Add Model"
+            title="Add Size"
             button={
               <Cores.Button className="bg-lime-500 hover:bg-lime-600">
                 Add
@@ -36,8 +36,8 @@ const ModelPage = () => {
       />
       <Layouts.SectionLayouts>
         <Cores.Table
-          headers={["Model", "Remarks"]}
-          bodies={data.map((model) => [model.model, model.remarks])}
+          headers={["Size", "Remarks"]}
+          bodies={data.map((size) => [size.size, size.remarks])}
           action={(idx) => {
             const currentData = data[idx];
             return (
@@ -78,4 +78,4 @@ const ModelPage = () => {
   );
 };
 
-export default ModelPage;
+export default SizePage;
