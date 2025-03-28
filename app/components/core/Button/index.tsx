@@ -14,7 +14,10 @@ interface ButtonProps extends React.ComponentProps<typeof ShadcnButton> {
 const Button: React.FC<ButtonProps> = ({ className, ...props }) => {
   return (
     <>
-      <ShadcnButton onClick={props.onClick} className={cn(className)}>
+      <ShadcnButton
+        onClick={props.onClick}
+        className={cn(className, "cursor-pointer")}
+      >
         {props.icon && <span className="mr-2">{props.icon}</span>}
         <span className="text-sm mt-[0.5px] text-justify flex-1">
           {props.children}

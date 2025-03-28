@@ -27,8 +27,8 @@ const items = [
         link: "/code",
       },
       {
-        title: "Color",
-        link: "/color",
+        title: "Model",
+        link: "/model",
       },
     ],
   },

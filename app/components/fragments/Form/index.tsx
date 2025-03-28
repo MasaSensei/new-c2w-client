@@ -9,6 +9,7 @@ import {
 import { type Control, type FieldValues, type Path } from "react-hook-form";
 import { Input } from "~/components/ui/input";
 import { Cores } from "~/components/core";
+import { Button } from "~/components/ui/button";
 
 interface Fields {
   name: string;
@@ -27,7 +28,7 @@ interface FormProps<T extends FieldValues> {
 
 const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
   return (
-    <form className={cn("w-full mx-auto", className)}>
+    <form onSubmit={props.onSubmit} className={cn("w-full mx-auto", className)}>
       {props.fields.map((field, i) => (
         <FormField
           key={i}
@@ -57,6 +58,9 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
           )}
         />
       ))}
+      <Button className="w-full cursor-pointer" type="submit">
+        Submit
+      </Button>
     </form>
   );
 };

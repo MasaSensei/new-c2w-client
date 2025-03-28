@@ -13,7 +13,7 @@ import { useTableFilter } from "~/hooks/useTableFilter";
 interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   headers: string[];
   bodies: (string | number | React.ReactNode)[][];
-  action?: React.ReactNode;
+  action?: (idx: number) => React.ReactNode;
 }
 
 const Table: React.FC<TableProps> = ({ headers, bodies, action, ...props }) => {
@@ -54,7 +54,7 @@ const Table: React.FC<TableProps> = ({ headers, bodies, action, ...props }) => {
                   {item}
                 </TableCell>
               ))}
-              {action && <TableCell>{action}</TableCell>}
+              {action && <TableCell>{action(idx)}</TableCell>}
             </TableRow>
           ))
         ) : (
