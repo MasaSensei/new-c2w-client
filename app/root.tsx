@@ -38,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <SidebarProvider>
           <div className="w-screen h-screen flex">
             <Layouts.Sidebar />
-            <div className="flex-1 flex flex-col h-screen">
+            <div className="flex-1 flex flex-col h-screen overflow-y-scroll overflow-x-hidden">
               <Layouts.Header />
               <main className="flex-1">{children}</main>
             </div>

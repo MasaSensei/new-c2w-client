@@ -17,28 +17,12 @@ import {
 } from "../../../components/ui/sidebar";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router";
-
-const items = [
-  {
-    title: "Master Data",
-    menus: [
-      {
-        title: "Code",
-        link: "/code",
-      },
-      {
-        title: "Model",
-        link: "/model",
-      },
-      {
-        title: "Size",
-        link: "/size",
-      },
-    ],
-  },
-];
+import { sidebarItems } from "~/data/sidebarItems";
+import { useLocation } from "react-router";
 
 const Sidebar = () => {
+  const location = useLocation();
+
   return (
     <SidebarShadcn className="mt-8 mx-auto bg-white">
       <SidebarContent className="bg-white">
@@ -65,14 +49,19 @@ const Sidebar = () => {
           <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item, idx) => (
+              {sidebarItems.map((item, idx) => (
                 <Collapsible
                   key={idx}
                   defaultOpen
                   className="group/collapsible"
                 >
                   <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
+                    <CollapsibleTrigger
+                      className={
+                        "group-data-[state=open]/collapsible:bg-gray-100 cursor-pointer"
+                      }
+                      asChild
+                    >
                       <SidebarMenuButton>
                         {item.title}
                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -81,7 +70,9 @@ const Sidebar = () => {
                     <CollapsibleContent>
                       {item.menus.map((menu, idx) => (
                         <SidebarMenuSub
-                          className="hover:bg-gray-100 rounded"
+                          className={`${
+                            location.pathname === menu.link && "bg-lime-100"
+                          } hover:bg-gray-100 rounded`}
                           key={idx}
                         >
                           <Link className="w-full my-2" to={menu.link}>

@@ -23,7 +23,7 @@ const Table: React.FC<TableProps> = ({ headers, bodies, action, ...props }) => {
   );
 
   return (
-    <ShadcnTable className="w-full overflow-auto">
+    <ShadcnTable className="w-full max-w-full table-fixed overflow-x-auto">
       <TableHeader className="bg-[#F6F7F9] text-[#758090]">
         <TableRow>
           {headers.map((header, idx) => (

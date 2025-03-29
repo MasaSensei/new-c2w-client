@@ -5,4 +5,5 @@ export default [
   route("code", "routes/code.tsx"),
   route("model", "routes/model.tsx"),
   route("size", "routes/size.tsx"),
+  route("supplier", "routes/supplier.tsx"),
 ] satisfies RouteConfig;
