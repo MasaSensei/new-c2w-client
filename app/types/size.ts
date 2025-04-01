@@ -2,7 +2,7 @@ export type Size = {
   id?: number;
   size: string;
   remarks: string;
-  is_active?: number;
+  is_active?: boolean;
 };
 
 export type ApiResponse = {

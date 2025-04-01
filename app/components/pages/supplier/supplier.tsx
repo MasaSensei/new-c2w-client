@@ -2,11 +2,13 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
-import { useSupplierForm } from "~/hooks/useSupplier";
+import { useSupplierAction, useSupplierForm } from "~/hooks/useSupplier";
 
 const SupplierPage = () => {
-  const { form, fields } = useSupplierForm();
-  const { control } = form;
+  const { data, fetchData } = useSupplierAction();
+  const { form, fields, handleEdit, onSubmit, handleDelete } =
+    useSupplierForm(fetchData);
+  const { control, handleSubmit } = form;
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
@@ -25,7 +27,7 @@ const SupplierPage = () => {
                   fields={fields}
                   control={control}
                   className="flex flex-col gap-5"
-                  onSubmit={() => {}}
+                  onSubmit={handleSubmit(onSubmit)}
                 />
               </Form>
             }
@@ -35,8 +37,47 @@ const SupplierPage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           headers={["id", "name", "phone", "address", "remarks"]}
-          bodies={[[1, "name", 0, "address", "remarks"]]}
-          action={() => null}
+          bodies={data.map((supplier) => [
+            supplier.id,
+            supplier.name,
+            supplier.number,
+            supplier.address,
+            supplier.remarks,
+          ])}
+          action={(idx) => {
+            const currentData = data[idx];
+            return (
+              <div className="flex gap-2">
+                <Cores.Popup
+                  title="Edit Model"
+                  button={
+                    <Cores.Button
+                      className="bg-lime-500 hover:bg-lime-600"
+                      onClick={() => handleEdit(currentData)}
+                    >
+                      Edit
+                    </Cores.Button>
+                  }
+                  content={
+                    <Form {...form}>
+                      <Fragments.Form
+                        fields={fields}
+                        control={control}
+                        className="flex flex-col gap-5"
+                        onSubmit={handleSubmit(onSubmit)}
+                      />
+                    </Form>
+                  }
+                />
+                <Cores.Button
+                  onClick={() => handleDelete(currentData)}
+                  className="bg-red-500 hover:bg-red-600"
+                >
+                  Delete
+                </Cores.Button>
+              </div>
+            );
+          }}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

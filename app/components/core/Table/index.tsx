@@ -54,7 +54,9 @@ const Table: React.FC<TableProps> = ({ headers, bodies, action, ...props }) => {
                   {item}
                 </TableCell>
               ))}
-              {action && <TableCell>{action(idx)}</TableCell>}
+              {action && (
+                <TableCell className="justify-center">{action(idx)}</TableCell>
+              )}
             </TableRow>
           ))
         ) : (

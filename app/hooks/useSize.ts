@@ -54,7 +54,7 @@ export const useSizeForm = (fetchData: () => Promise<void>) => {
       const payload = {
         size: data.size,
         remarks: data.remarks || "-",
-        is_active: 1,
+        is_active: true,
       };
       if (selectedSize) {
         await SizesService.update(selectedSize.id as number, payload as Size);

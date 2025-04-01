@@ -47,7 +47,7 @@ export const useCodeForm = (fetchData: () => Promise<void>) => {
       const payload = {
         code: data.code,
         remarks: data.remarks || "-",
-        is_active: 1,
+        is_active: true,
       };
       if (selectedCode) {
         await CodesService.update(selectedCode.id as number, payload as Code);
@@ -94,6 +94,8 @@ export const useCodeAction = () => {
   const fetchData = async () => {
     try {
       const response = await CodesService.getAll();
+      console.log(response.data); // Cek seluruh response
+      console.log(Array.isArray(response.data.data.data));
       if (!response.data.data) {
         setData([]);
       }

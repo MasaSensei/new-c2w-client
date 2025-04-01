@@ -47,7 +47,7 @@ export const useModelForm = (fetchData: () => Promise<void>) => {
       const payload = {
         model: data.model,
         remarks: data.remarks || "-",
-        is_active: 1,
+        is_active: true,
       };
       if (selectedModel) {
         await ModelsService.update(
@@ -78,7 +78,7 @@ export const useModelForm = (fetchData: () => Promise<void>) => {
 
     if (result.isConfirmed) {
       try {
-        await ModelsService.delete(model.id as number);
+        await ModelsService.delete(Number(model.id));
         Swal.fire("Terhapus!", "Data Model berhasil dihapus.", "success");
         await fetchData();
       } catch (error) {

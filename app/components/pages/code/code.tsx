@@ -38,11 +38,11 @@ const CodePage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           headers={["Code", "Remarks"]}
-          bodies={data.map((code) => [code.code, code.remarks])}
+          bodies={data?.map((code) => [code.code, code.remarks])}
           action={(idx) => {
             const currentCode = data[idx];
             return (
-              <div className="flex gap-2">
+              <div className="flex w-full gap-2 justify-center">
                 <Cores.Popup
                   title="Edit Code"
                   button={

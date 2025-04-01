@@ -1,12 +1,14 @@
-export type Model = {
+export type Supplier = {
   id?: number;
-  model: string;
+  name: string;
+  number: string;
+  address: string;
   remarks: string;
   is_active?: boolean;
 };
 
 export type ApiResponse = {
   success: boolean;
-  data: Model[];
+  data: Supplier[];
   message: string;
 };
