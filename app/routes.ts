@@ -7,4 +7,5 @@ export default [
   route("size", "routes/size.tsx"),
   route("supplier", "routes/supplier.tsx"),
   route("purchase-list", "routes/purchaseList.tsx"),
+  route("purchase-list/add", "routes/purchaseListAddNew.tsx"),
 ] satisfies RouteConfig;

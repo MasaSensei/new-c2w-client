@@ -10,11 +10,19 @@ import { type Control, type FieldValues, type Path } from "react-hook-form";
 import { Input } from "~/components/ui/input";
 import { Cores } from "~/components/core";
 import { Button } from "~/components/ui/button";
+import { Textarea } from "~/components/ui/textarea";
 
 interface Fields {
   name: string;
   label: string;
-  inputType?: "text" | "password" | "email" | "number" | "select";
+  inputType?:
+    | "text"
+    | "password"
+    | "email"
+    | "number"
+    | "select"
+    | "date"
+    | "textarea";
   placeholder?: string;
   options?: { value: string; label: string }[];
 }
@@ -24,40 +32,54 @@ interface FormProps<T extends FieldValues> {
   fields: Fields[];
   control: Control<T>;
   className?: string;
+  rowClassName?: string;
+  columnClassName?: string;
 }
 
 const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
   return (
-    <form onSubmit={props.onSubmit} className={cn("w-full mx-auto", className)}>
-      {props.fields.map((field, i) => (
-        <FormField
-          key={i}
-          control={props.control}
-          name={field.name as Path<T>}
-          render={({ field: formField }) => (
-            <FormItem>
-              <FormLabel>{field.label}</FormLabel>
-              <FormControl>
-                {field.inputType === "select" ? (
-                  <Cores.Select
-                    options={field.options}
-                    value={formField.value}
-                    onChange={formField.onChange}
-                  />
-                ) : (
-                  <Input
-                    {...formField}
-                    type={field.inputType}
-                    placeholder={field.placeholder}
-                    className="w-full"
-                  />
-                )}
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      ))}
+    <form
+      onSubmit={props.onSubmit}
+      className={cn("w-full mx-auto flex flex-col gap-4", className)}
+    >
+      <div className={cn(props.rowClassName)}>
+        {props.fields.map((field, i) => (
+          <FormField
+            key={i}
+            control={props.control}
+            name={field.name as Path<T>}
+            render={({ field: formField }) => (
+              <FormItem className={cn(props.columnClassName, "w-full")}>
+                <FormLabel>{field.label}</FormLabel>
+                <FormControl>
+                  {field.inputType === "select" ? (
+                    <Cores.Select
+                      options={field.options}
+                      placeholder={field.placeholder}
+                      value={formField.value}
+                      onChange={formField.onChange}
+                    />
+                  ) : field.inputType === "textarea" ? (
+                    <Textarea
+                      {...formField}
+                      placeholder={field.placeholder}
+                      rows={4}
+                      className={cn(props.columnClassName, "w-full")}
+                    />
+                  ) : (
+                    <Input
+                      {...formField}
+                      type={field.inputType}
+                      placeholder={field.placeholder}
+                    />
+                  )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
+      </div>
       <Button className="w-full cursor-pointer" type="submit">
         Submit
       </Button>

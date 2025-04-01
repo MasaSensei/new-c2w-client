@@ -26,7 +26,7 @@ const ModelPage = () => {
                 <Fragments.Form
                   fields={fields}
                   control={control}
-                  className="flex flex-col gap-5"
+                  rowClassName="flex flex-col gap-5"
                   onSubmit={handleSubmit(onSubmit)}
                 />
               </Form>

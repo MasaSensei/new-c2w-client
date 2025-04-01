@@ -21,6 +21,7 @@ interface SelectProps {
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
+  className?: string;
 }
 
 const Select: React.FC<SelectProps> = ({ ...props }) => {
@@ -44,7 +45,7 @@ const Select: React.FC<SelectProps> = ({ ...props }) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className={cn("w-full justify-between", props.className)}
         >
           {props.value
             ? props?.options?.find(
@@ -64,7 +65,7 @@ const Select: React.FC<SelectProps> = ({ ...props }) => {
           />
           <CommandList>
             {filteredOptions?.length === 0 ? (
-              <CommandEmpty>No framework found.</CommandEmpty>
+              <CommandEmpty>No results found.</CommandEmpty>
             ) : (
               <CommandGroup>
                 {filteredOptions?.map((option) => (
