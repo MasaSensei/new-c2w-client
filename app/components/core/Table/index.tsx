@@ -1,3 +1,5 @@
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 import { Input } from "~/components/ui/input";
 import {
   Table as ShadcnTable,
@@ -14,16 +16,32 @@ interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   headers: string[];
   bodies: (string | number | React.ReactNode)[][];
   action?: (idx: number) => React.ReactNode;
+  seachable?: boolean;
+  footer?: React.ReactNode;
+  details?: (idx: number) => React.ReactNode;
 }
 
-const Table: React.FC<TableProps> = ({ headers, bodies, action, ...props }) => {
+const Table: React.FC<TableProps> = ({
+  headers,
+  bodies,
+  action,
+  details,
+  ...props
+}) => {
   const { search, handleSearchChange, filteredBodies } = useTableFilter(
     headers,
     bodies
   );
+  const [expandedRows, setExpandedRows] = useState<number[]>([]);
+
+  const toggleRow = (idx: number) => {
+    setExpandedRows((prev) =>
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+    );
+  };
 
   return (
-    <ShadcnTable className="w-full max-w-full table-fixed overflow-x-auto">
+    <ShadcnTable className="w-full max-w-full table-fixed border overflow-x-auto">
       <TableHeader className="bg-[#F6F7F9] text-[#758090]">
         <TableRow>
           {headers.map((header, idx) => (
@@ -32,32 +50,62 @@ const Table: React.FC<TableProps> = ({ headers, bodies, action, ...props }) => {
               key={idx}
             >
               {header}
-              <div className="max-w-full w-96">
-                <Input
-                  className="-ml-2 w-full my-2 bg-white"
-                  value={search[idx]}
-                  onChange={(e) => handleSearchChange(e.target.value, idx)}
-                  placeholder={`Search ${header}`}
-                />
-              </div>
+              {props.seachable && (
+                <div className="max-w-full w-96">
+                  <Input
+                    className="-ml-2 w-full my-2 bg-white"
+                    value={search[idx]}
+                    onChange={(e) => handleSearchChange(e.target.value, idx)}
+                    placeholder={`Search ${header}`}
+                  />
+                </div>
+              )}
             </TableHead>
           ))}
-          {action && <TableHead className="rounded-tr-lg" />}
+          {(action || details) && (
+            <TableHead className="rounded-tr-lg">Action</TableHead>
+          )}
         </TableRow>
       </TableHeader>
       <TableBody className="bg-white">
         {filteredBodies.length > 0 ? (
           filteredBodies.map((body, idx) => (
-            <TableRow key={idx}>
-              {body.map((item, cellIdx) => (
-                <TableCell className="px-5" key={cellIdx}>
-                  {item}
-                </TableCell>
-              ))}
-              {action && (
-                <TableCell className="justify-center">{action(idx)}</TableCell>
+            <>
+              <TableRow key={idx}>
+                {body.map((item, cellIdx) => (
+                  <TableCell className="px-5" key={cellIdx}>
+                    {item}
+                  </TableCell>
+                ))}
+                {(action || details) && (
+                  <TableCell className="justify-center flex gap-2">
+                    {details && (
+                      <button
+                        onClick={() => toggleRow(idx)}
+                        className="p-1 cursor-pointer"
+                      >
+                        {expandedRows.includes(idx) ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        )}
+                      </button>
+                    )}
+                    {action && action(idx)}
+                  </TableCell>
+                )}
+              </TableRow>
+              {expandedRows.includes(idx) && details && (
+                <TableRow>
+                  <TableCell
+                    colSpan={headers.length + 1}
+                    className="bg-gray-100"
+                  >
+                    {details(idx)}
+                  </TableCell>
+                </TableRow>
               )}
-            </TableRow>
+            </>
           ))
         ) : (
           <TableRow>
@@ -67,13 +115,15 @@ const Table: React.FC<TableProps> = ({ headers, bodies, action, ...props }) => {
           </TableRow>
         )}
       </TableBody>
-      <TableFooter className="bg-[#F6F7F9]">
-        <TableRow>
-          <TableCell className="rounded-b-lg" colSpan={headers.length + 1}>
-            Test
-          </TableCell>
-        </TableRow>
-      </TableFooter>
+      {props.footer && (
+        <TableFooter className="bg-[#F6F7F9]">
+          <TableRow>
+            <TableCell className="rounded-b-lg" colSpan={headers.length + 1}>
+              {props.footer}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      )}
     </ShadcnTable>
   );
 };

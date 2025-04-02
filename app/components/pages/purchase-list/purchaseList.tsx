@@ -3,9 +3,11 @@ import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { usePurchaseAction, usePurchaseForm } from "~/hooks/usePurchase";
 import { Form } from "~/components/ui/form";
-import { Pen, Eye, Trash } from "lucide-react";
+import { Pen, Eye } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const PurchaseListPage = () => {
+  const navigate = useNavigate();
   const { fetchData, suppliers } = usePurchaseAction();
   const { form, fields, handleEdit, onSubmit } = usePurchaseForm(
     fetchData,
@@ -20,7 +22,7 @@ const PurchaseListPage = () => {
         title="Purchase List"
         button={
           <Cores.Popup
-            title="Add Supplier"
+            title="Add Purchase List"
             button={
               <Cores.Button className="bg-lime-500 hover:bg-lime-600">
                 Add
@@ -72,11 +74,11 @@ const PurchaseListPage = () => {
               <Cores.Button className="bg-transparent shadow-none hover:bg-transparent">
                 <Pen className="text-black" />
               </Cores.Button>
-              <Cores.Button className="bg-transparent shadow-none hover:bg-transparent">
+              <Cores.Button
+                onClick={() => navigate(`/purchase-list-detail/${idx + 1}`)}
+                className="bg-transparent shadow-none hover:bg-transparent"
+              >
                 <Eye className="text-black" />
-              </Cores.Button>
-              <Cores.Button className="bg-transparent shadow-none hover:bg-transparent">
-                <Trash className="text-red-500" />
               </Cores.Button>
             </div>
           )}

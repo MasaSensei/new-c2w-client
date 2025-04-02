@@ -45,7 +45,7 @@ const Select: React.FC<SelectProps> = ({ ...props }) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", props.className)}
+          className={cn("w-full justify-between bg-white", props.className)}
         >
           {props.value
             ? props?.options?.find(

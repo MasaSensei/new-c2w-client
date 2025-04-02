@@ -34,6 +34,7 @@ interface FormProps<T extends FieldValues> {
   className?: string;
   rowClassName?: string;
   columnClassName?: string;
+  additional?: React.ReactNode;
 }
 
 const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
@@ -64,13 +65,14 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
                       {...formField}
                       placeholder={field.placeholder}
                       rows={4}
-                      className={cn(props.columnClassName, "w-full")}
+                      className={cn(props.columnClassName, "w-full bg-white")}
                     />
                   ) : (
                     <Input
                       {...formField}
                       type={field.inputType}
                       placeholder={field.placeholder}
+                      className="bg-white"
                     />
                   )}
                 </FormControl>
@@ -80,6 +82,7 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
           />
         ))}
       </div>
+      {props.additional}
       <Button className="w-full cursor-pointer" type="submit">
         Submit
       </Button>
