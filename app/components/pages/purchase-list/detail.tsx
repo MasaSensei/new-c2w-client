@@ -36,7 +36,7 @@ const PurchaseListDetailPage = () => {
           <div className="absolute inset-0 bg-black opacity-75"></div>
           <div className="relative z-10">
             <Cores.Card
-              className="w-[1200px] h-[520px] overflow-y-scroll"
+              className="w-[1300px] h-[590px] overflow-y-scroll"
               header={
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">Add Item</h3>

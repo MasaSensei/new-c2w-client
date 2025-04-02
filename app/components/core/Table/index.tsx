@@ -63,7 +63,7 @@ const Table: React.FC<TableProps> = ({
             </TableHead>
           ))}
           {(action || details) && (
-            <TableHead className="rounded-tr-lg">Action</TableHead>
+            <TableHead className="rounded-tr-lg"></TableHead>
           )}
         </TableRow>
       </TableHeader>
