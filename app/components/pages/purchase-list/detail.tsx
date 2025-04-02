@@ -13,8 +13,9 @@ import { Label } from "~/components/ui/label";
 
 const PurchaseListDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { form, fields } = usePurchaseDetailForm();
+  const { form, fields, onSubmit, purchaseItems } = usePurchaseDetailForm();
   const { purchaseListId } = useParams();
+  const { control, handleSubmit } = form;
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -54,7 +55,7 @@ const PurchaseListDetailPage = () => {
                     <Form {...form}>
                       <Fragments.Form
                         fields={fields}
-                        control={form.control}
+                        control={control}
                         rowClassName="grid grid-cols-3 gap-4"
                         className="flex gap-5"
                         columnClassName={`last:col-span-3 ${
@@ -62,7 +63,7 @@ const PurchaseListDetailPage = () => {
                             .map((field) => field.name)
                             .filter((col) => col === "remarks")[0]
                         }`}
-                        onSubmit={() => {}}
+                        onSubmit={handleSubmit(onSubmit)}
                         additional={
                           <>
                             <Separator className="my-2.5" />
@@ -115,13 +116,19 @@ const PurchaseListDetailPage = () => {
                     </h1>
                     <Cores.Table
                       headers={[
-                        "Tanggal",
-                        "Supplier",
-                        "Invoice",
-                        "Nominal",
-                        "Status",
+                        "Total Roll",
+                        "Bahan",
+                        "Total Yard",
+                        "Sub Total",
                         "Remarks",
                       ]}
+                      bodies={purchaseItems.map((item) => [
+                        item.total_roll,
+                        item.material,
+                        item.total_yard,
+                        item.sub_total,
+                        item.remarks,
+                      ])}
                       details={(idx) => (
                         <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
                           <h4 className="font-semibold">
@@ -134,16 +141,6 @@ const PurchaseListDetailPage = () => {
                           <p>Status: Overdue</p>
                         </div>
                       )}
-                      bodies={[
-                        [
-                          "18-12-2024",
-                          "Target",
-                          "00261",
-                          "1.000.000",
-                          "Overdue",
-                          "Asahi Hitam",
-                        ],
-                      ]}
                       action={(idx) => (
                         <div className="flex flex-row flex-wrap items-center justify-center">
                           <Pen className="text-black w-2.5 h-2.5 " />

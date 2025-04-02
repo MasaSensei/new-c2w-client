@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
+import { usePurchaseStore } from "~/stores/useDetailPurchaseStore";
 
 const formSchema = z.object({
   total_roll: z.string().min(1, { message: "Total Roll is required" }),
@@ -27,6 +28,18 @@ export const usePurchaseDetailForm = () => {
       remarks: "-",
     },
   });
+
+  const { addItem } = usePurchaseStore();
+  const purchaseItems = usePurchaseStore((state) => state.items);
+
+  useEffect(() => {
+    console.log(purchaseItems);
+  }, [purchaseItems]);
+
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log("Form data submitted:", data); // Debug log
+    addItem(data);
+  };
 
   const fields = [
     {
@@ -73,5 +86,5 @@ export const usePurchaseDetailForm = () => {
     },
   ];
 
-  return { form, fields };
+  return { form, onSubmit, fields, purchaseItems };
 };
