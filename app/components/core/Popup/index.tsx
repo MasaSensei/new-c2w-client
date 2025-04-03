@@ -15,6 +15,7 @@ interface PopupProps {
   trigger?: (open: boolean) => void;
   height?: string;
   width?: string;
+  description?: string;
 }
 
 const Popup: React.FC<PopupProps> = ({ title, ...props }) => {
@@ -30,6 +31,7 @@ const Popup: React.FC<PopupProps> = ({ title, ...props }) => {
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{props.description}</DialogDescription>
         </DialogHeader>
         {props.content}
       </DialogContent>

@@ -29,13 +29,13 @@ export const useItemForm = (
     {
       name: "item",
       label: "Item",
-      inputType: "text",
+      inputType: "text" as const,
       placeholder: "Enter Item",
     },
     {
       name: "remarks",
       label: "Remarks",
-      inputType: "textarea",
+      inputType: "text" as const,
       placeholder: "Enter Remarks",
     },
   ];
