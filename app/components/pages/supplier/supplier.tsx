@@ -36,6 +36,7 @@ const SupplierPage = () => {
       />
       <Layouts.SectionLayouts>
         <Cores.Table
+          seachable
           headers={["id", "name", "phone", "address", "remarks"]}
           bodies={data.map((supplier) => [
             supplier.id,
@@ -78,6 +79,7 @@ const SupplierPage = () => {
               </div>
             );
           }}
+          footer={<h1>Test</h1>}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

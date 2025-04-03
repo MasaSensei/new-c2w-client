@@ -7,8 +7,16 @@ export const sidebarItems = [
         link: "/code",
       },
       {
+        title: "Color",
+        link: "/color",
+      },
+      {
         title: "Model",
         link: "/model",
+      },
+      {
+        title: "Item",
+        link: "/item",
       },
       {
         title: "Size",
@@ -27,9 +35,14 @@ export const sidebarItems = [
         title: "Purchase List",
         link: "/purchase-list",
       },
+    ],
+  },
+  {
+    title: "Inventory",
+    menus: [
       {
-        title: "Size",
-        link: "/size",
+        title: "Material Inventory",
+        link: "/material-inventory",
       },
     ],
   },

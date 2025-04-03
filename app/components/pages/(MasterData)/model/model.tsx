@@ -2,21 +2,20 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
-import { useCodeForm, useCodeAction } from "~/hooks/useCode";
+import { useModelForm, useModelAction } from "~/hooks/useModel";
 
-const CodePage = () => {
-  const { data, fetchData } = useCodeAction();
+const ModelPage = () => {
+  const { data, fetchData } = useModelAction();
   const { form, fields, handleEdit, onSubmit, handleDelete } =
-    useCodeForm(fetchData);
+    useModelForm(fetchData);
   const { control, handleSubmit } = form;
-
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
-        title="Code"
+        title="Model"
         button={
           <Cores.Popup
-            title="Add Code"
+            title="Add Model"
             button={
               <Cores.Button className="bg-lime-500 hover:bg-lime-600">
                 Add
@@ -27,7 +26,8 @@ const CodePage = () => {
                 <Fragments.Form
                   fields={fields}
                   control={control}
-                  className="flex flex-col gap-5"
+                  columnClassName="mb-2"
+                  rowClassName="flex flex-col gap-5"
                   onSubmit={handleSubmit(onSubmit)}
                 />
               </Form>
@@ -37,18 +37,19 @@ const CodePage = () => {
       />
       <Layouts.SectionLayouts>
         <Cores.Table
-          headers={["Code", "Remarks"]}
-          bodies={data?.map((code) => [code.code, code.remarks])}
+          seachable
+          headers={["Model", "Remarks"]}
+          bodies={data.map((model) => [model.model, model.remarks])}
           action={(idx) => {
-            const currentCode = data[idx];
+            const currentData = data[idx];
             return (
-              <div className="flex w-full gap-2 justify-center">
+              <div className="flex gap-2">
                 <Cores.Popup
-                  title="Edit Code"
+                  title="Edit Model"
                   button={
                     <Cores.Button
                       className="bg-lime-500 hover:bg-lime-600"
-                      onClick={() => handleEdit(currentCode)}
+                      onClick={() => handleEdit(currentData)}
                     >
                       Edit
                     </Cores.Button>
@@ -58,14 +59,15 @@ const CodePage = () => {
                       <Fragments.Form
                         fields={fields}
                         control={control}
-                        rowClassName="flex flex-col gap-5"
+                        columnClassName="mb-5"
+                        className="flex flex-col gap-5"
                         onSubmit={handleSubmit(onSubmit)}
                       />
                     </Form>
                   }
                 />
                 <Cores.Button
-                  onClick={() => handleDelete(currentCode)}
+                  onClick={() => handleDelete(currentData)}
                   className="bg-red-500 hover:bg-red-600"
                 >
                   Delete
@@ -73,10 +75,11 @@ const CodePage = () => {
               </div>
             );
           }}
+          footer={<h1>Test</h1>}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>
   );
 };
 
-export default CodePage;
+export default ModelPage;

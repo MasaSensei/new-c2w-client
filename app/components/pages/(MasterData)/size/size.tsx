@@ -36,6 +36,7 @@ const SizePage = () => {
       />
       <Layouts.SectionLayouts>
         <Cores.Table
+          seachable
           headers={["Size", "Remarks"]}
           bodies={data.map((size) => [size.size, size.remarks])}
           action={(idx) => {
@@ -72,6 +73,7 @@ const SizePage = () => {
               </div>
             );
           }}
+          footer={<h1>Test</h1>}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

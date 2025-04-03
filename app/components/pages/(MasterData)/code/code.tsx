@@ -2,20 +2,23 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
-import { useModelForm, useModelAction } from "~/hooks/useModel";
+import { useCodeForm, useCodeAction } from "~/hooks/useCode";
 
-const ModelPage = () => {
-  const { data, fetchData } = useModelAction();
-  const { form, fields, handleEdit, onSubmit, handleDelete } =
-    useModelForm(fetchData);
+const CodePage = () => {
+  const { data, fetchData, isLoading, setIsLoading } = useCodeAction();
+  const { form, fields, handleEdit, onSubmit, handleDelete } = useCodeForm(
+    fetchData,
+    setIsLoading
+  );
   const { control, handleSubmit } = form;
+
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
-        title="Model"
+        title="Code"
         button={
           <Cores.Popup
-            title="Add Model"
+            title="Add Code"
             button={
               <Cores.Button className="bg-lime-500 hover:bg-lime-600">
                 Add
@@ -26,7 +29,8 @@ const ModelPage = () => {
                 <Fragments.Form
                   fields={fields}
                   control={control}
-                  rowClassName="flex flex-col gap-5"
+                  columnClassName="mb-5"
+                  className="flex flex-col gap-5"
                   onSubmit={handleSubmit(onSubmit)}
                 />
               </Form>
@@ -36,18 +40,20 @@ const ModelPage = () => {
       />
       <Layouts.SectionLayouts>
         <Cores.Table
-          headers={["Model", "Remarks"]}
-          bodies={data.map((model) => [model.model, model.remarks])}
+          seachable
+          headers={["Code", "Remarks"]}
+          bodies={data?.map((code) => [code.code, code.remarks])}
+          isLoading={isLoading}
           action={(idx) => {
-            const currentData = data[idx];
+            const currentCode = data[idx];
             return (
-              <div className="flex gap-2">
+              <div className="flex w-full gap-2 justify-center">
                 <Cores.Popup
-                  title="Edit Model"
+                  title="Edit Code"
                   button={
                     <Cores.Button
                       className="bg-lime-500 hover:bg-lime-600"
-                      onClick={() => handleEdit(currentData)}
+                      onClick={() => handleEdit(currentCode)}
                     >
                       Edit
                     </Cores.Button>
@@ -57,6 +63,7 @@ const ModelPage = () => {
                       <Fragments.Form
                         fields={fields}
                         control={control}
+                        columnClassName="mb-5"
                         className="flex flex-col gap-5"
                         onSubmit={handleSubmit(onSubmit)}
                       />
@@ -64,7 +71,7 @@ const ModelPage = () => {
                   }
                 />
                 <Cores.Button
-                  onClick={() => handleDelete(currentData)}
+                  onClick={() => handleDelete(currentCode)}
                   className="bg-red-500 hover:bg-red-600"
                 >
                   Delete
@@ -72,10 +79,11 @@ const ModelPage = () => {
               </div>
             );
           }}
+          footer={<h1>Test</h1>}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>
   );
 };
 
-export default ModelPage;
+export default CodePage;

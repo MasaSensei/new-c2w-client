@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { useTableFilter } from "~/hooks/useTableFilter";
+import ClipLoader from "react-spinners/ClipLoader";
 
 interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   headers: string[];
@@ -19,6 +20,7 @@ interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   seachable?: boolean;
   footer?: React.ReactNode;
   details?: (idx: number) => React.ReactNode;
+  isLoading?: boolean;
 }
 
 const Table: React.FC<TableProps> = ({
@@ -68,7 +70,19 @@ const Table: React.FC<TableProps> = ({
         </TableRow>
       </TableHeader>
       <TableBody className="bg-white">
-        {filteredBodies.length > 0 ? (
+        {props.isLoading ? (
+          <TableRow>
+            <TableCell colSpan={headers.length + 1} className="text-center">
+              <ClipLoader
+                color="#000000"
+                loading={true}
+                size={20}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            </TableCell>
+          </TableRow>
+        ) : filteredBodies.length > 0 ? (
           filteredBodies.map((body, idx) => (
             <>
               <TableRow key={idx}>

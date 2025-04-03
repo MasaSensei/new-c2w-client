@@ -2,64 +2,65 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useState } from "react";
-import type { Code } from "~/types/code";
-import { CodesService } from "~/services/code.service";
 import Swal from "sweetalert2";
+import type { Item } from "~/types/item";
+import { ItemsService } from "~/services/item.service";
 
 const formSchema = z.object({
-  code: z.string().min(1, { message: "Code is required" }),
+  item: z.string().min(1, { message: "Item is required" }),
   remarks: z.string().optional(),
 });
 
-export const useCodeForm = (
+export const useItemForm = (
   fetchData: () => Promise<void>,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const [selectedCode, setSelectedCode] = useState<Code | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      code: "",
+      item: "",
       remarks: "",
     },
   });
 
   const fields = [
     {
-      name: "code",
-      label: "Code",
-      inputType: "text" as const,
-      placeholder: "ABC-123",
+      name: "item",
+      label: "Item",
+      inputType: "text",
+      placeholder: "Enter Item",
     },
     {
       name: "remarks",
       label: "Remarks",
-      inputType: "text" as const,
-      placeholder: "noted",
+      inputType: "textarea",
+      placeholder: "Enter Remarks",
     },
   ];
 
-  const handleEdit = (code: Code) => {
-    setSelectedCode(code);
-    form.setValue("code", code.code);
-    form.setValue("remarks", code.remarks || "");
+  const handleEdit = (item: Item) => {
+    setSelectedItem(item);
+    form.setValue("item", item.item);
+    form.setValue("remarks", item.remarks || "");
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
       const payload = {
-        code: data.code.toUpperCase(),
-        remarks: data.remarks || "-",
+        item: data.item,
+        remarks: data.remarks,
         is_active: true,
       };
-      if (selectedCode) {
-        await CodesService.update(selectedCode.id as number, payload as Code);
+      if (selectedItem) {
+        await ItemsService.update(selectedItem.id as number, payload as Item);
       } else {
-        await CodesService.create(payload as Code);
+        await ItemsService.create(payload as Item);
       }
       form.reset();
-      setSelectedCode(null);
+      setSelectedItem(null);
       await fetchData();
     } catch (error) {
       console.error("Submit error:", error);
@@ -68,7 +69,7 @@ export const useCodeForm = (
     }
   };
 
-  const handleDelete = async (code: Code) => {
+  const handleDelete = async (item: Item) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -81,9 +82,8 @@ export const useCodeForm = (
 
     if (result.isConfirmed) {
       try {
-        await CodesService.delete(code.id as number);
-        Swal.fire("Terhapus!", "Data Code berhasil dihapus.", "success");
-        await fetchData();
+        await ItemsService.delete(item.id as number);
+        Swal.fire("Terhapus!", "Data Color berhasil dihapus.", "success");
       } catch (error) {
         Swal.fire("Gagal!", "Terjadi kesalahan saat menghapus data", "error");
         console.error("Delete error:", error);
@@ -91,17 +91,25 @@ export const useCodeForm = (
     }
   };
 
-  return { form, fields, handleEdit, selectedCode, onSubmit, handleDelete };
+  return {
+    form,
+    fields,
+    selectedItem,
+    handleEdit,
+    onSubmit,
+    handleDelete,
+  };
 };
 
-export const useCodeAction = () => {
-  const [data, setData] = useState<Code[]>([]);
+export const useItemAction = () => {
+  const [data, setData] = useState<Item[]>([]);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await CodesService.getAll();
+      const response = await ItemsService.getAll();
       if (!response.data.data) {
         setIsLoading(false);
         setData([]);

@@ -45,6 +45,7 @@ const PurchaseListPage = () => {
       />
       <Layouts.SectionLayouts>
         <Cores.Table
+          seachable
           headers={[
             "Tanggal",
             "Supplier",
@@ -82,6 +83,7 @@ const PurchaseListPage = () => {
               </Cores.Button>
             </div>
           )}
+          footer={<h1>Test</h1>}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

@@ -2,64 +2,68 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useState } from "react";
-import type { Code } from "~/types/code";
-import { CodesService } from "~/services/code.service";
 import Swal from "sweetalert2";
+import type { Color } from "~/types/color";
+import { ColorsService } from "~/services/color.service";
 
 const formSchema = z.object({
-  code: z.string().min(1, { message: "Code is required" }),
+  color: z.string().min(1, { message: "Color is required" }),
   remarks: z.string().optional(),
 });
 
-export const useCodeForm = (
+export const useColorForm = (
   fetchData: () => Promise<void>,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const [selectedCode, setSelectedCode] = useState<Code | null>(null);
+  const [selectedColor, setSelectedColor] = useState<Color | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      code: "",
+      color: "",
       remarks: "",
     },
   });
 
   const fields = [
     {
-      name: "code",
-      label: "Code",
+      name: "color",
+      label: "Color",
       inputType: "text" as const,
-      placeholder: "ABC-123",
+      placeholder: "Color Name",
     },
     {
       name: "remarks",
       label: "Remarks",
       inputType: "text" as const,
-      placeholder: "noted",
+      placeholder: "Remarks",
     },
   ];
 
-  const handleEdit = (code: Code) => {
-    setSelectedCode(code);
-    form.setValue("code", code.code);
-    form.setValue("remarks", code.remarks || "");
+  const handleEdit = (color: Color) => {
+    setSelectedColor(color);
+    form.setValue("color", color.color);
+    form.setValue("remarks", color.remarks || "");
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
       const payload = {
-        code: data.code.toUpperCase(),
-        remarks: data.remarks || "-",
+        color: data.color.toUpperCase(),
+        remarks: data.remarks,
         is_active: true,
       };
-      if (selectedCode) {
-        await CodesService.update(selectedCode.id as number, payload as Code);
+      if (selectedColor) {
+        await ColorsService.update(
+          selectedColor.id as number,
+          payload as Color
+        );
       } else {
-        await CodesService.create(payload as Code);
+        await ColorsService.create(payload as Color);
       }
       form.reset();
-      setSelectedCode(null);
+      setSelectedColor(null);
       await fetchData();
     } catch (error) {
       console.error("Submit error:", error);
@@ -68,7 +72,7 @@ export const useCodeForm = (
     }
   };
 
-  const handleDelete = async (code: Code) => {
+  const handleDelete = async (color: Color) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -81,9 +85,8 @@ export const useCodeForm = (
 
     if (result.isConfirmed) {
       try {
-        await CodesService.delete(code.id as number);
-        Swal.fire("Terhapus!", "Data Code berhasil dihapus.", "success");
-        await fetchData();
+        await ColorsService.delete(color.id as number);
+        Swal.fire("Terhapus!", "Data Color berhasil dihapus.", "success");
       } catch (error) {
         Swal.fire("Gagal!", "Terjadi kesalahan saat menghapus data", "error");
         console.error("Delete error:", error);
@@ -91,17 +94,24 @@ export const useCodeForm = (
     }
   };
 
-  return { form, fields, handleEdit, selectedCode, onSubmit, handleDelete };
+  return {
+    form,
+    fields,
+    selectedColor,
+    handleEdit,
+    onSubmit,
+    handleDelete,
+  };
 };
 
-export const useCodeAction = () => {
-  const [data, setData] = useState<Code[]>([]);
+export const useColorAction = () => {
+  const [data, setData] = useState<Color[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await CodesService.getAll();
+      const response = await ColorsService.getAll();
       if (!response.data.data) {
         setIsLoading(false);
         setData([]);
