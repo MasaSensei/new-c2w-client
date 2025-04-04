@@ -8,7 +8,7 @@ import {
   usePurchaseDetailAction,
 } from "~/hooks/usePurchaseDetail";
 import { useState, useEffect } from "react";
-import { Cross, Pen } from "lucide-react";
+import { Pen, XIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Input } from "~/components/ui/input";
@@ -18,8 +18,17 @@ const PurchaseListDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isLoading, fetchData, rawMaterials, setIsLoading } =
     usePurchaseDetailAction();
-  const { form, fields, onSubmit, purchaseItems, fields2 } =
-    usePurchaseDetailForm(fetchData, setIsLoading, rawMaterials);
+  const {
+    form,
+    fields,
+    onSubmit,
+    purchaseItems,
+    tempRoll,
+    setTempRoll,
+    addRoll,
+    rollItems,
+    removeRoll,
+  } = usePurchaseDetailForm(fetchData, setIsLoading, rawMaterials);
   const { purchaseListId } = useParams();
   const { control, handleSubmit } = form;
 
@@ -51,7 +60,7 @@ const PurchaseListDetailPage = () => {
                     className="bg-transparent shadow-none hover:bg-transparent"
                     onClick={toggleModal}
                   >
-                    <Cross className="h-4 w-4 text-black" />
+                    <XIcon className="h-4 w-4 text-black" />
                   </Cores.Button>
                 </div>
               }
@@ -74,32 +83,72 @@ const PurchaseListDetailPage = () => {
                           <>
                             <Separator className="my-2.5" />
                             <div className="gap-2 flex items-end justify-center">
-                              <Form {...form}>
-                                <Fragments.Form
-                                  fields={fields2}
-                                  control={control}
-                                  rowClassName="grid grid-cols-2 gap-4"
-                                  className="flex flex-row items-end gap-4"
-                                  onSubmit={handleSubmit(onSubmit)}
-                                  buttonClassName="w-[50px] bg-lime-500 hover:bg-lime-600"
-                                  buttonName="Add"
+                              <div className="flex flex-col gap-2">
+                                <Label htmlFor="total_roll">Total Roll</Label>
+                                <Input
+                                  className="bg-white"
+                                  type="text"
+                                  name="total_roll"
+                                  value={tempRoll.total_roll}
+                                  onChange={(e) =>
+                                    setTempRoll({
+                                      ...tempRoll,
+                                      total_roll: e.target.value,
+                                    })
+                                  }
+                                  placeholder="Total Roll"
                                 />
-                              </Form>
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <Label htmlFor="length_in_yard">
+                                  Length in Yard
+                                </Label>
+                                <Input
+                                  className="bg-white"
+                                  type="text"
+                                  name="length_in_yard"
+                                  value={tempRoll.length_in_yard}
+                                  onChange={(e) =>
+                                    setTempRoll({
+                                      ...tempRoll,
+                                      length_in_yard: e.target.value,
+                                    })
+                                  }
+                                  placeholder="Length in Yard"
+                                />
+                              </div>
+                              <div className="flex items-center">
+                                <Button
+                                  onClick={() => addRoll()}
+                                  type="button"
+                                  className="bg-lime-500 hover:bg-lime-600 cursor-pointer mx-auto text-white text-sm w-50"
+                                >
+                                  Add
+                                </Button>
+                              </div>
                             </div>
                             <div className="mt-1.5 bg-white p-4">
                               <Label className="text-sm mb-2">Roll Items</Label>
-                              <Cores.Table
-                                headers={["Tanggal", "Supplier"]}
-                                bodies={[["18-12-2024", "Target"]]}
-                                action={(idx) => (
-                                  <Cores.Button
-                                    className="bg-transparent shadow-none hover:bg-transparent"
-                                    onClick={() => {}}
-                                  >
-                                    <Cross className="h-4 w-4 text-black" />
-                                  </Cores.Button>
-                                )}
-                              />
+                              {rollItems.length > 0 ? (
+                                <Cores.Table
+                                  headers={["Jumlah Roll", "Length in Yard"]}
+                                  bodies={rollItems.map((item) => [
+                                    item.total_roll,
+                                    item.length_in_yard,
+                                  ])}
+                                  action={(idx) => (
+                                    <Cores.Button
+                                      className="bg-transparent shadow-none hover:bg-transparent"
+                                      onClick={() => removeRoll(idx)}
+                                      type="button"
+                                    >
+                                      <XIcon className="h-4 w-4 text-black" />
+                                    </Cores.Button>
+                                  )}
+                                />
+                              ) : (
+                                <span className="text-sm">No roll items</span>
+                              )}
                             </div>
                           </>
                         }

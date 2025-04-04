@@ -35,10 +35,30 @@ export const usePurchaseDetailForm = (
     },
   });
 
+  const [rollItems, setRollItems] = useState<
+    { total_roll: string; length_in_yard: string }[]
+  >([]);
+  const [tempRoll, setTempRoll] = useState({
+    total_roll: "",
+    length_in_yard: "",
+  });
+
   const { addItem } = usePurchaseStore();
   const purchaseItems = usePurchaseStore((state) => state.items);
 
+  const addRoll = () => {
+    if (!tempRoll.total_roll || !tempRoll.length_in_yard) return;
+
+    setRollItems((prevItems) => [...prevItems, tempRoll]);
+    setTempRoll({ total_roll: "", length_in_yard: "" }); // reset setelah ditambahkan
+  };
+
+  const removeRoll = (index: number) => {
+    setRollItems((prevItems) => prevItems.filter((_, i) => i !== index));
+  };
+
   useEffect(() => {
+    console.log(rollItems);
     console.log(purchaseItems);
   }, [purchaseItems]);
 
@@ -90,22 +110,17 @@ export const usePurchaseDetailForm = (
     },
   ];
 
-  const fields2 = [
-    {
-      name: "total_roll",
-      label: "Jumlah Roll",
-      inputType: "number" as const,
-      placeholder: "Jumlah Roll",
-    },
-    {
-      name: "length_in_yard",
-      label: "Length Yard",
-      inputType: "number" as const,
-      placeholder: "Length Yard",
-    },
-  ];
-
-  return { form, onSubmit, fields, purchaseItems, fields2 };
+  return {
+    form,
+    onSubmit,
+    fields,
+    purchaseItems,
+    setTempRoll,
+    tempRoll,
+    rollItems,
+    addRoll,
+    removeRoll,
+  };
 };
 
 export const usePurchaseDetailAction = () => {

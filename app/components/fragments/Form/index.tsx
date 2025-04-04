@@ -38,6 +38,7 @@ interface FormProps<T extends FieldValues> {
   additional?: React.ReactNode;
   buttonName?: string;
   buttonClassName?: string;
+  buttonType?: "submit" | "reset" | "button";
 }
 
 const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
@@ -89,7 +90,7 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
       {props.additional}
       <Button
         className={cn(props.buttonClassName, "cursor-pointer")}
-        type="submit"
+        type={props.buttonType ? props.buttonType : "submit"}
       >
         {props.buttonName ? props.buttonName : "Submit"}
       </Button>
