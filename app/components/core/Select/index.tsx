@@ -45,7 +45,10 @@ const Select: React.FC<SelectProps> = ({ ...props }) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between bg-white", props.className)}
+          className={cn(
+            "w-full justify-between bg-white cursor-pointer",
+            props.className
+          )}
         >
           {props.value
             ? props?.options?.find(
@@ -72,6 +75,7 @@ const Select: React.FC<SelectProps> = ({ ...props }) => {
                   <CommandItem
                     key={option.value}
                     value={option.value}
+                    className="cursor-pointer"
                     onSelect={(currentValue) => {
                       props.onChange(
                         currentValue === props.value ? "" : currentValue

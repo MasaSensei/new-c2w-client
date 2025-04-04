@@ -2,8 +2,17 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Trash, PenIcon } from "lucide-react";
+import {
+  useMaterialInventoryAction,
+  useMaterialInventoryForm,
+} from "~/hooks/useMaterialInventory";
+import { Form } from "~/components/ui/form";
 
 const MaterialInventoryPage = () => {
+  const { data, fetchData, isLoading, setIsLoading, codes, colors, items } =
+    useMaterialInventoryAction();
+  const { form, fields, handleEdit, onSubmit, handleDelete } =
+    useMaterialInventoryForm(fetchData, setIsLoading, items, colors, codes);
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
@@ -17,25 +26,69 @@ const MaterialInventoryPage = () => {
               </Cores.Button>
             }
             content={
-              <div>
-                <h1>Ini adalah popup</h1>
-              </div>
+              <Form {...form}>
+                <Fragments.Form
+                  fields={fields}
+                  control={form.control}
+                  columnClassName="mb-5  last:col-span-2"
+                  rowClassName="grid grid-cols-2 gap-5"
+                  className="flex flex-col gap-5"
+                  onSubmit={form.handleSubmit(onSubmit)}
+                />
+              </Form>
             }
           />
         }
       />
       <Layouts.SectionLayouts>
         <Cores.Table
+          isLoading={isLoading}
           seachable
-          headers={["No", "Color", "Stok", "Satuan"]}
-          bodies={[
-            ["1", "Kertas", "10", "Pcs"],
-            ["2", "Kertas", "10", "Pcs"],
+          headers={[
+            "Item",
+            "Warna",
+            "Kode",
+            "Warna 2",
+            "Total Roll",
+            "Total Yard",
+            "Remarks",
           ]}
+          bodies={data?.map((item) => [
+            item?.Item?.item,
+            item?.Color1?.color,
+            item?.Code?.code,
+            item?.Color2?.color,
+            item.rolls || 0,
+            item.yards || 0,
+            item.remarks || "-",
+          ])}
           action={(idx) => (
             <div className="flex gap-4 items-center justify-start">
-              <PenIcon className="cursor-pointer h-4 w-4" />
-              <Trash className="cursor-pointer h-4 w-4 text-red-500" />
+              <Cores.Popup
+                title="Edit Bahan Baku"
+                button={
+                  <PenIcon
+                    onClick={() => handleEdit(data[idx])}
+                    className="cursor-pointer h-4 w-4"
+                  />
+                }
+                content={
+                  <Form {...form}>
+                    <Fragments.Form
+                      fields={fields}
+                      control={form.control}
+                      columnClassName="mb-5  last:col-span-2"
+                      rowClassName="grid grid-cols-2 gap-5"
+                      className="flex flex-col gap-5"
+                      onSubmit={form.handleSubmit(onSubmit)}
+                    />
+                  </Form>
+                }
+              />
+              <Trash
+                onClick={() => handleDelete(data[idx])}
+                className="cursor-pointer h-4 w-4 text-red-500"
+              />
             </div>
           )}
         />
