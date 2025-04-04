@@ -32,10 +32,10 @@ export const useMaterialInventoryForm = (
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id_item: "0",
-      id_color: "0",
-      id_color_2: "0",
-      id_code: "0",
+      id_item: "",
+      id_color: "",
+      id_color_2: "",
+      id_code: "",
       remarks: "",
     },
   });

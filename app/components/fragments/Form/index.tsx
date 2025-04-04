@@ -25,6 +25,7 @@ interface Fields {
     | "textarea";
   placeholder?: string;
   options?: { value: string; label: string }[];
+  disabled?: boolean;
 }
 
 interface FormProps<T extends FieldValues> {
@@ -35,6 +36,8 @@ interface FormProps<T extends FieldValues> {
   rowClassName?: string;
   columnClassName?: string;
   additional?: React.ReactNode;
+  buttonName?: string;
+  buttonClassName?: string;
 }
 
 const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
@@ -72,7 +75,8 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
                       {...formField}
                       type={field.inputType}
                       placeholder={field.placeholder}
-                      className="bg-white"
+                      className="bg-white disabled:shadow disabled:cursor-not-allowed disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-900 disabled:opacity-100"
+                      disabled={field.disabled}
                     />
                   )}
                 </FormControl>
@@ -83,8 +87,11 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
         ))}
       </div>
       {props.additional}
-      <Button className="w-full cursor-pointer" type="submit">
-        Submit
+      <Button
+        className={cn(props.buttonClassName, "cursor-pointer")}
+        type="submit"
+      >
+        {props.buttonName ? props.buttonName : "Submit"}
       </Button>
     </form>
   );

@@ -3,7 +3,10 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
-import { usePurchaseDetailForm } from "~/hooks/usePurchaseDetail";
+import {
+  usePurchaseDetailForm,
+  usePurchaseDetailAction,
+} from "~/hooks/usePurchaseDetail";
 import { useState, useEffect } from "react";
 import { Cross, Pen } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -13,7 +16,10 @@ import { Label } from "~/components/ui/label";
 
 const PurchaseListDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { form, fields, onSubmit, purchaseItems } = usePurchaseDetailForm();
+  const { isLoading, fetchData, rawMaterials, setIsLoading } =
+    usePurchaseDetailAction();
+  const { form, fields, onSubmit, purchaseItems, fields2 } =
+    usePurchaseDetailForm(fetchData, setIsLoading, rawMaterials);
   const { purchaseListId } = useParams();
   const { control, handleSubmit } = form;
 
@@ -58,7 +64,7 @@ const PurchaseListDetailPage = () => {
                         control={control}
                         rowClassName="grid grid-cols-3 gap-4"
                         className="flex gap-5"
-                        columnClassName={`last:col-span-3 ${
+                        columnClassName={`nth-2:col-span-2 last:col-span-3 ${
                           fields
                             .map((field) => field.name)
                             .filter((col) => col === "remarks")[0]
@@ -68,27 +74,17 @@ const PurchaseListDetailPage = () => {
                           <>
                             <Separator className="my-2.5" />
                             <div className="gap-2 flex items-end justify-center">
-                              <div className="flex flex-col gap-2">
-                                <Label htmlFor="total_roll">Total Roll</Label>
-                                <Input
-                                  className="bg-white"
-                                  type="text"
-                                  placeholder="Total Roll"
+                              <Form {...form}>
+                                <Fragments.Form
+                                  fields={fields2}
+                                  control={control}
+                                  rowClassName="grid grid-cols-2 gap-4"
+                                  className="flex flex-row items-end gap-4"
+                                  onSubmit={handleSubmit(onSubmit)}
+                                  buttonClassName="w-[50px] bg-lime-500 hover:bg-lime-600"
+                                  buttonName="Add"
                                 />
-                              </div>
-                              <div className="flex flex-col gap-2">
-                                <Label htmlFor="total_roll">Total Roll</Label>
-                                <Input
-                                  className="bg-white"
-                                  type="text"
-                                  placeholder="Total Roll"
-                                />
-                              </div>
-                              <div className="flex items-center">
-                                <Button className="bg-lime-500 hover:bg-lime-600 cursor-pointer mx-auto text-white text-sm w-50">
-                                  Add
-                                </Button>
-                              </div>
+                              </Form>
                             </div>
                             <div className="mt-1.5 bg-white p-4">
                               <Label className="text-sm mb-2">Roll Items</Label>
