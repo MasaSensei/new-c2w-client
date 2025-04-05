@@ -1,9 +1,11 @@
+import type { PurchaseListDetail } from "./purchaseListDetail";
 import type { Supplier } from "./supplier";
 
 export type PurchaseList = {
   id: number;
   id_supplier: number;
   Supplier?: Supplier;
+  PurchaseListDetail?: PurchaseListDetail[];
   tanggal: Date;
   invoice_number: string;
   jatuh_tempo: Date;

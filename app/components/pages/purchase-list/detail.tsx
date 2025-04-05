@@ -17,8 +17,14 @@ import formatDate from "~/utils/formatDate";
 
 const PurchaseListDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isLoading, fetchData, purchaseItems, rawMaterials, setIsLoading } =
-    usePurchaseDetailAction();
+  const {
+    isLoading,
+    fetchData,
+    purchaseItems,
+    rawMaterials,
+    setIsLoading,
+    router,
+  } = usePurchaseDetailAction();
   const {
     form,
     fields,
@@ -33,7 +39,7 @@ const PurchaseListDetailPage = () => {
     addToTabel,
     handleDeleteRoll,
     handleEditRoll,
-  } = usePurchaseDetailForm(fetchData, setIsLoading, rawMaterials);
+  } = usePurchaseDetailForm(fetchData, setIsLoading, rawMaterials, router);
 
   const { control, handleSubmit } = form;
 
@@ -175,7 +181,7 @@ const PurchaseListDetailPage = () => {
                         Items:
                       </h1>
                       <Cores.Table
-                        headersClassName="text-xs nth-2:text-start text-center"
+                        headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
                         headers={[
                           "Total Roll",
                           "Bahan",
@@ -183,7 +189,7 @@ const PurchaseListDetailPage = () => {
                           "Sub Total",
                           "Remarks",
                         ]}
-                        bodiesClassName="text-xs w-full nth-2:text-start text-center"
+                        bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
                         bodies={purchaseItemsWithLabel.map((item) => [
                           item.total_roll,
                           item.materialName,
@@ -239,6 +245,7 @@ const PurchaseListDetailPage = () => {
                       </Button>
                       <Button
                         type="submit"
+                        onClick={handleSubmit(onSubmit)}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                       >
                         Save
@@ -290,6 +297,30 @@ const PurchaseListDetailPage = () => {
           </div>
           <div className="mt-4">
             <h3 className="font-semibold">Item Purchased:</h3>
+            <Cores.Table
+              isLoading={isLoading}
+              headers={[
+                "Bahan",
+                "Rolls",
+                "Yards",
+                "Price per Yard",
+                "Sub Total",
+                "Remarks",
+              ]}
+              headersClassName="first:text-start nth-2:text-end text-center"
+              bodiesClassName="w-full first:text-start nth-2:text-end text-center"
+              bodies={
+                purchaseItems?.PurchaseListDetail?.map((item) => [
+                  item.material,
+                  item.rolls,
+                  item.yards,
+                  formatCurrency(item.price_per_yard),
+                  formatCurrency(item.total),
+                  item.remarks,
+                ]) ?? []
+              }
+              action={(idx) => <></>}
+            />
           </div>
         </div>
       </Layouts.SectionLayouts>

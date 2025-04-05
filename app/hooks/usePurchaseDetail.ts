@@ -7,23 +7,26 @@ import { usePurchaseStore } from "~/stores/useDetailPurchaseStore";
 import type { RawMaterial } from "~/types/rawMaterial";
 import { RawMaterialService } from "~/services/rawMaterial.service";
 import type { PurchaseList } from "~/types/purchaseList";
+import type { PurchaseListDetail } from "~/types/purchaseListDetail";
 import { PurchaseListService } from "~/services/purchaseList.service";
 import { useParams } from "react-router";
+import { PurchaseListDetailService } from "~/services/purchaseListDetail.service";
 
 const formSchema = z.object({
-  total_roll: z.string().min(1, { message: "Total Roll is required" }),
-  material: z.string().min(1, { message: "Material is required" }),
-  price_per_yard: z.string().min(1, { message: "Price Per Unit is required" }),
-  length_in_yard: z.string().min(1, { message: "Length is required" }),
-  total_yard: z.string().min(1, { message: "Total Yard is required" }),
-  sub_total: z.string().min(1, { message: "Sub Total is required" }),
+  total_roll: z.string(),
+  material: z.string(),
+  price_per_yard: z.string(),
+  length_in_yard: z.string(),
+  total_yard: z.string(),
+  sub_total: z.string(),
   remarks: z.string().optional(),
 });
 
 export const usePurchaseDetailForm = (
   fetchData: () => Promise<void>,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  rawMaterials: RawMaterial[]
+  rawMaterials: RawMaterial[],
+  router: any
 ) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,39 +51,7 @@ export const usePurchaseDetailForm = (
   });
 
   const { addItem, updateItem, removeItem, resetItems } = usePurchaseStore();
-  const handleTest = () => {
-    addItem({
-      material: "1",
-      price_per_yard: "2",
-      total_roll: "2",
-      length_in_yard: "5",
-      total_yard: "10",
-      sub_total: "20",
-      remarks: "-",
-    });
 
-    addItem({
-      material: "1",
-      price_per_yard: "2",
-      total_roll: "1",
-      length_in_yard: "6",
-      total_yard: "6",
-      sub_total: "12",
-      remarks: "-",
-    });
-
-    addItem({
-      material: "1",
-      price_per_yard: "6",
-      total_roll: "1",
-      length_in_yard: "6",
-      total_yard: "6",
-      sub_total: "12",
-      remarks: "-",
-    });
-
-    console.log("📦 ITEMS:", usePurchaseStore.getState().items);
-  };
   const purchaseItems = usePurchaseStore((state) => state.items);
   const purchaseItemsWithLabel = purchaseItems.map((item) => {
     const material = rawMaterials.find(
@@ -196,22 +167,45 @@ export const usePurchaseDetailForm = (
     }
   };
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async () => {
+    const purchaseItemsWithRoll = purchaseItems.filter(
+      (item) => item.rollItems && item.rollItems.length > 0
+    );
+
     try {
-      const payload = {
-        total_roll: data.total_roll,
-        material: data.material,
-        price_per_yard: data.price_per_yard,
-        length_in_yard: data.length_in_yard,
-        total_yard: data.total_yard,
-        sub_total: data.sub_total,
-        remarks: data.remarks,
-      };
-      await addItem(payload);
-      form.reset();
-      await fetchData();
+      const finalPayload = purchaseItemsWithRoll.flatMap((item) => {
+        const price = Number(item.price_per_yard || 0);
+        const remarks = item.remarks || "-";
+        const id_raw_material = item.material;
+        const material = rawMaterials.find(
+          (rawMaterial) => rawMaterial.id === Number(item.material)
+        );
+        return (item.rollItems || []).map((roll) => {
+          const total_roll = Number(roll.total_roll || 0);
+          const length_in_yard = Number(roll.length_in_yard || 0);
+          const total_yard = total_roll * length_in_yard;
+          const sub_total = total_yard * price;
+
+          return {
+            id_purchase_list: Number(router.purchaseListId),
+            rolls: Number(total_roll.toString()),
+            id_raw_material: Number(id_raw_material),
+            material: `${material?.Item?.item} ${material?.Color1?.color} ${material?.Code?.code} ${material?.Color2?.color}`,
+            price_per_yard: item.price_per_yard,
+            yards: Number(roll.length_in_yard),
+            total: sub_total.toString(),
+            is_active: true,
+            remarks,
+          };
+        });
+      });
+
+      await PurchaseListDetailService.create(
+        finalPayload as PurchaseListDetail[]
+      );
+      console.log("Payload:", finalPayload);
     } catch (error) {
-      console.error("Submit error:", error);
+      console.error("Gagal submit:", error);
     }
   };
 
@@ -291,7 +285,6 @@ export const usePurchaseDetailForm = (
     addRoll,
     addToTabel,
     handleDeleteRoll,
-    handleTest,
     handleEditRoll,
     cancelForm,
     removeRoll,
@@ -327,5 +320,12 @@ export const usePurchaseDetailAction = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  return { fetchData, rawMaterials, purchaseItems, isLoading, setIsLoading };
+  return {
+    fetchData,
+    rawMaterials,
+    purchaseItems,
+    isLoading,
+    setIsLoading,
+    router,
+  };
 };
