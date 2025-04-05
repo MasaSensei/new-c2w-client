@@ -5,11 +5,16 @@ import { usePurchaseAction, usePurchaseForm } from "~/hooks/usePurchase";
 import { Form } from "~/components/ui/form";
 import { Pen, Eye } from "lucide-react";
 import { useNavigate } from "react-router";
+import type { PurchaseList } from "~/types/purchaseList";
+import formatDate from "~/utils/formatDate";
+import { formatCurrency } from "~/utils/currency";
 
 const PurchaseListPage = () => {
   const navigate = useNavigate();
-  const { fetchData, suppliers } = usePurchaseAction();
-  const { form, fields, handleEdit, onSubmit } = usePurchaseForm(
+  const { setIsLoading, isLoading, fetchData, suppliers, data } =
+    usePurchaseAction();
+  const { form, fields, handleEdit, onSubmit, handleTest } = usePurchaseForm(
+    setIsLoading,
     fetchData,
     suppliers
   );
@@ -35,8 +40,8 @@ const PurchaseListPage = () => {
                   control={control}
                   className="flex flex-col gap-5"
                   rowClassName="grid grid-cols-2 gap-8"
-                  columnClassName={`last:col-span-2 ${remarks[0]}`}
-                  onSubmit={() => {}}
+                  columnClassName={`last:col-span-2 nth-3:col-span-2 ${remarks[0]}`}
+                  onSubmit={handleSubmit(onSubmit)}
                 />
               </Form>
             }
@@ -57,30 +62,33 @@ const PurchaseListPage = () => {
             "Penangguhan",
             "Remarks",
           ]}
-          bodies={[
-            [
-              "18-12-2024",
-              "Target",
-              "00261",
-              "1.000.000",
-              "31-jan-2025",
-              "Overdue",
-              "1.000.000",
-              "0",
-              "Asahi Hitam",
-            ],
-          ]}
+          isLoading={isLoading}
+          headersClassName="text-sm"
+          bodiesClassName="text-sm"
+          bodies={
+            data.length > 0
+              ? data.map((item: PurchaseList) => [
+                  formatDate(item.tanggal),
+                  item.Supplier?.name,
+                  item.invoice_number,
+                  formatCurrency(item.nominal),
+                  formatDate(item.jatuh_tempo),
+                  item.status,
+                  formatCurrency(item.payment),
+                  formatCurrency(item.outstanding),
+                  item.remarks,
+                ])
+              : []
+          }
           action={(idx) => (
-            <div className="flex flex-row flex-wrap justify-center">
-              <Cores.Button className="bg-transparent shadow-none hover:bg-transparent">
-                <Pen className="text-black" />
-              </Cores.Button>
-              <Cores.Button
-                onClick={() => navigate(`/purchase-list-detail/${idx + 1}`)}
-                className="bg-transparent shadow-none hover:bg-transparent"
-              >
-                <Eye className="text-black" />
-              </Cores.Button>
+            <div className="flex flex-row gap-2 flex-wrap justify-center">
+              <Pen className="text-black w-4 h-4" />
+              <Eye
+                onClick={() =>
+                  navigate(`/purchase-list-detail/${data[idx].id}`)
+                }
+                className="text-black cursor-pointer w-4 h-4"
+              />
             </div>
           )}
           footer={<h1>Test</h1>}

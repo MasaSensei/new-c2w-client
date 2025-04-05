@@ -1,4 +1,3 @@
-import { useParams } from "react-router";
 import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
@@ -14,10 +13,11 @@ import { Separator } from "~/components/ui/separator";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { formatCurrency } from "~/utils/currency";
+import formatDate from "~/utils/formatDate";
 
 const PurchaseListDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isLoading, fetchData, rawMaterials, setIsLoading } =
+  const { isLoading, fetchData, purchaseItems, rawMaterials, setIsLoading } =
     usePurchaseDetailAction();
   const {
     form,
@@ -32,7 +32,7 @@ const PurchaseListDetailPage = () => {
     addToTabel,
     handleTest,
   } = usePurchaseDetailForm(fetchData, setIsLoading, rawMaterials);
-  const { purchaseListId } = useParams();
+
   const { control, handleSubmit } = form;
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -219,28 +219,36 @@ const PurchaseListDetailPage = () => {
         <div className="m-5">
           <div className="text-sm flex items-start gap-8 rounded-t-lg mb-4">
             <p>
-              <span className="font-semibold">Invoice: </span>09876543
+              <span className="font-semibold">Tanggal: </span>
+              {formatDate(purchaseItems?.tanggal)}
             </p>
             <p>
-              <span className="font-semibold">Invoice: </span>09876543
+              <span className="font-semibold">Supplier: </span>
+              {purchaseItems?.Supplier?.name}
             </p>
             <p>
-              <span className="font-semibold">Invoice: </span>09876543
+              <span className="font-semibold">Invoice: </span>
+              {purchaseItems?.invoice_number}
             </p>
             <p>
-              <span className="font-semibold">Invoice: </span>09876543
+              <span className="font-semibold">Nominal: </span>
+              {formatCurrency(Number(purchaseItems?.nominal))}
             </p>
             <p>
-              <span className="font-semibold">Invoice: </span>09876543
+              <span className="font-semibold">Jatuh Tempo: </span>
+              {formatDate(purchaseItems?.jatuh_tempo)}
             </p>
             <p>
-              <span className="font-semibold">Invoice: </span>09876543
+              <span className="font-semibold">Status: </span>
+              {purchaseItems?.status}
             </p>
             <p>
-              <span className="font-semibold">Invoice: </span>09876543
+              <span className="font-semibold">Harga Dibayar: </span>
+              {formatCurrency(Number(purchaseItems?.payment))}
             </p>
             <p>
-              <span className="font-semibold">Invoice: </span>09876543
+              <span className="font-semibold">Penangguhan: </span>
+              {formatCurrency(Number(purchaseItems?.outstanding))}
             </p>
           </div>
           <div className="mt-4">

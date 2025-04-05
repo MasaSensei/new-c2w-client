@@ -85,6 +85,11 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
                           : "bg-white "
                       }`}
                     />
+                  ) : field.inputType === "date" ? (
+                    <Cores.DatePicker
+                      value={formField.value}
+                      onChange={formField.onChange}
+                    />
                   ) : (
                     <Input
                       {...formField}

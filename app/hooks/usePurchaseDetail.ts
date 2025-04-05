@@ -6,6 +6,9 @@ import Swal from "sweetalert2";
 import { usePurchaseStore } from "~/stores/useDetailPurchaseStore";
 import type { RawMaterial } from "~/types/rawMaterial";
 import { RawMaterialService } from "~/services/rawMaterial.service";
+import type { PurchaseList } from "~/types/purchaseList";
+import { PurchaseListService } from "~/services/purchaseList.service";
+import { useParams } from "react-router";
 
 const formSchema = z.object({
   total_roll: z.string().min(1, { message: "Total Roll is required" }),
@@ -210,13 +213,22 @@ export const usePurchaseDetailForm = (
 
 export const usePurchaseDetailAction = () => {
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
+  const [purchaseItems, setPurchaseItems] = useState<PurchaseList>();
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useParams();
   const fetchData = async () => {
     try {
       setIsLoading(true);
+      const purchaseItemsRes = await PurchaseListService.get(
+        Number(router.purchaseListId)
+      );
       const rawMaterialRes = await RawMaterialService.getAll();
-      setIsLoading(false);
+      if (!purchaseItemsRes.data.data || !rawMaterialRes.data.data) {
+        setIsLoading(false);
+        setPurchaseItems([] as unknown as PurchaseList);
+        setRawMaterials([]);
+      }
+      setPurchaseItems(purchaseItemsRes.data.data);
       setRawMaterials(rawMaterialRes.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -228,5 +240,5 @@ export const usePurchaseDetailAction = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  return { fetchData, rawMaterials, isLoading, setIsLoading };
+  return { fetchData, rawMaterials, purchaseItems, isLoading, setIsLoading };
 };
