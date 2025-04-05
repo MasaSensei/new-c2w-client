@@ -17,7 +17,7 @@ const formSchema = z.object({
   material: z.string(),
   price_per_yard: z.string(),
   length_in_yard: z.string(),
-  total_yard: z.string(),
+  yard_per_roll: z.string(),
   sub_total: z.string(),
   remarks: z.string().optional(),
 });
@@ -35,7 +35,7 @@ export const usePurchaseDetailForm = (
       material: "",
       price_per_yard: "",
       length_in_yard: "",
-      total_yard: "",
+      yard_per_roll: "",
       sub_total: "",
       remarks: "-",
     },
@@ -76,21 +76,22 @@ export const usePurchaseDetailForm = (
 
     const totalYard = updatedRolls.reduce(
       (sum, item) =>
-        sum + Number(item.total_roll || 0) * Number(item.length_in_yard || 0),
+        sum + Number(item.length_in_yard || 0) / Number(item.total_roll || 0),
       0
     );
 
     const price = Number(form.getValues("price_per_yard") || 0);
-    const subTotal = totalYard * price;
+    // Gunakan tempRoll.length_in_yard di sini untuk memastikan panjang yard yang benar
+    const subTotal = Number(tempRoll.length_in_yard) * price;
 
     setRollItems(updatedRolls);
     setTempRoll({ total_roll: "", length_in_yard: "" });
 
     form.setValue("total_roll", totalRoll.toString());
-    form.setValue("total_yard", totalYard.toString());
+    form.setValue("yard_per_roll", totalYard.toString());
     form.setValue("sub_total", subTotal.toString());
 
-    // Optional: kosongkan length di form input agar tidak bikin bingung
+    // Kosongkan length_in_yard di form input
     form.setValue("length_in_yard", "");
   };
 
@@ -120,7 +121,7 @@ export const usePurchaseDetailForm = (
     form.setValue("remarks", item.remarks || "");
     form.setValue("total_roll", totalRoll.toString());
     form.setValue("length_in_yard", ""); // kosongin karena pakai rollItems
-    form.setValue("total_yard", totalYard.toString());
+    form.setValue("yard_per_roll", totalYard.toString());
     form.setValue("sub_total", subTotal.toString());
 
     // Simpan ulang ke state
@@ -149,7 +150,7 @@ export const usePurchaseDetailForm = (
     setRollItems(updatedRolls);
 
     form.setValue("total_roll", totalRoll.toString());
-    form.setValue("total_yard", totalYard.toString());
+    form.setValue("yard_per_roll", totalYard.toString());
     form.setValue("sub_total", subTotal.toString());
   };
 
@@ -183,8 +184,8 @@ export const usePurchaseDetailForm = (
         return (item.rollItems || []).map((roll) => {
           const total_roll = Number(roll.total_roll || 0);
           const length_in_yard = Number(roll.length_in_yard || 0);
-          const total_yard = total_roll * length_in_yard;
-          const sub_total = total_yard * price;
+          const yard_per_roll = length_in_yard / total_roll;
+          const sub_total = yard_per_roll * price;
 
           return {
             id_purchase_list: Number(router.purchaseListId),
@@ -249,8 +250,8 @@ export const usePurchaseDetailForm = (
       })),
     },
     {
-      name: "total_yard",
-      label: "Total Yard",
+      name: "yard_per_roll",
+      label: "Yard/Roll",
       inputType: "number" as const,
       disabled: true,
     },

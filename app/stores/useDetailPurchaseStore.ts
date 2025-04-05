@@ -10,7 +10,7 @@ type PurchaseItem = {
   material: string;
   price_per_yard: string;
   length_in_yard: string;
-  total_yard: string;
+  yard_per_roll: string;
   sub_total: string;
   remarks?: string;
   rollItems?: RollItem[];
@@ -80,7 +80,7 @@ export const usePurchaseStore = create<PurchaseStore>((set) => ({
         const updatedItem: PurchaseItem = {
           ...existing,
           total_roll: updatedTotalRoll.toString(),
-          total_yard: updatedTotalYard.toString(),
+          yard_per_roll: updatedTotalYard.toString(),
           sub_total: updatedSubTotal.toString(),
           rollItems: updatedRollItems,
         };

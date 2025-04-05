@@ -96,22 +96,6 @@ const PurchaseListDetailPage = () => {
                             <Separator className="my-2.5" />
                             <div className="gap-2 flex items-end justify-center">
                               <div className="flex flex-col gap-2">
-                                <Label htmlFor="total_roll">Total Roll</Label>
-                                <Input
-                                  className="bg-white"
-                                  type="text"
-                                  name="total_roll"
-                                  value={tempRoll.total_roll}
-                                  onChange={(e) =>
-                                    setTempRoll({
-                                      ...tempRoll,
-                                      total_roll: e.target.value,
-                                    })
-                                  }
-                                  placeholder="Total Roll"
-                                />
-                              </div>
-                              <div className="flex flex-col gap-2">
                                 <Label htmlFor="length_in_yard">
                                   Length in Yard
                                 </Label>
@@ -127,6 +111,22 @@ const PurchaseListDetailPage = () => {
                                     })
                                   }
                                   placeholder="Length in Yard"
+                                />
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <Label htmlFor="total_roll">Total Roll</Label>
+                                <Input
+                                  className="bg-white"
+                                  type="text"
+                                  name="total_roll"
+                                  value={tempRoll.total_roll}
+                                  onChange={(e) =>
+                                    setTempRoll({
+                                      ...tempRoll,
+                                      total_roll: e.target.value,
+                                    })
+                                  }
+                                  placeholder="Total Roll"
                                 />
                               </div>
                               <div className="flex items-center">
@@ -193,7 +193,7 @@ const PurchaseListDetailPage = () => {
                         bodies={purchaseItemsWithLabel.map((item) => [
                           item.total_roll,
                           item.materialName,
-                          item.total_yard,
+                          item.yard_per_roll,
                           formatCurrency(item.sub_total),
                           item.remarks,
                         ])}
@@ -321,6 +321,9 @@ const PurchaseListDetailPage = () => {
               }
               action={(idx) => <></>}
             />
+          </div>
+          <div className="mt-4">
+            <h3 className="font-semibold">Item Return:</h3>
           </div>
         </div>
       </Layouts.SectionLayouts>
