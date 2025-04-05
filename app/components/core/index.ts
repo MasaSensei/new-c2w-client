@@ -3,6 +3,7 @@ import Table from "./Table";
 import Popup from "./Popup";
 import Select from "./Select";
 import Card from "./Card";
+import CurrencyInput from "./CurrencyInput";
 
 export const Cores = {
   Button,
@@ -10,4 +11,5 @@ export const Cores = {
   Popup,
   Select,
   Card,
+  CurrencyInput,
 };

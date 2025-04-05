@@ -27,7 +27,7 @@ export const usePurchaseDetailForm = (
     defaultValues: {
       total_roll: "",
       material: "",
-      price_per_yard: "0",
+      price_per_yard: "",
       length_in_yard: "",
       total_yard: "",
       sub_total: "",
@@ -44,27 +44,110 @@ export const usePurchaseDetailForm = (
   });
 
   const { addItem } = usePurchaseStore();
+  const handleTest = () => {
+    addItem({
+      material: "1",
+      price_per_yard: "2",
+      total_roll: "2",
+      length_in_yard: "5",
+      total_yard: "10",
+      sub_total: "20",
+      remarks: "-",
+    });
+
+    addItem({
+      material: "1",
+      price_per_yard: "2",
+      total_roll: "1",
+      length_in_yard: "6",
+      total_yard: "6",
+      sub_total: "12",
+      remarks: "-",
+    });
+
+    addItem({
+      material: "1",
+      price_per_yard: "6",
+      total_roll: "1",
+      length_in_yard: "6",
+      total_yard: "6",
+      sub_total: "12",
+      remarks: "-",
+    });
+
+    console.log("📦 ITEMS:", usePurchaseStore.getState().items);
+  };
   const purchaseItems = usePurchaseStore((state) => state.items);
+  console.log(purchaseItems);
+  const purchaseItemsWithLabel = purchaseItems.map((item) => {
+    const material = rawMaterials.find(
+      (rawMaterial) => rawMaterial.id === Number(item.material)
+    );
+
+    return {
+      ...item,
+      materialName: `${material?.Item?.item} ${material?.Color1?.color} ${material?.Code?.code} ${material?.Color2?.color}`,
+    };
+  });
 
   const addRoll = () => {
     if (!tempRoll.total_roll || !tempRoll.length_in_yard) return;
 
     setRollItems((prevItems) => [...prevItems, tempRoll]);
-    setTempRoll({ total_roll: "", length_in_yard: "" }); // reset setelah ditambahkan
+    setTempRoll({ total_roll: "", length_in_yard: "" });
+    form.setValue("total_roll", String(Number(tempRoll.total_roll)));
+    form.setValue("length_in_yard", String(Number(tempRoll.length_in_yard)));
+    form.setValue(
+      "total_yard",
+      String(Number(tempRoll.total_roll) * Number(tempRoll.length_in_yard))
+    );
+    form.setValue(
+      "sub_total",
+      String(
+        Number(form.getValues("total_yard")) *
+          Number(form.getValues("price_per_yard"))
+      )
+    );
   };
 
   const removeRoll = (index: number) => {
     setRollItems((prevItems) => prevItems.filter((_, i) => i !== index));
   };
 
-  useEffect(() => {
-    console.log(rollItems);
-    console.log(purchaseItems);
-  }, [purchaseItems]);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const payload = {
+        total_roll: data.total_roll,
+        material: data.material,
+        price_per_yard: data.price_per_yard,
+        length_in_yard: data.length_in_yard,
+        total_yard: data.total_yard,
+        sub_total: data.sub_total,
+        remarks: data.remarks,
+      };
+      await addItem(payload);
+      form.reset();
+      await fetchData();
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
+  };
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("Form data submitted:", data);
-    addItem(data);
+  const addToTabel = async (data: z.infer<typeof formSchema>) => {
+    const newRollItem = {
+      total_roll: data.total_roll,
+      length_in_yard: data.length_in_yard,
+    };
+
+    const updatedRolls = [...rollItems];
+
+    addItem({
+      ...data,
+      rollItems: updatedRolls,
+    });
+
+    setRollItems([]); // Reset rollItems untuk input selanjutnya
+    form.reset();
   };
 
   const fields = [
@@ -81,7 +164,7 @@ export const usePurchaseDetailForm = (
       placeholder: "Raw Material",
       options: rawMaterials?.map((material) => ({
         value: String(material.id),
-        label: `${material?.Item?.item} - ${material?.Color1?.color} - ${material?.Code?.code} - ${material?.Color2?.color}`,
+        label: `${material?.Item?.item} ${material?.Color1?.color} ${material?.Code?.code} ${material?.Color2?.color}`,
       })),
     },
     {
@@ -93,13 +176,13 @@ export const usePurchaseDetailForm = (
     {
       name: "price_per_yard",
       label: "Price Per Yard",
-      inputType: "number" as const,
+      inputType: "currency" as const,
       placeholder: "Price Per Yard",
     },
     {
       name: "sub_total",
       label: "Sub Total",
-      inputType: "number" as const,
+      inputType: "currency" as const,
       disabled: true,
     },
     {
@@ -114,11 +197,13 @@ export const usePurchaseDetailForm = (
     form,
     onSubmit,
     fields,
-    purchaseItems,
+    purchaseItemsWithLabel,
     setTempRoll,
     tempRoll,
     rollItems,
     addRoll,
+    addToTabel,
+    handleTest,
     removeRoll,
   };
 };

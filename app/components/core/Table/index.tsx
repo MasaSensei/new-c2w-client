@@ -12,10 +12,13 @@ import {
 } from "~/components/ui/table";
 import { useTableFilter } from "~/hooks/useTableFilter";
 import ClipLoader from "react-spinners/ClipLoader";
+import { cn } from "~/lib/utils";
 
 interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   headers: string[];
+  headersClassName?: string;
   bodies: (string | number | React.ReactNode)[][];
+  bodiesClassName?: string;
   action?: (idx: number) => React.ReactNode;
   seachable?: boolean;
   footer?: React.ReactNode;
@@ -48,7 +51,10 @@ const Table: React.FC<TableProps> = ({
         <TableRow>
           {headers.map((header, idx) => (
             <TableHead
-              className="pl-2 first:rounded-tl-lg last:rounded-tr-lg px-5 pt-2"
+              className={cn(
+                props.headersClassName,
+                "pl-2 first:rounded-tl-lg last:rounded-tr-lg px-5 pt-2"
+              )}
               key={idx}
             >
               {header}
@@ -87,7 +93,13 @@ const Table: React.FC<TableProps> = ({
             <>
               <TableRow key={idx}>
                 {body.map((item, cellIdx) => (
-                  <TableCell className="px-5" key={cellIdx}>
+                  <TableCell
+                    className={cn(
+                      props.bodiesClassName,
+                      "px-5 whitespace-nowrap max-w-[150px] "
+                    )}
+                    key={cellIdx}
+                  >
                     {item}
                   </TableCell>
                 ))}

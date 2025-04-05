@@ -13,6 +13,7 @@ import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { formatCurrency } from "~/utils/currency";
 
 const PurchaseListDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,12 +23,14 @@ const PurchaseListDetailPage = () => {
     form,
     fields,
     onSubmit,
-    purchaseItems,
+    purchaseItemsWithLabel,
     tempRoll,
     setTempRoll,
     addRoll,
     rollItems,
     removeRoll,
+    addToTabel,
+    handleTest,
   } = usePurchaseDetailForm(fetchData, setIsLoading, rawMaterials);
   const { purchaseListId } = useParams();
   const { control, handleSubmit } = form;
@@ -66,7 +69,7 @@ const PurchaseListDetailPage = () => {
               }
               content={
                 <div className="grid lg:grid-cols-12 gap-4">
-                  <div className="col-span-5 bg-slate-100 p-4 rounded-lg">
+                  <div className="col-span-4 bg-slate-100 p-4 rounded-lg">
                     <Form {...form}>
                       <Fragments.Form
                         fields={fields}
@@ -78,7 +81,8 @@ const PurchaseListDetailPage = () => {
                             .map((field) => field.name)
                             .filter((col) => col === "remarks")[0]
                         }`}
-                        onSubmit={handleSubmit(onSubmit)}
+                        buttonType="submit"
+                        buttonName="Add Item"
                         additional={
                           <>
                             <Separator className="my-2.5" />
@@ -121,7 +125,7 @@ const PurchaseListDetailPage = () => {
                                 <Button
                                   onClick={() => addRoll()}
                                   type="button"
-                                  className="bg-lime-500 hover:bg-lime-600 cursor-pointer mx-auto text-white text-sm w-50"
+                                  className="bg-lime-500 hover:bg-lime-600 cursor-pointer mx-auto text-white text-sm w-20"
                                 >
                                   Add
                                 </Button>
@@ -150,16 +154,24 @@ const PurchaseListDetailPage = () => {
                                 <span className="text-sm">No roll items</span>
                               )}
                             </div>
+                            <Button
+                              className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
+                              onClick={() => addToTabel(form.getValues())}
+                              type="button"
+                            >
+                              Add Item
+                            </Button>
                           </>
                         }
                       />
                     </Form>
                   </div>
-                  <div className="col-span-7">
+                  <div className="col-span-8">
                     <h1 className="text-lg font-semibold -mt-10 mb-2.5">
                       Items:
                     </h1>
                     <Cores.Table
+                      headersClassName="text-xs nth-2:text-start text-center"
                       headers={[
                         "Total Roll",
                         "Bahan",
@@ -167,23 +179,26 @@ const PurchaseListDetailPage = () => {
                         "Sub Total",
                         "Remarks",
                       ]}
-                      bodies={purchaseItems.map((item) => [
+                      bodiesClassName="text-xs w-full nth-2:text-start text-center"
+                      bodies={purchaseItemsWithLabel.map((item) => [
                         item.total_roll,
-                        item.material,
+                        item.materialName,
                         item.total_yard,
-                        item.sub_total,
+                        formatCurrency(item.sub_total),
                         item.remarks,
                       ])}
                       details={(idx) => (
-                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                          <h4 className="font-semibold">
-                            Detail for row {idx + 1}
-                          </h4>
-                          <p>Supplier: Target</p>
-                          <p>Tanggal: 18-12-2024</p>
-                          <p>Invoice: 00261</p>
-                          <p>Nominal: 1.000.000</p>
-                          <p>Status: Overdue</p>
+                        <div className="p-4 bg-white border border-gray-200 rounded-lg">
+                          <h4 className="font-semibold mb-2.5">Roll Items</h4>
+                          <Cores.Table
+                            headers={["Jumlah Roll", "Length in Yard"]}
+                            bodies={(
+                              purchaseItemsWithLabel[idx]?.rollItems ?? []
+                            ).map((item) => [
+                              item.total_roll,
+                              item.length_in_yard,
+                            ])}
+                          />
                         </div>
                       )}
                       action={(idx) => (
