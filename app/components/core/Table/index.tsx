@@ -16,6 +16,7 @@ import { cn } from "~/lib/utils";
 
 interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   headers: string[];
+  className?: string;
   headersClassName?: string;
   bodies: (string | number | React.ReactNode)[][];
   bodiesClassName?: string;
@@ -46,7 +47,12 @@ const Table: React.FC<TableProps> = ({
   };
 
   return (
-    <ShadcnTable className="w-full max-w-full table-fixed border overflow-x-auto">
+    <ShadcnTable
+      className={cn(
+        props.className,
+        "max-w-full table-fixed border overflow-x-auto"
+      )}
+    >
       <TableHeader className="bg-[#F6F7F9] text-[#758090]">
         <TableRow>
           {headers.map((header, idx) => (

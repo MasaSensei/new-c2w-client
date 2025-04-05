@@ -106,7 +106,6 @@ export const usePurchaseStore = create<PurchaseStore>((set) => ({
 
       return { items: [...state.items, newWithChildren] };
     }),
-
   removeItem: (index) =>
     set((state) => ({ items: state.items.filter((_, i) => i !== index) })),
   resetItems: () => set({ items: [] }),

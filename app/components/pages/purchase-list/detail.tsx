@@ -7,7 +7,7 @@ import {
   usePurchaseDetailAction,
 } from "~/hooks/usePurchaseDetail";
 import { useState, useEffect } from "react";
-import { Pen, XIcon } from "lucide-react";
+import { Pen, Trash2, XIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Input } from "~/components/ui/input";
@@ -25,12 +25,14 @@ const PurchaseListDetailPage = () => {
     onSubmit,
     purchaseItemsWithLabel,
     tempRoll,
+    cancelForm,
     setTempRoll,
     addRoll,
     rollItems,
     removeRoll,
     addToTabel,
-    handleTest,
+    handleDeleteRoll,
+    handleEditRoll,
   } = usePurchaseDetailForm(fetchData, setIsLoading, rawMaterials);
 
   const { control, handleSubmit } = form;
@@ -69,8 +71,8 @@ const PurchaseListDetailPage = () => {
               }
               content={
                 <div className="grid lg:grid-cols-12 gap-4">
-                  <div className="col-span-4 bg-slate-100 p-4 rounded-lg">
-                    <Form {...form}>
+                  <Form {...form}>
+                    <div className="col-span-4 bg-slate-100 p-4 rounded-lg">
                       <Fragments.Form
                         fields={fields}
                         control={control}
@@ -143,7 +145,10 @@ const PurchaseListDetailPage = () => {
                                   action={(idx) => (
                                     <Cores.Button
                                       className="bg-transparent shadow-none hover:bg-transparent"
-                                      onClick={() => removeRoll(idx)}
+                                      onClick={() => {
+                                        removeRoll(idx);
+                                        setIsModalOpen(true);
+                                      }}
                                       type="button"
                                     >
                                       <XIcon className="h-4 w-4 text-black" />
@@ -164,50 +169,82 @@ const PurchaseListDetailPage = () => {
                           </>
                         }
                       />
-                    </Form>
-                  </div>
-                  <div className="col-span-8">
-                    <h1 className="text-lg font-semibold -mt-10 mb-2.5">
-                      Items:
-                    </h1>
-                    <Cores.Table
-                      headersClassName="text-xs nth-2:text-start text-center"
-                      headers={[
-                        "Total Roll",
-                        "Bahan",
-                        "Total Yard",
-                        "Sub Total",
-                        "Remarks",
-                      ]}
-                      bodiesClassName="text-xs w-full nth-2:text-start text-center"
-                      bodies={purchaseItemsWithLabel.map((item) => [
-                        item.total_roll,
-                        item.materialName,
-                        item.total_yard,
-                        formatCurrency(item.sub_total),
-                        item.remarks,
-                      ])}
-                      details={(idx) => (
-                        <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                          <h4 className="font-semibold mb-2.5">Roll Items</h4>
-                          <Cores.Table
-                            headers={["Jumlah Roll", "Length in Yard"]}
-                            bodies={(
-                              purchaseItemsWithLabel[idx]?.rollItems ?? []
-                            ).map((item) => [
-                              item.total_roll,
-                              item.length_in_yard,
-                            ])}
-                          />
-                        </div>
-                      )}
-                      action={(idx) => (
-                        <div className="flex flex-row flex-wrap items-center justify-center">
-                          <Pen className="text-black w-2.5 h-2.5 " />
-                        </div>
-                      )}
-                    />
-                  </div>
+                    </div>
+                    <div className="col-span-8">
+                      <h1 className="text-lg font-semibold -mt-10 mb-2.5">
+                        Items:
+                      </h1>
+                      <Cores.Table
+                        headersClassName="text-xs nth-2:text-start text-center"
+                        headers={[
+                          "Total Roll",
+                          "Bahan",
+                          "Total Yard",
+                          "Sub Total",
+                          "Remarks",
+                        ]}
+                        bodiesClassName="text-xs w-full nth-2:text-start text-center"
+                        bodies={purchaseItemsWithLabel.map((item) => [
+                          item.total_roll,
+                          item.materialName,
+                          item.total_yard,
+                          formatCurrency(item.sub_total),
+                          item.remarks,
+                        ])}
+                        details={(idx) => (
+                          <div className="p-4 bg-white border border-gray-200 rounded-lg">
+                            <h4 className="font-semibold mb-2.5">
+                              Roll Items:{" "}
+                              {formatCurrency(
+                                purchaseItemsWithLabel[idx]?.price_per_yard
+                              )}
+                              /yard
+                            </h4>
+                            <Cores.Table
+                              headers={["Jumlah Roll", "Length in Yard"]}
+                              className="w-96 overflow-x-auto"
+                              bodies={(
+                                purchaseItemsWithLabel[idx]?.rollItems ?? []
+                              ).map((item) => [
+                                item.total_roll,
+                                item.length_in_yard,
+                              ])}
+                            />
+                          </div>
+                        )}
+                        action={(idx) => (
+                          <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
+                            <Pen
+                              onClick={() => handleEditRoll(idx)}
+                              className="text-black w-2.5 h-2.5 cursor-pointer"
+                            />
+                            <Trash2
+                              onClick={() => handleDeleteRoll(idx)}
+                              className="text-black w-2.5 h-2.5 cursor-pointer"
+                            />
+                          </div>
+                        )}
+                      />
+                    </div>
+                    <div className="col-span-12 text-center">
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          cancelForm();
+                          toggleModal();
+                        }}
+                        className="bg-transparent me-2 hover:bg-slate-900 border border-slate-700 transition duration-300 ease-in-out cursor-pointer mx-auto text-slate-700 hover:text-white text-sm"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </Form>
                 </div>
               }
             />
