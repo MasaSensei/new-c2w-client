@@ -2,17 +2,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { usePurchaseStore } from "~/stores/useDetailPurchaseStore";
-import type { RawMaterial } from "~/types/rawMaterial";
-import { RawMaterialService } from "~/services/rawMaterial.service";
-import type { PurchaseList } from "~/types/purchaseList";
-import type { PurchaseListDetail } from "~/types/purchaseListDetail";
-import { PurchaseListService } from "~/services/purchaseList.service";
 import { useParams } from "react-router";
-import { PurchaseListDetailService } from "~/services/purchaseListDetail.service";
+import { usePurchaseStore } from "~/stores/useDetailPurchaseStore";
+import { RawMaterialService } from "~/services/rawMaterial.service";
+import { PurchaseListService } from "~/services/purchaseList.service";
+import type { RawMaterial } from "~/types/rawMaterial";
+import type { PurchaseList } from "~/types/purchaseList";
+import { useDetailPurchaseStoreReturn } from "~/stores/useDetailPurchaseStoreReturn";
 
 const formSchema = z.object({
+  jatuh_tempo: z.string(),
   total_roll: z.string(),
   material: z.string(),
   price_per_yard: z.string(),
@@ -26,11 +25,13 @@ export const usePurchaseDetailForm = (
   fetchData: () => Promise<void>,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   rawMaterials: RawMaterial[],
+  purchaseItemsSelected: PurchaseList,
   router: any
 ) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      jatuh_tempo: "",
       total_roll: "",
       material: "",
       price_per_yard: "",
@@ -42,6 +43,7 @@ export const usePurchaseDetailForm = (
   });
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [maxRollsReturn, setMaxRollsReturn] = useState<number>(0);
   const [rollItems, setRollItems] = useState<
     { total_roll: string; length_in_yard: string }[]
   >([]);
@@ -51,112 +53,95 @@ export const usePurchaseDetailForm = (
   });
 
   const { addItem, updateItem, removeItem, resetItems } = usePurchaseStore();
-
+  const { addItem: addItemReturn, updateItem: updateItemReturn } =
+    useDetailPurchaseStoreReturn();
   const purchaseItems = usePurchaseStore((state) => state.items);
-  const purchaseItemsWithLabel = purchaseItems.map((item) => {
-    const material = rawMaterials.find(
-      (rawMaterial) => rawMaterial.id === Number(item.material)
-    );
+  const purchaseItemsReturnNonLabel = useDetailPurchaseStoreReturn(
+    (state) => state.items
+  );
 
-    return {
-      ...item,
-      materialName: `${material?.Item?.item} ${material?.Color1?.color} ${material?.Code?.code} ${material?.Color2?.color}`,
-    };
-  });
+  const getMaterialName = (id: string | number) => {
+    const m = rawMaterials.find((r) => r.id === Number(id));
+    return `${m?.Item?.item} ${m?.Color1?.color} ${m?.Code?.code} ${m?.Color2?.color}`;
+  };
+
+  const getMaterialNameReturn = (id: string | number) => {
+    const m = purchaseItemsSelected?.PurchaseListDetail?.find(
+      (r) => r.id === Number(id)
+    );
+    const n = purchaseItemsSelected?.PurchaseListDetail?.find(
+      (r) => r.id === Number(id)
+    );
+    return n?.material;
+  };
+
+  const purchaseItemsReturn = purchaseItemsReturnNonLabel.map((item) => ({
+    ...item,
+    materialName: getMaterialNameReturn(item.material),
+  }));
+
+  const purchaseItemsWithLabel = purchaseItems.map((item) => ({
+    ...item,
+    materialName: getMaterialName(item.material),
+  }));
+
+  const calculateTotals = (rolls = rollItems) => {
+    const totalRoll = rolls.reduce(
+      (sum, r) => sum + Number(r.total_roll || 0),
+      0
+    );
+    const yardPerRoll = rolls.reduce(
+      (sum, r) =>
+        sum + Number(r.length_in_yard || 0) / Number(r.total_roll || 0),
+      0
+    );
+    const totalYard = Math.floor(yardPerRoll * 10) / 10;
+    const subTotal =
+      Number(form.getValues("price_per_yard") || 0) *
+      rolls.reduce((sum, r) => sum + Number(r.length_in_yard || 0), 0);
+
+    return { totalRoll, totalYard, subTotal };
+  };
+
+  const updateFormWithRolls = (rolls: typeof rollItems) => {
+    const { totalRoll, totalYard, subTotal } = calculateTotals(rolls);
+    form.setValue("total_roll", totalRoll.toString());
+    form.setValue("yard_per_roll", totalYard.toString());
+    form.setValue("sub_total", subTotal.toString());
+  };
 
   const addRoll = () => {
     if (!tempRoll.total_roll || !tempRoll.length_in_yard) return;
 
-    const updatedRolls = [...rollItems, tempRoll];
-
-    const totalRoll = updatedRolls.reduce(
-      (sum, item) => sum + Number(item.total_roll || 0),
-      0
-    );
-
-    const totalYard = updatedRolls.reduce(
-      (sum, item) =>
-        sum + Number(item.length_in_yard || 0) / Number(item.total_roll || 0),
-      0
-    );
-
-    const price = Number(form.getValues("price_per_yard") || 0);
-    // Gunakan tempRoll.length_in_yard di sini untuk memastikan panjang yard yang benar
-    const subTotal = Number(tempRoll.length_in_yard) * price;
-
-    setRollItems(updatedRolls);
+    const updated = [...rollItems, tempRoll];
+    setRollItems(updated);
+    updateFormWithRolls(updated);
     setTempRoll({ total_roll: "", length_in_yard: "" });
-
-    form.setValue("total_roll", totalRoll.toString());
-    form.setValue("yard_per_roll", totalYard.toString());
-    form.setValue("sub_total", subTotal.toString());
-
-    // Kosongkan length_in_yard di form input
     form.setValue("length_in_yard", "");
+  };
+
+  const removeRoll = (index: number) => {
+    const updated = rollItems.filter((_, i) => i !== index);
+    setRollItems(updated);
+    updateFormWithRolls(updated);
   };
 
   const handleEditRoll = (index: number) => {
     const item = purchaseItemsWithLabel[index];
     if (!item) return;
 
-    // Reset rollItems dengan data dari item
-    const newRollItems = item.rollItems ?? [];
+    setEditIndex(index);
+    setRollItems(item.rollItems ?? []);
+    setTempRoll({ total_roll: "", length_in_yard: "" });
 
-    const totalRoll = newRollItems.reduce(
-      (sum, roll) => sum + Number(roll.total_roll || 0),
-      0
-    );
-
-    const totalYard = newRollItems.reduce(
-      (sum, roll) =>
-        sum + Number(roll.total_roll || 0) * Number(roll.length_in_yard || 0),
-      0
-    );
-
-    const subTotal = totalYard * Number(item.price_per_yard || 0);
-
-    // Set ke form
-    form.setValue("material", item.material); // pastikan kamu punya material ID-nya
+    const { totalRoll, totalYard, subTotal } = calculateTotals(item.rollItems);
+    form.setValue("material", item.material);
     form.setValue("price_per_yard", item.price_per_yard);
     form.setValue("remarks", item.remarks || "");
     form.setValue("total_roll", totalRoll.toString());
-    form.setValue("length_in_yard", ""); // kosongin karena pakai rollItems
     form.setValue("yard_per_roll", totalYard.toString());
     form.setValue("sub_total", subTotal.toString());
-
-    // Simpan ulang ke state
-    setRollItems(newRollItems);
-    setTempRoll({ total_roll: "", length_in_yard: "" });
-    setEditIndex(index);
-  };
-
-  const removeRoll = (index: number) => {
-    const updatedRolls = rollItems.filter((_, i) => i !== index);
-
-    const totalRoll = updatedRolls.reduce(
-      (sum, item) => sum + Number(item.total_roll || 0),
-      0
-    );
-
-    const totalYard = updatedRolls.reduce(
-      (sum, item) =>
-        sum + Number(item.total_roll || 0) * Number(item.length_in_yard || 0),
-      0
-    );
-
-    const price = Number(form.getValues("price_per_yard") || 0);
-    const subTotal = totalYard * price;
-
-    setRollItems(updatedRolls);
-
-    form.setValue("total_roll", totalRoll.toString());
-    form.setValue("yard_per_roll", totalYard.toString());
-    form.setValue("sub_total", subTotal.toString());
-  };
-
-  const cancelForm = () => {
-    resetItems();
-    form.reset();
+    form.setValue("length_in_yard", "");
   };
 
   const handleDeleteRoll = async (index: number) => {
@@ -168,68 +153,67 @@ export const usePurchaseDetailForm = (
     }
   };
 
+  const addToTabel = (data: z.infer<typeof formSchema>) => {
+    const newItem = { ...data, rollItems };
+
+    if (editIndex !== null) {
+      updateItem(editIndex, newItem);
+    } else {
+      addItem(newItem);
+    }
+
+    form.reset();
+    setRollItems([]);
+    setEditIndex(null);
+  };
+
+  const addToTabelReturn = (data: z.infer<typeof formSchema>) => {
+    const newItem = { ...data };
+
+    if (editIndex !== null) {
+      updateItemReturn(editIndex, newItem);
+    } else {
+      addItemReturn(newItem);
+    }
+
+    form.reset({
+      material: "",
+      price_per_yard: "",
+      remarks: "",
+    });
+    // setRollItems([]);
+  };
+
   const onSubmit = async () => {
-    const purchaseItemsWithRoll = purchaseItems.filter(
-      (item) => item.rollItems && item.rollItems.length > 0
-    );
-
     try {
-      const finalPayload = purchaseItemsWithRoll.flatMap((item) => {
-        const price = Number(item.price_per_yard || 0);
-        const remarks = item.remarks || "-";
-        const id_raw_material = item.material;
-        const material = rawMaterials.find(
-          (rawMaterial) => rawMaterial.id === Number(item.material)
-        );
-        return (item.rollItems || []).map((roll) => {
-          const total_roll = Number(roll.total_roll || 0);
-          const length_in_yard = Number(roll.length_in_yard || 0);
-          const yard_per_roll = length_in_yard / total_roll;
-          const sub_total = yard_per_roll * price;
-
-          return {
+      const payload = purchaseItems
+        .filter((i) => i.rollItems?.length)
+        .flatMap((i) =>
+          i?.rollItems?.map((roll) => ({
             id_purchase_list: Number(router.purchaseListId),
-            rolls: Number(total_roll.toString()),
-            id_raw_material: Number(id_raw_material),
-            material: `${material?.Item?.item} ${material?.Color1?.color} ${material?.Code?.code} ${material?.Color2?.color}`,
-            price_per_yard: item.price_per_yard,
+            rolls: Number(roll.total_roll),
+            id_raw_material: Number(i.material),
+            material: getMaterialName(i.material),
+            price_per_yard: i.price_per_yard,
             yards: Number(roll.length_in_yard),
-            total: sub_total.toString(),
+            total: (
+              Number(roll.length_in_yard) * Number(i.price_per_yard)
+            ).toString(),
             is_active: true,
-            remarks,
-          };
-        });
-      });
+            remarks: i.remarks || "-",
+          }))
+        );
 
-      await PurchaseListDetailService.create(
-        finalPayload as PurchaseListDetail[]
-      );
-      console.log("Payload:", finalPayload);
+      // await PurchaseListDetailService.create(payload);
+      console.log("Payload:", payload);
     } catch (error) {
       console.error("Gagal submit:", error);
     }
   };
 
-  const addToTabel = async (data: z.infer<typeof formSchema>) => {
-    const updatedRolls = [...rollItems];
-
-    const newItem = {
-      ...data,
-      rollItems: updatedRolls,
-    };
-
-    if (editIndex !== null) {
-      // Update kalau sedang edit
-      updateItem(editIndex, newItem);
-    } else {
-      // Tambah baru
-      addItem(newItem);
-    }
-
-    // Reset semua
-    setRollItems([]);
+  const cancelForm = () => {
+    resetItems();
     form.reset();
-    setEditIndex(null); // kembali ke mode tambah
   };
 
   const fields = [
@@ -244,9 +228,9 @@ export const usePurchaseDetailForm = (
       label: "Material",
       inputType: "select" as const,
       placeholder: "Raw Material",
-      options: rawMaterials?.map((material) => ({
-        value: String(material.id),
-        label: `${material?.Item?.item} ${material?.Color1?.color} ${material?.Code?.code} ${material?.Color2?.color}`,
+      options: rawMaterials.map((m) => ({
+        value: String(m.id),
+        label: getMaterialName(m.id || 0),
       })),
     },
     {
@@ -275,20 +259,90 @@ export const usePurchaseDetailForm = (
     },
   ];
 
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      const selectedId = Number(value.material);
+
+      const found = purchaseItemsSelected?.PurchaseListDetail?.find(
+        (item) => item.id === selectedId
+      );
+
+      if (found) {
+        setMaxRollsReturn(found.rolls);
+      } else {
+        setMaxRollsReturn(0);
+      }
+
+      if (name === "total_roll") {
+        const inputRoll = Number(value.total_roll); // ini roll yang diketik user
+
+        // Batasi jika lebih besar dari rolls maksimal
+        if (inputRoll > maxRollsReturn) {
+          form.setValue("total_roll", String(maxRollsReturn));
+        }
+
+        // Hitung sub_total
+        if (found && inputRoll > 0) {
+          const subTotal = (inputRoll / found.rolls) * Number(found.total || 0);
+          form.setValue("sub_total", subTotal.toFixed(0));
+        } else {
+          form.setValue("sub_total", "0");
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form.watch, purchaseItemsSelected, maxRollsReturn]);
+
+  const returnFields = [
+    {
+      name: "material",
+      label: "Material",
+      inputType: "select" as const,
+      placeholder: "Raw Material",
+      options: purchaseItemsSelected?.PurchaseListDetail?.map((m) => ({
+        value: String(m.id),
+        label: `${m.material} (${m.total})`,
+      })),
+    },
+    {
+      name: "total_roll",
+      label: `Total Roll: ${maxRollsReturn}`,
+      inputType: "number" as const,
+      placeholder: `maks: ${maxRollsReturn}`,
+      max: maxRollsReturn,
+    },
+    {
+      name: "sub_total",
+      label: "Sub Total",
+      inputType: "currency" as const,
+      disabled: true,
+    },
+    {
+      name: "remarks",
+      label: "Remarks",
+      inputType: "text" as const,
+      placeholder: "Remarks",
+    },
+  ];
+
   return {
+    returnFields,
     form,
-    onSubmit,
     fields,
-    purchaseItemsWithLabel,
-    setTempRoll,
+    addToTabelReturn,
     tempRoll,
     rollItems,
+    setTempRoll,
     addRoll,
-    addToTabel,
-    handleDeleteRoll,
-    handleEditRoll,
-    cancelForm,
     removeRoll,
+    addToTabel,
+    onSubmit,
+    cancelForm,
+    handleEditRoll,
+    handleDeleteRoll,
+    purchaseItemsWithLabel,
+    purchaseItemsReturn,
   };
 };
 
@@ -297,22 +351,18 @@ export const usePurchaseDetailAction = () => {
   const [purchaseItems, setPurchaseItems] = useState<PurchaseList>();
   const [isLoading, setIsLoading] = useState(false);
   const router = useParams();
+
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const purchaseItemsRes = await PurchaseListService.get(
+      const purchaseRes = await PurchaseListService.get(
         Number(router.purchaseListId)
       );
-      const rawMaterialRes = await RawMaterialService.getAll();
-      if (!purchaseItemsRes.data.data || !rawMaterialRes.data.data) {
-        setIsLoading(false);
-        setPurchaseItems([] as unknown as PurchaseList);
-        setRawMaterials([]);
-      }
-      setPurchaseItems(purchaseItemsRes.data.data);
-      setRawMaterials(rawMaterialRes.data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      const materialRes = await RawMaterialService.getAll();
+      setPurchaseItems(purchaseRes.data.data || ({} as PurchaseList));
+      setRawMaterials(materialRes.data.data || []);
+    } catch (err) {
+      console.error("Error fetching:", err);
     } finally {
       setIsLoading(false);
     }
@@ -320,11 +370,13 @@ export const usePurchaseDetailAction = () => {
 
   useEffect(() => {
     fetchData();
+    console.log("Purchase Items:", purchaseItems);
   }, []);
+
   return {
     fetchData,
     rawMaterials,
-    purchaseItems,
+    purchaseItems: purchaseItems ?? ({} as PurchaseList),
     isLoading,
     setIsLoading,
     router,

@@ -27,6 +27,7 @@ interface Fields {
   placeholder?: string;
   options?: { value: string; label: string }[];
   disabled?: boolean;
+  max?: number;
 }
 
 interface FormProps<T extends FieldValues> {
@@ -100,6 +101,7 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
                           ? "shadow cursor-not-allowed bg-slate-100 border-slate-300 text-slate-900"
                           : "bg-white "
                       }`}
+                      max={field.max}
                       readOnly={field.disabled}
                     />
                   )}
