@@ -13,7 +13,6 @@ export type PurchaseList = {
   nominal: number | string;
   payment: number | string;
   outstanding: number | string;
-  return: boolean;
   remarks?: string | null;
   is_active: boolean;
 };

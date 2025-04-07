@@ -9,6 +9,8 @@ import { PurchaseListService } from "~/services/purchaseList.service";
 import type { RawMaterial } from "~/types/rawMaterial";
 import type { PurchaseList } from "~/types/purchaseList";
 import { useDetailPurchaseStoreReturn } from "~/stores/useDetailPurchaseStoreReturn";
+import { PurchaseListDetailService } from "~/services/purchaseListDetail.service";
+import type { PurchaseListDetail } from "~/types/purchaseListDetail";
 
 const formSchema = z.object({
   jatuh_tempo: z.string(),
@@ -168,19 +170,35 @@ export const usePurchaseDetailForm = (
   };
 
   const addToTabelReturn = (data: z.infer<typeof formSchema>) => {
-    const newItem = { ...data };
+    const totalYard = purchaseItemsSelected?.PurchaseListDetail?.reduce(
+      (sum, r) => sum + Number(r.yards || 0),
+      0
+    );
+    const totalRoll = purchaseItemsSelected?.PurchaseListDetail?.reduce(
+      (sum, r) => sum + Number(r.rolls || 0),
+      0
+    );
+    const payload = {
+      ...data,
+      length_in_yard:
+        Math.floor(
+          (Number(totalYard?.toString()) / Number(totalRoll?.toString())) * 10
+        ) /
+        10 /
+        Number(data.total_roll),
+    };
 
     if (editIndex !== null) {
-      updateItemReturn(editIndex, newItem);
+      updateItemReturn(editIndex, payload as any);
     } else {
-      addItemReturn(newItem);
+      addItemReturn(payload as any);
     }
 
-    form.reset({
-      material: "",
-      price_per_yard: "",
-      remarks: "",
-    });
+    // form.reset({
+    //   material: "",
+    //   price_per_yard: "",
+    //   remarks: "",
+    // });
     // setRollItems([]);
   };
 
@@ -204,8 +222,43 @@ export const usePurchaseDetailForm = (
           }))
         );
 
-      // await PurchaseListDetailService.create(payload);
-      console.log("Payload:", payload);
+      await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
+    } catch (error) {
+      console.error("Gagal submit:", error);
+    }
+  };
+
+  const onSubmitReturn = async () => {
+    const totalYard = purchaseItemsSelected?.PurchaseListDetail?.reduce(
+      (sum, r) => sum + Number(r.yards || 0),
+      0
+    );
+    const totalRoll = purchaseItemsSelected?.PurchaseListDetail?.reduce(
+      (sum, r) => sum + Number(r.rolls || 0),
+      0
+    );
+    try {
+      const payload = purchaseItemsReturnNonLabel.map((i) => ({
+        id_purchase_list: Number(router.purchaseListId),
+        rolls: Number(i.total_roll),
+        id_raw_material: Number(i.material),
+        material: getMaterialNameReturn(i.material),
+        price_per_yard: i.price_per_yard,
+        yards:
+          Math.floor(
+            ((Number(totalYard?.toString()) / Number(totalRoll?.toString())) *
+              10) /
+              10
+          ) / Number(i.total_roll),
+        total: i.sub_total,
+        is_active: true,
+        remarks: i.remarks || "-",
+      }));
+
+      console.log(payload);
+      console.log(Math.floor(Number(totalYard) / Number(totalRoll)) * 7);
+
+      // await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
     } catch (error) {
       console.error("Gagal submit:", error);
     }
@@ -217,12 +270,6 @@ export const usePurchaseDetailForm = (
   };
 
   const fields = [
-    {
-      name: "total_roll",
-      label: "Total Roll",
-      inputType: "number" as const,
-      disabled: true,
-    },
     {
       name: "material",
       label: "Material",
@@ -281,7 +328,6 @@ export const usePurchaseDetailForm = (
           form.setValue("total_roll", String(maxRollsReturn));
         }
 
-        // Hitung sub_total
         if (found && inputRoll > 0) {
           const subTotal = (inputRoll / found.rolls) * Number(found.total || 0);
           form.setValue("sub_total", subTotal.toFixed(0));
@@ -338,6 +384,7 @@ export const usePurchaseDetailForm = (
     removeRoll,
     addToTabel,
     onSubmit,
+    onSubmitReturn,
     cancelForm,
     handleEditRoll,
     handleDeleteRoll,

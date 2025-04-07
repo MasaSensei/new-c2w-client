@@ -6,7 +6,7 @@ import {
   usePurchaseDetailForm,
   usePurchaseDetailAction,
 } from "~/hooks/usePurchaseDetail";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Pen, Trash2, XIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
@@ -32,6 +32,7 @@ const PurchaseListDetailPage = () => {
     addToTabelReturn,
     returnFields,
     onSubmit,
+    onSubmitReturn,
     purchaseItemsWithLabel,
     tempRoll,
     cancelForm,
@@ -198,7 +199,7 @@ const PurchaseListDetailPage = () => {
                           </Button>
                           <Button
                             type="submit"
-                            onClick={handleSubmit(onSubmit)}
+                            onClick={() => onSubmitReturn()}
                             className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                           >
                             Save
@@ -213,7 +214,7 @@ const PurchaseListDetailPage = () => {
                             control={control}
                             rowClassName="grid grid-cols-3 gap-4"
                             className="flex gap-5"
-                            columnClassName={`nth-2:col-span-2 last:col-span-3 ${
+                            columnClassName={`first:col-span-3  last:col-span-3 ${
                               fields
                                 .map((field) => field.name)
                                 .filter((col) => col === "remarks")[0]
@@ -323,15 +324,17 @@ const PurchaseListDetailPage = () => {
                             headers={[
                               "Total Roll",
                               "Bahan",
-                              "Total Yard",
+                              "Yard per Roll",
                               "Sub Total",
                               "Remarks",
                             ]}
                             bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
                             bodies={purchaseItemsWithLabel.map((item) => [
-                              item.total_roll,
+                              item?.rollItems
+                                ?.map((i) => i.total_roll)
+                                .reduce((a, b) => Number(a) + Number(b), 0),
                               item.materialName,
-                              item.yard_per_roll,
+                              item.yard_per_roll + " yd",
                               formatCurrency(item.sub_total),
                               item.remarks,
                             ])}

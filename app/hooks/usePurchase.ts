@@ -128,7 +128,6 @@ export const usePurchaseForm = (
         payment: data.harga_dibayar || 0,
         outstanding: data.penangguhan || 0,
         remarks: data.remarks,
-        return: false,
       };
 
       if (selectedItem) {

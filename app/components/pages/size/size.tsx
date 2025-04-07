@@ -2,20 +2,20 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
-import { useSupplierAction, useSupplierForm } from "~/hooks/useSupplier";
+import { useSizeForm, useSizeAction } from "~/hooks/useSize";
 
-const SupplierPage = () => {
-  const { data, fetchData } = useSupplierAction();
+const SizePage = () => {
+  const { data, fetchData } = useSizeAction();
   const { form, fields, handleEdit, onSubmit, handleDelete } =
-    useSupplierForm(fetchData);
+    useSizeForm(fetchData);
   const { control, handleSubmit } = form;
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
-        title="Supplier"
+        title="Size"
         button={
           <Cores.Popup
-            title="Add Supplier"
+            title="Add Size"
             button={
               <Cores.Button className="bg-lime-500 hover:bg-lime-600">
                 Add
@@ -26,7 +26,6 @@ const SupplierPage = () => {
                 <Fragments.Form
                   fields={fields}
                   control={control}
-                  rowClassName="flex flex-col gap-5"
                   className="flex flex-col gap-5"
                   onSubmit={handleSubmit(onSubmit)}
                 />
@@ -37,15 +36,8 @@ const SupplierPage = () => {
       />
       <Layouts.SectionLayouts>
         <Cores.Table
-          seachable
-          headers={["No", "Name", "Phone", "Address", "Remarks"]}
-          bodies={data.map((supplier) => [
-            supplier.id,
-            supplier.name,
-            supplier.number,
-            supplier.address,
-            supplier.remarks,
-          ])}
+          headers={["Size", "Remarks"]}
+          bodies={data.map((size) => [size.size, size.remarks])}
           action={(idx) => {
             const currentData = data[idx];
             return (
@@ -65,7 +57,7 @@ const SupplierPage = () => {
                       <Fragments.Form
                         fields={fields}
                         control={control}
-                        rowClassName="flex flex-col gap-5"
+                        className="flex flex-col gap-5"
                         onSubmit={handleSubmit(onSubmit)}
                       />
                     </Form>
@@ -80,11 +72,10 @@ const SupplierPage = () => {
               </div>
             );
           }}
-          footer={<h1>Test</h1>}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>
   );
 };
 
-export default SupplierPage;
+export default SizePage;
