@@ -46,4 +46,13 @@ export const sidebarItems = [
       },
     ],
   },
+  {
+    title: "Customer Management",
+    menus: [
+      {
+        title: "Customer Info",
+        link: "/customer",
+      },
+    ],
+  },
 ];

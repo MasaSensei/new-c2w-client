@@ -15,4 +15,5 @@ export default [
   ),
   route("purchase-list/add", "routes/purchaseListAddNew.tsx"),
   route("material-inventory", "routes/inventory/materialInventory.tsx"),
+  route("customer", "routes/customerList.tsx"),
 ] satisfies RouteConfig;
