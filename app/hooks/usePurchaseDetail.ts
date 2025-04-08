@@ -181,11 +181,7 @@ export const usePurchaseDetailForm = (
     const payload = {
       ...data,
       length_in_yard:
-        Math.floor(
-          (Number(totalYard?.toString()) / Number(totalRoll?.toString())) * 10
-        ) /
-        10 /
-        Number(data.total_roll),
+        Math.floor((Number(totalYard) / Number(totalRoll)) * 10) / 10,
     };
 
     if (editIndex !== null) {
@@ -244,19 +240,16 @@ export const usePurchaseDetailForm = (
         id_raw_material: Number(i.material),
         material: getMaterialNameReturn(i.material),
         price_per_yard: i.price_per_yard,
-        yards:
-          Math.floor(
-            ((Number(totalYard?.toString()) / Number(totalRoll?.toString())) *
-              10) /
-              10
-          ) / Number(i.total_roll),
+        yards: Math.floor((Number(totalYard) / Number(totalRoll)) * 10) / 10,
         total: i.sub_total,
         is_active: true,
         remarks: i.remarks || "-",
       }));
 
       console.log(payload);
-      console.log(Math.floor(Number(totalYard) / Number(totalRoll)) * 7);
+      console.log(
+        Math.floor((Number(totalYard) / Number(totalRoll)) * 10) / 10
+      );
 
       // await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
     } catch (error) {
