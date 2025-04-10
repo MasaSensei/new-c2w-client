@@ -46,7 +46,7 @@ export const sidebarItems = [
       },
       {
         title: "Staging Cutting Inventory",
-        link: "/raw-material-inventory",
+        link: "/staging-cutting-inventory",
       },
     ],
   },
