@@ -62,6 +62,20 @@ const MaterialInventoryPage = () => {
             item.yards || 0,
             item.remarks || "-",
           ])}
+          details={(idx) => (
+            <Cores.Table
+              isLoading={isLoading}
+              headers={["Supplier", "Roll", "Yard", "Keterangan"]}
+              bodies={
+                data[idx]?.PurchaseListDetail?.map((item) => [
+                  item?.PurchaseList?.Supplier?.name,
+                  item?.rolls || 0,
+                  item?.yards || 0,
+                  item?.remarks || "-",
+                ]) || []
+              }
+            />
+          )}
           action={(idx) => (
             <div className="flex gap-4 items-center justify-start">
               <Cores.Popup

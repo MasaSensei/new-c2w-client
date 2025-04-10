@@ -1,6 +1,7 @@
 import type { Code } from "./code";
 import type { Color } from "./color";
 import type { Item } from "./item";
+import type { PurchaseListDetail } from "./purchaseListDetail";
 
 export type RawMaterial = {
   id?: number;
@@ -11,6 +12,7 @@ export type RawMaterial = {
   id_color_2: number;
   Color2?: Color;
   id_code: number;
+  PurchaseListDetail?: PurchaseListDetail[];
   Code?: Code;
   rolls?: number;
   yards?: number;

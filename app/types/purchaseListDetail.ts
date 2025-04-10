@@ -5,6 +5,7 @@ export type PurchaseListDetail = {
   id?: number;
   id_purchase_list: number;
   purchase_list?: PurchaseList[];
+  PurchaseList?: PurchaseList;
   id_raw_material: number;
   raw_material?: RawMaterial;
   material: string;

@@ -44,6 +44,10 @@ export const sidebarItems = [
         title: "Material Inventory",
         link: "/material-inventory",
       },
+      {
+        title: "Staging Cutting Inventory",
+        link: "/raw-material-inventory",
+      },
     ],
   },
   {
