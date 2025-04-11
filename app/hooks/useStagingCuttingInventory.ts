@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useState } from "react";
+import type { RawMaterial } from "~/types/rawMaterial";
+import { RawMaterialService } from "~/services/rawMaterial.service";
 
 const formSchema = z.object({
   id_raw_material: z.string().min(1, { message: "Item is required" }),
@@ -27,9 +29,14 @@ export const useStagingCuttingInventory = () => {
 
   const fields = [
     {
+      name: "input_date",
+      label: "Date",
+      inputType: "date" as const,
+    },
+    {
       name: "id_raw_material",
       label: "Item",
-      inputType: "select",
+      inputType: "select" as const,
       options: [
         { value: "1", label: "Item 1" },
         { value: "2", label: "Item 2" },
@@ -37,4 +44,34 @@ export const useStagingCuttingInventory = () => {
       ],
     },
   ];
+
+  return { form, fields };
+};
+
+export const useStagingCuttingInventoryAction = () => {
+  const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await RawMaterialService.getAll();
+      if (!response.data.data) {
+        setIsLoading(false);
+        setRawMaterials([]);
+      }
+      setIsLoading(false);
+      setRawMaterials(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return { rawMaterials, isLoading, setIsLoading };
 };
