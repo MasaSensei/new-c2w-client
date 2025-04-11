@@ -62,7 +62,10 @@ export const useColorForm = (
       } else {
         await ColorsService.create(payload as Color);
       }
-      form.reset();
+      form.reset({
+        color: "",
+        remarks: "",
+      });
       setSelectedColor(null);
       await fetchData();
     } catch (error) {
