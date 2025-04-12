@@ -9,7 +9,10 @@ import {
 import { Form } from "~/components/ui/form";
 import { useState } from "react";
 import { Pen, Trash2, XIcon } from "lucide-react";
-import { useStagingCuttingInventory } from "~/hooks/useStagingCuttingInventory";
+import {
+  useStagingCuttingInventory,
+  useStagingCuttingInventoryAction,
+} from "~/hooks/useStagingCuttingInventory";
 import type { Label } from "@radix-ui/react-label";
 import { Separator } from "@radix-ui/react-separator";
 import { Button } from "~/components/ui/button";
@@ -20,8 +23,13 @@ const MaterialInventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data, fetchData, isLoading, setIsLoading, codes, colors, items } =
     useMaterialInventoryAction();
+  const {
+    rawMaterials,
+    isLoading: isLoadingStaging,
+    setIsLoading: setIsLoadingStaging,
+  } = useStagingCuttingInventoryAction();
   const { form: formStaging, fields: fieldsStaging } =
-    useStagingCuttingInventory();
+    useStagingCuttingInventory(fetchData, setIsLoadingStaging, rawMaterials);
   const { form, fields, handleEdit, onSubmit, handleDelete } =
     useMaterialInventoryForm(fetchData, setIsLoading, items, colors, codes);
 
@@ -87,13 +95,13 @@ const MaterialInventoryPage = () => {
                       <Fragments.Form
                         fields={fieldsStaging}
                         control={formStaging.control}
-                        rowClassName="grid grid-cols-2 gap-4"
+                        rowClassName="grid grid-cols-3 gap-4"
                         className="flex gap-5"
-                        // columnClassName={`first:col-span-2  last:col-span-3 ${
-                        //   fields
-                        //     .map((field) => field.name)
-                        //     .filter((col) => col === "remarks")[0]
-                        // }`}
+                        columnClassName={`first:col-span-3 nth-2:col-span-3 last:col-span-3 ${
+                          fields
+                            .map((field) => field.name)
+                            .filter((col) => col === "remarks")[0]
+                        }`}
                         buttonType="submit"
                         buttonName="Add Item"
                       />

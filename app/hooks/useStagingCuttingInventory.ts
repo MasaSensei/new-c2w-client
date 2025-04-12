@@ -14,7 +14,11 @@ const formSchema = z.object({
   remarks: z.string().optional(),
 });
 
-export const useStagingCuttingInventory = () => {
+export const useStagingCuttingInventory = (
+  fetchData: () => Promise<void>,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  rawMaterials: RawMaterial[]
+) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,11 +41,37 @@ export const useStagingCuttingInventory = () => {
       name: "id_raw_material",
       label: "Item",
       inputType: "select" as const,
+      options: rawMaterials.flatMap((raw) => {
+        return (raw.PurchaseListDetail || []).map((detail) => ({
+          value: (detail?.id ?? 0).toString(),
+          label: `${detail.PurchaseList?.invoice_number} - ${detail.material}(${detail.rolls}x${detail.yards})`,
+        }));
+      }),
+    },
+    {
+      name: "rolls",
+      label: "Rolls",
+      inputType: "number" as const,
+    },
+    {
+      name: "yards",
+      label: "Yards",
+      inputType: "number" as const,
+      disabled: true,
+    },
+    {
+      name: "status",
+      label: "Status",
+      inputType: "select" as const,
       options: [
-        { value: "1", label: "Item 1" },
-        { value: "2", label: "Item 2" },
-        { value: "3", label: "Item 3" },
+        { value: "pending", label: "Pending" },
+        { value: "completed", label: "Completed" },
       ],
+    },
+    {
+      name: "remarks",
+      label: "Remarks",
+      inputType: "textarea" as const,
     },
   ];
 
