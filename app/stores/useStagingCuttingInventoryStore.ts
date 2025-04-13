@@ -22,6 +22,7 @@ interface StagingCuttingInventoryStore {
     stagingCuttingInventory: StagingCuttingInventory
   ) => void;
   deleteStagingCuttingInventory: (id: number) => void;
+  resetStagingCuttingInventory: () => void;
 }
 
 export const useStagingCuttingInventoryStore =
@@ -53,4 +54,6 @@ export const useStagingCuttingInventoryStore =
         ),
       }));
     },
+
+    resetStagingCuttingInventory: () => set({ stagingCuttingInventory: [] }),
   }));

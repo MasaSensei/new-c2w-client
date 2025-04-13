@@ -13,7 +13,6 @@ export default [
     "purchase-list-detail/:purchaseListId",
     "routes/purchaseListDetail.tsx"
   ),
-  route("purchase-list/add", "routes/purchaseListAddNew.tsx"),
   route("material-inventory", "routes/inventory/materialInventory.tsx"),
   route(
     "staging-cutting-inventory",

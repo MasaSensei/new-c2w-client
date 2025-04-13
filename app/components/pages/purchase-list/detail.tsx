@@ -373,7 +373,10 @@ const PurchaseListDetailPage = () => {
                           </Button>
                           <Button
                             type="submit"
-                            onClick={handleSubmit(onSubmit)}
+                            onClick={() => {
+                              closeModal();
+                              onSubmit();
+                            }}
                             className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                           >
                             Save
@@ -456,7 +459,9 @@ const PurchaseListDetailPage = () => {
             <h3 className="font-semibold">
               Item Return:{" "}
               {purchaseItems?.PurchaseListDetail?.flatMap((detail) =>
-                detail?.PurchaseListDetailReturn?.map((item) => item.date)
+                detail?.PurchaseListDetailReturn?.map((item) =>
+                  formatDate(item.date)
+                )
               )}
             </h3>
             <Cores.Table
@@ -469,7 +474,8 @@ const PurchaseListDetailPage = () => {
                 "Total",
                 "Remarks",
               ]}
-              bodiesClassName="text-red-500 w-full first:text-slate-900"
+              headersClassName="text-center first:text-start"
+              bodiesClassName="text-red-500 text-center first:text-start w-full last:text-slate-900 first:text-slate-900"
               bodies={
                 purchaseItems?.PurchaseListDetail?.flatMap(
                   (detail) =>
@@ -479,7 +485,7 @@ const PurchaseListDetailPage = () => {
                       `-${item.yards.toString()}`,
                       `-${formatCurrency(item.price_per_yard)}` || "-",
                       `-${formatCurrency(item.total)}` || "-",
-                      `-${item.remarks}` || "-",
+                      `${item.remarks}` || "-",
                     ]) || []
                 ) || []
               }

@@ -10,15 +10,11 @@ import { Form } from "~/components/ui/form";
 import { useState } from "react";
 import { Pen, Trash2, XIcon } from "lucide-react";
 import {
-  useStagingCuttingInventory,
+  useStagingCuttingInventoryForm,
   useStagingCuttingInventoryAction,
 } from "~/hooks/useStagingCuttingInventory";
-import type { Label } from "@radix-ui/react-label";
 import { Separator } from "@radix-ui/react-separator";
 import { Button } from "~/components/ui/button";
-import type { Input } from "~/components/ui/input";
-import type { formatCurrency } from "~/utils/currency";
-import formatDate from "~/utils/formatDate";
 
 const MaterialInventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,11 +28,16 @@ const MaterialInventoryPage = () => {
   const {
     form: formStaging,
     fields: fieldsStaging,
+    onSubmit: onSubmitStaging,
     addToTabel,
     stagingCuttingInventory,
     handleDelete: handleDeleteStaging,
     handleEdit: handleEditStaging,
-  } = useStagingCuttingInventory(fetchData, setIsLoadingStaging, rawMaterials);
+  } = useStagingCuttingInventoryForm(
+    fetchData,
+    setIsLoadingStaging,
+    rawMaterials
+  );
   const { form, fields, handleEdit, onSubmit, handleDelete } =
     useMaterialInventoryForm(fetchData, setIsLoading, items, colors, codes);
 
@@ -129,7 +130,7 @@ const MaterialInventoryPage = () => {
                     </div>
                     <div className="col-span-8">
                       <h1 className="text-lg font-semibold -mt-10 mb-2.5">
-                        Items: {formatDate(stagingCuttingInventory[0].date)}
+                        Items:
                       </h1>
                       <Cores.Table
                         headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
@@ -175,7 +176,10 @@ const MaterialInventoryPage = () => {
                       </Button>
                       <Button
                         type="submit"
-                        // onClick={handleSubmit(onSubmit)}
+                        onClick={() => {
+                          closeModal();
+                          onSubmitStaging();
+                        }}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                       >
                         Save

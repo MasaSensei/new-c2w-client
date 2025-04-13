@@ -62,6 +62,7 @@ export const usePurchaseDetailForm = (
     addItem: addItemReturn,
     updateItem: updateItemReturn,
     removeItem: removeItemReturn,
+    resetItems: resetItemsReturn,
   } = useDetailPurchaseStoreReturn();
   const purchaseItems = usePurchaseStore((state) => state.items);
   const purchaseItemsReturnNonLabel = useDetailPurchaseStoreReturn(
@@ -254,6 +255,8 @@ export const usePurchaseDetailForm = (
         );
 
       await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
+      resetItems();
+      fetchData();
     } catch (error) {
       console.error("Gagal submit:", error);
     }
@@ -284,6 +287,7 @@ export const usePurchaseDetailForm = (
       );
 
       await PurchaseListDetailServiceReturn.create(payload);
+      resetItemsReturn();
     } catch (error) {
       console.error("Gagal submit:", error);
     } finally {

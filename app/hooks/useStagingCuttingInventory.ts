@@ -5,17 +5,19 @@ import { useEffect, useState } from "react";
 import type { RawMaterial } from "~/types/rawMaterial";
 import { RawMaterialService } from "~/services/rawMaterial.service";
 import { useStagingCuttingInventoryStore } from "~/stores/useStagingCuttingInventoryStore";
+import { StaggingMaterialToCuttingService } from "~/services/staggingMaterialToCutting.service";
+import type { StaggingMaterialToCutting } from "~/types/staggingMaterialToCutting";
 
 const formSchema = z.object({
   id_raw_material: z.string().min(1, { message: "Item is required" }),
-  rolls: z.string().min(1, { message: "Size is required" }),
-  yards: z.string().min(1, { message: "Color is required" }),
-  status: z.string().min(1, { message: "Color 2 is required" }),
+  rolls: z.string(),
+  yards: z.string(),
+  status: z.string(),
   input_date: z.date(),
   remarks: z.string().optional(),
 });
 
-export const useStagingCuttingInventory = (
+export const useStagingCuttingInventoryForm = (
   fetchData: () => Promise<void>,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   rawMaterials: RawMaterial[]
@@ -39,6 +41,7 @@ export const useStagingCuttingInventory = (
     addStagingCuttingInventory,
     updateStagingCuttingInventory,
     deleteStagingCuttingInventory,
+    resetStagingCuttingInventory,
   } = useStagingCuttingInventoryStore();
   const stagingCuttingInventoryNonLabel = useStagingCuttingInventoryStore(
     (state) => state.stagingCuttingInventory
@@ -153,6 +156,31 @@ export const useStagingCuttingInventory = (
     })
   );
 
+  console.log(stagingCuttingInventory);
+
+  const onSubmit = async () => {
+    try {
+      const payload: StaggingMaterialToCutting[] = stagingCuttingInventory.map(
+        (item) => ({
+          input_date: item.date,
+          id_purchase_list_detail: Number(item.material),
+          rolls: Number(item.rolls),
+          yards: Number(item.yards),
+          status: item.status,
+          is_active: true,
+          remarks: item.remarks,
+        })
+      );
+      const send = await StaggingMaterialToCuttingService.create(payload);
+      if (send.status === 201) {
+        form.reset();
+        resetStagingCuttingInventory();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const subscription = form.watch((data, { name }) => {
       const selectedId = Number(data.id_raw_material);
@@ -204,22 +232,29 @@ export const useStagingCuttingInventory = (
     stagingCuttingInventory,
     handleEdit,
     handleDelete,
+    onSubmit,
   };
 };
 
 export const useStagingCuttingInventoryAction = () => {
+  const [data, setData] = useState<StaggingMaterialToCutting[]>([]);
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
+      const responseData = await StaggingMaterialToCuttingService.getAll();
+      console.log(responseData.data);
       const response = await RawMaterialService.getAll();
-      if (!response.data.data) {
+      if (!responseData.data.data) {
         setIsLoading(false);
         setRawMaterials([]);
+        setData([]);
       }
       setIsLoading(false);
+      setData(responseData.data.data);
+      console.log(responseData.data.data);
       setRawMaterials(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -232,5 +267,5 @@ export const useStagingCuttingInventoryAction = () => {
     fetchData();
   }, []);
 
-  return { rawMaterials, isLoading, setIsLoading };
+  return { rawMaterials, isLoading, setIsLoading, data, fetchData };
 };

@@ -55,6 +55,9 @@ export const useCodeForm = (
       };
       if (selectedCode) {
         await CodesService.update(selectedCode.id as number, payload as Code);
+        form.reset({
+          code: "",
+        });
       } else {
         await CodesService.create(payload as Code);
       }
@@ -65,6 +68,7 @@ export const useCodeForm = (
       console.error("Submit error:", error);
     } finally {
       setIsLoading(false);
+      form.reset();
     }
   };
 

@@ -73,6 +73,7 @@ export const useSupplierForm = (fetchData: () => Promise<void>) => {
       };
       if (selectedSupplier) {
         await SuppliersService.update(selectedSupplier.id as number, payload);
+        form.reset();
       } else {
         await SuppliersService.create(payload);
       }
