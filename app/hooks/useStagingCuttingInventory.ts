@@ -4,6 +4,7 @@ import * as z from "zod";
 import { useEffect, useState } from "react";
 import type { RawMaterial } from "~/types/rawMaterial";
 import { RawMaterialService } from "~/services/rawMaterial.service";
+import { useStagingCuttingInventoryStore } from "~/stores/useStagingCuttingInventoryStore";
 
 const formSchema = z.object({
   id_raw_material: z.string().min(1, { message: "Item is required" }),
@@ -19,6 +20,9 @@ export const useStagingCuttingInventory = (
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   rawMaterials: RawMaterial[]
 ) => {
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [maxRolls, setMaxRolls] = useState<number>(0);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,6 +34,15 @@ export const useStagingCuttingInventory = (
       remarks: "",
     },
   });
+
+  const {
+    addStagingCuttingInventory,
+    updateStagingCuttingInventory,
+    deleteStagingCuttingInventory,
+  } = useStagingCuttingInventoryStore();
+  const stagingCuttingInventoryNonLabel = useStagingCuttingInventoryStore(
+    (state) => state.stagingCuttingInventory
+  );
 
   const fields = [
     {
@@ -50,8 +63,10 @@ export const useStagingCuttingInventory = (
     },
     {
       name: "rolls",
-      label: "Rolls",
+      label: `Rolls (${maxRolls})`,
+      placeholder: `maks: ${maxRolls}`,
       inputType: "number" as const,
+      max: maxRolls,
     },
     {
       name: "yards",
@@ -75,7 +90,121 @@ export const useStagingCuttingInventory = (
     },
   ];
 
-  return { form, fields };
+  const addToTabel = (data: z.infer<typeof formSchema>) => {
+    const payload = {
+      date: new Date(data.input_date).toISOString(),
+      material: data.id_raw_material,
+      rolls: data.rolls,
+      yards: data.yards,
+      status: data.status,
+      remarks: data.remarks,
+    };
+
+    if (editIndex !== null) {
+      updateStagingCuttingInventory(editIndex, payload);
+    } else {
+      addStagingCuttingInventory(payload);
+      form.reset({
+        id_raw_material: "",
+        rolls: "",
+        yards: "",
+        status: "",
+        remarks: "",
+      });
+      console.log(payload);
+    }
+  };
+
+  const handleEdit = (index: number) => {
+    const item = stagingCuttingInventory[index];
+    if (!item) return;
+
+    setEditIndex(index);
+    form.setValue("input_date", new Date(item.date));
+    form.setValue("id_raw_material", item.material.toString());
+    form.setValue("rolls", item.rolls);
+    form.setValue("yards", item.yards.toString());
+    form.setValue("status", item.status);
+    form.setValue("remarks", item.remarks || "");
+  };
+
+  const handleDelete = async (index: number) => {
+    try {
+      await deleteStagingCuttingInventory(index);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMaterialName = (id: string | number) => {
+    const m = rawMaterials
+      .map((r) => r.PurchaseListDetail?.map((d) => d))
+      .flat()
+      .find((r) => r?.id === Number(id));
+
+    return m?.material;
+  };
+
+  const stagingCuttingInventory = stagingCuttingInventoryNonLabel.map(
+    (item, index) => ({
+      ...item,
+      id: index,
+      materialName: getMaterialName(item.material),
+    })
+  );
+
+  useEffect(() => {
+    const subscription = form.watch((data, { name }) => {
+      const selectedId = Number(data.id_raw_material);
+
+      // Flatten semua detail dari rawMaterials
+      const allDetails = rawMaterials.flatMap(
+        (raw) => raw.PurchaseListDetail || []
+      );
+
+      // Cari detail berdasarkan id
+      const selectedDetail = allDetails.find(
+        (d) => Number(d.id) === selectedId
+      );
+
+      if (selectedDetail) {
+        setMaxRolls(selectedDetail.rolls);
+      } else {
+        setMaxRolls(0);
+      }
+
+      if (name === "rolls") {
+        const inputRolls = Number(data.rolls);
+
+        if (inputRolls > maxRolls) {
+          form.setValue("rolls", maxRolls.toString());
+        }
+
+        if (selectedDetail && inputRolls > 0) {
+          const totalYards =
+            Number(selectedDetail.yardsPerRoll) * Number(form.watch("rolls"));
+
+          form.setValue("yards", totalYards.toString());
+        } else {
+          form.setValue("yards", "");
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form.watch, rawMaterials, setMaxRolls, maxRolls]);
+
+  return {
+    form,
+    fields,
+    editIndex,
+    setEditIndex,
+    addToTabel,
+    setIsLoading,
+    stagingCuttingInventory,
+    handleEdit,
+    handleDelete,
+  };
 };
 
 export const useStagingCuttingInventoryAction = () => {

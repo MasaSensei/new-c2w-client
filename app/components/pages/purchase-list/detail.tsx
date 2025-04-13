@@ -44,6 +44,8 @@ const PurchaseListDetailPage = () => {
     handleDeleteRoll,
     handleEditRoll,
     purchaseItemsReturn,
+    handleDeleteReturn,
+    editItemReturn,
   } = usePurchaseDetailForm(
     fetchData,
     setIsLoading,
@@ -106,26 +108,13 @@ const PurchaseListDetailPage = () => {
                     {isReturn ? (
                       <>
                         <div className="col-span-4 flex flex-col gap-4">
-                          <div className="flex flex-col gap-2">
-                            <Label htmlFor="jatuh_tempo">Jatuh Tempo</Label>
-                            <Input
-                              className="bg-white"
-                              type="text"
-                              {...form.register("jatuh_tempo")}
-                              defaultValue={form.getValues("jatuh_tempo")}
-                              placeholder="Jatuh Tempo"
-                              onChange={(e) =>
-                                form.setValue("jatuh_tempo", e.target.value)
-                              }
-                            />
-                          </div>
                           <div className=" bg-slate-100 p-4 rounded-lg">
                             <Fragments.Form
                               fields={returnFields}
                               control={control}
-                              rowClassName="grid grid-cols-3 gap-4"
+                              rowClassName="grid grid-cols-4 gap-4"
                               className="flex gap-5"
-                              columnClassName={`first:col-span-3 nth-3:col-span-2 last:col-span-3 ${
+                              columnClassName={`first:col-span-2 nth-2:col-span-2 nth-3:col-span-4 nth-5:col-span-3 last:col-span-4 ${
                                 fields
                                   .map((field) => field.name)
                                   .filter((col) => col === "remarks")[0]
@@ -138,9 +127,7 @@ const PurchaseListDetailPage = () => {
                                   <Button
                                     className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                                     onClick={() =>
-                                      !isReturn
-                                        ? addToTabel(form.getValues())
-                                        : addToTabelReturn(form.getValues())
+                                      addToTabelReturn(form.getValues())
                                     }
                                     type="button"
                                   >
@@ -175,11 +162,11 @@ const PurchaseListDetailPage = () => {
                             action={(idx) => (
                               <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                                 <Pen
-                                  onClick={() => handleEditRoll(idx)}
+                                  onClick={() => editItemReturn(idx)}
                                   className="text-black w-2.5 h-2.5 cursor-pointer"
                                 />
                                 <Trash2
-                                  onClick={() => handleDeleteRoll(idx)}
+                                  onClick={() => handleDeleteReturn(idx)}
                                   className="text-black w-2.5 h-2.5 cursor-pointer"
                                 />
                               </div>
@@ -466,7 +453,37 @@ const PurchaseListDetailPage = () => {
             />
           </div>
           <div className="mt-4">
-            <h3 className="font-semibold">Item Return:</h3>
+            <h3 className="font-semibold">
+              Item Return:{" "}
+              {purchaseItems?.PurchaseListDetail?.flatMap((detail) =>
+                detail?.PurchaseListDetailReturn?.map((item) => item.date)
+              )}
+            </h3>
+            <Cores.Table
+              isLoading={isLoading}
+              headers={[
+                "Bahan",
+                "Rolls",
+                "Yards",
+                "Price per Yard",
+                "Total",
+                "Remarks",
+              ]}
+              bodiesClassName="text-red-500 w-full first:text-slate-900"
+              bodies={
+                purchaseItems?.PurchaseListDetail?.flatMap(
+                  (detail) =>
+                    detail?.PurchaseListDetailReturn?.map((item) => [
+                      item.PurchaseListDetail?.material || "-",
+                      `-${item.rolls}` || "-",
+                      `-${item.yards.toString()}`,
+                      `-${formatCurrency(item.price_per_yard)}` || "-",
+                      `-${formatCurrency(item.total)}` || "-",
+                      `-${item.remarks}` || "-",
+                    ]) || []
+                ) || []
+              }
+            />
           </div>
         </div>
       </Layouts.SectionLayouts>

@@ -18,6 +18,7 @@ import { Separator } from "@radix-ui/react-separator";
 import { Button } from "~/components/ui/button";
 import type { Input } from "~/components/ui/input";
 import type { formatCurrency } from "~/utils/currency";
+import formatDate from "~/utils/formatDate";
 
 const MaterialInventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,8 +29,14 @@ const MaterialInventoryPage = () => {
     isLoading: isLoadingStaging,
     setIsLoading: setIsLoadingStaging,
   } = useStagingCuttingInventoryAction();
-  const { form: formStaging, fields: fieldsStaging } =
-    useStagingCuttingInventory(fetchData, setIsLoadingStaging, rawMaterials);
+  const {
+    form: formStaging,
+    fields: fieldsStaging,
+    addToTabel,
+    stagingCuttingInventory,
+    handleDelete: handleDeleteStaging,
+    handleEdit: handleEditStaging,
+  } = useStagingCuttingInventory(fetchData, setIsLoadingStaging, rawMaterials);
   const { form, fields, handleEdit, onSubmit, handleDelete } =
     useMaterialInventoryForm(fetchData, setIsLoading, items, colors, codes);
 
@@ -104,65 +111,56 @@ const MaterialInventoryPage = () => {
                         }`}
                         buttonType="submit"
                         buttonName="Add Item"
+                        additional={
+                          <>
+                            <Separator className="my-2.5" />
+                            <Button
+                              className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
+                              onClick={() =>
+                                addToTabel(formStaging.getValues())
+                              }
+                              type="button"
+                            >
+                              Add Item
+                            </Button>
+                          </>
+                        }
                       />
                     </div>
                     <div className="col-span-8">
                       <h1 className="text-lg font-semibold -mt-10 mb-2.5">
-                        Items:
+                        Items: {formatDate(stagingCuttingInventory[0].date)}
                       </h1>
-                      {/* <Cores.Table
+                      <Cores.Table
                         headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
                         headers={[
                           "Total Roll",
                           "Bahan",
-                          "Yard per Roll",
-                          "Sub Total",
+                          "Yards",
+                          "Status",
                           "Remarks",
                         ]}
                         bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
-                        bodies={purchaseItemsWithLabel.map((item) => [
-                          item?.rollItems
-                            ?.map((i) => i.total_roll)
-                            .reduce((a, b) => Number(a) + Number(b), 0),
+                        bodies={stagingCuttingInventory.map((item) => [
+                          item.rolls,
                           item.materialName,
-                          item.yard_per_roll + " yd",
-                          formatCurrency(item.sub_total),
-                          item.remarks,
+                          item.yards,
+                          item.status,
+                          item.remarks || "-",
                         ])}
-                        details={(idx) => (
-                          <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                            <h4 className="font-semibold mb-2.5">
-                              Roll Items:{" "}
-                              {formatCurrency(
-                                purchaseItemsWithLabel[idx]?.price_per_yard
-                              )}
-                              /yard
-                            </h4>
-                            <Cores.Table
-                              headers={["Jumlah Roll", "Length in Yard"]}
-                              className="w-96 overflow-x-auto"
-                              bodies={(
-                                purchaseItemsWithLabel[idx]?.rollItems ?? []
-                              ).map((item) => [
-                                item.total_roll,
-                                item.length_in_yard,
-                              ])}
-                            />
-                          </div>
-                        )}
                         action={(idx) => (
                           <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                             <Pen
-                              onClick={() => handleEditRoll(idx)}
+                              onClick={() => handleEditStaging(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                             <Trash2
-                              onClick={() => handleDeleteRoll(idx)}
+                              onClick={() => handleDeleteStaging(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                           </div>
                         )}
-                      /> */}
+                      />
                     </div>
                     <div className="col-span-12 text-center">
                       <Button

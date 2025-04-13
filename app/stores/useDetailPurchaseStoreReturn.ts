@@ -1,14 +1,15 @@
 import { create } from "zustand";
 
 type ReturnItem = {
+  date: string;
   jatuh_tempo: string;
   total_roll: string;
   material: string;
   price_per_yard: string;
   length_in_yard: string;
-  yard_per_roll: string;
+  yard_per_roll?: string;
   sub_total: string;
-  remarks?: string;
+  remarks: string;
 };
 
 interface ReturnStore {
@@ -21,10 +22,12 @@ interface ReturnStore {
 
 export const useDetailPurchaseStoreReturn = create<ReturnStore>((set) => ({
   items: [],
-  addItem: (item) =>
-    set((state) => ({
-      items: [...state.items, item], // langsung push aja, gak perlu cek merge
-    })),
+  addItem: (item) => {
+    console.log(item),
+      set((state) => ({
+        items: [...state.items, item],
+      }));
+  },
   updateItem: (index, item) =>
     set((state) => ({
       items: state.items.map((i, idx) => (idx === index ? item : i)),

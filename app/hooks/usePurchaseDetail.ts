@@ -11,8 +11,10 @@ import type { PurchaseList } from "~/types/purchaseList";
 import { useDetailPurchaseStoreReturn } from "~/stores/useDetailPurchaseStoreReturn";
 import { PurchaseListDetailService } from "~/services/purchaseListDetail.service";
 import type { PurchaseListDetail } from "~/types/purchaseListDetail";
+import { PurchaseListDetailServiceReturn } from "~/services/purchaseListDetailReturn.service";
 
 const formSchema = z.object({
+  date: z.date().optional(),
   jatuh_tempo: z.string(),
   total_roll: z.string(),
   material: z.string(),
@@ -41,6 +43,7 @@ export const usePurchaseDetailForm = (
       yard_per_roll: "",
       sub_total: "",
       remarks: "-",
+      date: new Date(),
     },
   });
 
@@ -55,8 +58,11 @@ export const usePurchaseDetailForm = (
   });
 
   const { addItem, updateItem, removeItem, resetItems } = usePurchaseStore();
-  const { addItem: addItemReturn, updateItem: updateItemReturn } =
-    useDetailPurchaseStoreReturn();
+  const {
+    addItem: addItemReturn,
+    updateItem: updateItemReturn,
+    removeItem: removeItemReturn,
+  } = useDetailPurchaseStoreReturn();
   const purchaseItems = usePurchaseStore((state) => state.items);
   const purchaseItemsReturnNonLabel = useDetailPurchaseStoreReturn(
     (state) => state.items
@@ -170,14 +176,14 @@ export const usePurchaseDetailForm = (
   };
 
   const addToTabelReturn = (data: z.infer<typeof formSchema>) => {
-    const totalYard = purchaseItemsSelected?.PurchaseListDetail?.reduce(
-      (sum, r) => sum + Number(r.yards || 0),
-      0
-    );
-    const totalRoll = purchaseItemsSelected?.PurchaseListDetail?.reduce(
-      (sum, r) => sum + Number(r.rolls || 0),
-      0
-    );
+    const totalYard = purchaseItemsSelected?.PurchaseListDetail?.filter(
+      (r) => r.id_raw_material === Number(data.material)
+    )?.reduce((sum, r) => sum + Number(r.yards || 0), 0);
+
+    const totalRoll = purchaseItemsSelected?.PurchaseListDetail?.filter(
+      (r) => r.id_raw_material === Number(data.material)
+    )?.reduce((sum, r) => sum + Number(r.rolls || 0), 0);
+
     const payload = {
       ...data,
       length_in_yard:
@@ -190,12 +196,41 @@ export const usePurchaseDetailForm = (
       addItemReturn(payload as any);
     }
 
-    // form.reset({
-    //   material: "",
-    //   price_per_yard: "",
-    //   remarks: "",
-    // });
-    // setRollItems([]);
+    const currentJatuhTempo = form.getValues("jatuh_tempo");
+
+    form.reset({
+      material: "",
+      total_roll: "",
+      sub_total: "",
+      remarks: "",
+      jatuh_tempo: currentJatuhTempo,
+    });
+  };
+
+  const editItemReturn = async (index: number) => {
+    const item = purchaseItemsReturn[index];
+    if (!item) return;
+
+    try {
+      const data = purchaseItemsReturn[index];
+      setEditIndex(index);
+      form.setValue("jatuh_tempo", data.jatuh_tempo);
+      form.setValue("material", data.material);
+      form.setValue("total_roll", data.total_roll);
+      form.setValue("sub_total", data.sub_total);
+      form.setValue("remarks", data.remarks || "");
+    } catch (error) {
+      console.error("Edit error:", error);
+    }
+  };
+
+  const handleDeleteReturn = async (index: number) => {
+    try {
+      await removeItemReturn(index);
+      await fetchData();
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
   };
 
   const onSubmit = async () => {
@@ -208,7 +243,7 @@ export const usePurchaseDetailForm = (
             rolls: Number(roll.total_roll),
             id_raw_material: Number(i.material),
             material: getMaterialName(i.material),
-            price_per_yard: i.price_per_yard,
+            price_per_yard: Number(i.price_per_yard),
             yards: Number(roll.length_in_yard),
             total: (
               Number(roll.length_in_yard) * Number(i.price_per_yard)
@@ -234,26 +269,25 @@ export const usePurchaseDetailForm = (
       0
     );
     try {
-      const payload = purchaseItemsReturnNonLabel.map((i) => ({
-        id_purchase_list: Number(router.purchaseListId),
-        rolls: Number(i.total_roll),
-        id_raw_material: Number(i.material),
-        material: getMaterialNameReturn(i.material),
-        price_per_yard: i.price_per_yard,
-        yards: Math.floor((Number(totalYard) / Number(totalRoll)) * 10) / 10,
-        total: i.sub_total,
-        is_active: true,
-        remarks: i.remarks || "-",
-      }));
-
-      console.log(payload);
-      console.log(
-        Math.floor((Number(totalYard) / Number(totalRoll)) * 10) / 10
+      const payload: PurchaseListDetail[] = purchaseItemsReturnNonLabel.map(
+        (i) => ({
+          id_purchase_list_detail: Number(router.purchaseListId),
+          date: i.date,
+          jatuh_tempo: i.jatuh_tempo,
+          rolls: Number(i.total_roll),
+          price_per_yard: Number(i.sub_total || 0),
+          yards: Number(i.length_in_yard || 0),
+          total: i.sub_total.toString(),
+          is_active: true,
+          remarks: i.remarks || "-",
+        })
       );
 
-      // await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
+      await PurchaseListDetailServiceReturn.create(payload);
     } catch (error) {
       console.error("Gagal submit:", error);
+    } finally {
+      form.reset();
     }
   };
 
@@ -316,7 +350,6 @@ export const usePurchaseDetailForm = (
       if (name === "total_roll") {
         const inputRoll = Number(value.total_roll); // ini roll yang diketik user
 
-        // Batasi jika lebih besar dari rolls maksimal
         if (inputRoll > maxRollsReturn) {
           form.setValue("total_roll", String(maxRollsReturn));
         }
@@ -334,6 +367,16 @@ export const usePurchaseDetailForm = (
   }, [form.watch, purchaseItemsSelected, maxRollsReturn]);
 
   const returnFields = [
+    {
+      name: "date",
+      label: "Date",
+      inputType: "date" as const,
+    },
+    {
+      name: "jatuh_tempo",
+      label: "Jatuh Tempo",
+      inputType: "text" as const,
+    },
     {
       name: "material",
       label: "Material",
@@ -383,6 +426,8 @@ export const usePurchaseDetailForm = (
     handleDeleteRoll,
     purchaseItemsWithLabel,
     purchaseItemsReturn,
+    handleDeleteReturn,
+    editItemReturn,
   };
 };
 

@@ -6,7 +6,20 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   server: {
     host: true,
-    port: 3002, // opsional, tapi disarankan biar pasti
+    port: 3002,
+    allowedHosts: [
+      "towewew18.online",
+      "konveksi-dev.towewew18.online",
+      "localhost",
+    ],
+    cors: {
+      origin: [
+        "towewew18.online",
+        "konveksi-dev.towewew18.online",
+        "localhost",
+      ],
+      credentials: true,
+    },
   },
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
 });
