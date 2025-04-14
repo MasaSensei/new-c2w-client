@@ -68,4 +68,13 @@ export const sidebarItems = [
       },
     ],
   },
+  {
+    title: "Tailors Management",
+    menus: [
+      {
+        title: "Tailor Staff",
+        link: "/tailor-staff",
+      },
+    ],
+  },
 ];

@@ -20,4 +20,5 @@ export default [
   ),
   route("customer", "routes/customerList.tsx"),
   route("cutting-staff", "routes/(Cutters)/cuttingStaff.tsx"),
+  route("tailor-staff", "routes/(Tailors)/tailorStaff.tsx"),
 ] satisfies RouteConfig;
