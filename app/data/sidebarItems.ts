@@ -59,4 +59,13 @@ export const sidebarItems = [
       },
     ],
   },
+  {
+    title: "Cutters Management",
+    menus: [
+      {
+        title: "Cutting Staff",
+        link: "/cutting-staff",
+      },
+    ],
+  },
 ];

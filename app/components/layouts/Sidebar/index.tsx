@@ -50,11 +50,7 @@ const Sidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               {sidebarItems.map((item, idx) => (
-                <Collapsible
-                  key={idx}
-                  defaultOpen
-                  className="group/collapsible"
-                >
+                <Collapsible key={idx} className="group/collapsible">
                   <SidebarMenuItem>
                     <CollapsibleTrigger
                       className={
