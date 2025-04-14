@@ -38,6 +38,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({
       value={value}
       onChange={handleChange}
       onBlur={handleBlur}
+      type="number"
       onFocus={handleFocus}
       className={cn("w-full", className)}
       readOnly={disabled}
