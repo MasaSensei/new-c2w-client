@@ -67,7 +67,7 @@ const Table: React.FC<TableProps> = ({
               {props.seachable && (
                 <div className="max-w-full w-96">
                   <Input
-                    className="-ml-2 w-full my-2 bg-white"
+                    className="-mx-2 w-full my-2 bg-white"
                     value={search[idx]}
                     onChange={(e) => handleSearchChange(e.target.value, idx)}
                     placeholder={`Search ${header}`}

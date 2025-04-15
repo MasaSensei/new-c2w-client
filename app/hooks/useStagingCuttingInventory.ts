@@ -114,7 +114,6 @@ export const useStagingCuttingInventoryForm = (
         status: "",
         remarks: "",
       });
-      console.log(payload);
     }
   };
 
@@ -155,8 +154,6 @@ export const useStagingCuttingInventoryForm = (
       materialName: getMaterialName(item.material),
     })
   );
-
-  console.log(stagingCuttingInventory);
 
   const onSubmit = async () => {
     try {
@@ -245,7 +242,6 @@ export const useStagingCuttingInventoryAction = () => {
     try {
       setIsLoading(true);
       const responseData = await StaggingMaterialToCuttingService.getAll();
-      console.log(responseData.data);
       const response = await RawMaterialService.getAll();
       if (!responseData.data.data) {
         setIsLoading(false);
