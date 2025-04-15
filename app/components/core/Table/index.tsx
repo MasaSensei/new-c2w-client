@@ -84,7 +84,10 @@ const Table: React.FC<TableProps> = ({
       <TableBody className="bg-white">
         {props.isLoading ? (
           <TableRow>
-            <TableCell colSpan={headers.length + 1} className="text-center">
+            <TableCell
+              colSpan={action ? headers.length + 1 : headers.length}
+              className="text-center"
+            >
               <ClipLoader
                 color="#000000"
                 loading={true}
@@ -130,7 +133,7 @@ const Table: React.FC<TableProps> = ({
               {expandedRows.includes(idx) && details && (
                 <TableRow>
                   <TableCell
-                    colSpan={headers.length + 1}
+                    colSpan={action ? headers.length + 1 : headers.length}
                     className="bg-gray-100"
                   >
                     {details(idx)}
@@ -141,7 +144,10 @@ const Table: React.FC<TableProps> = ({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={headers.length + 1} className="text-center">
+            <TableCell
+              colSpan={action ? headers.length + 1 : headers.length}
+              className="text-center"
+            >
               No data found
             </TableCell>
           </TableRow>
@@ -150,7 +156,10 @@ const Table: React.FC<TableProps> = ({
       {props.footer && (
         <TableFooter className="bg-[#F6F7F9]">
           <TableRow>
-            <TableCell className="rounded-b-lg" colSpan={headers.length + 1}>
+            <TableCell
+              className="rounded-b-lg"
+              colSpan={action ? headers.length + 1 : headers.length}
+            >
               {props.footer}
             </TableCell>
           </TableRow>
