@@ -25,7 +25,7 @@ const StagingCuttingInventoryPage = () => {
     isLoading: isLoadingWorkers,
     setIsLoading: setIsLoadingWorkers,
   } = useCuttingProgressAction();
-  const { form, fields } = useCuttingProgressForm(
+  const { form, fields, addToTable } = useCuttingProgressForm(
     fetchDataWorkers,
     setIsLoadingWorkers,
     workers,
@@ -75,7 +75,9 @@ const StagingCuttingInventoryPage = () => {
                             <Separator />
                             <Button
                               className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                              onClick={() => {}}
+                              onClick={() => {
+                                addToTable(form.getValues());
+                              }}
                               type="button"
                             >
                               Add Item

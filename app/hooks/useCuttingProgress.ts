@@ -6,9 +6,10 @@ import type { Worker } from "~/types/worker";
 import { WorkersService } from "~/services/worker.service";
 import type { StaggingMaterialToCutting } from "~/types/staggingMaterialToCutting";
 import { StaggingMaterialToCuttingService } from "~/services/staggingMaterialToCutting.service";
+import { useCuttingProgressStore } from "~/stores/useCuttingProgress";
 
 const formSchema = z.object({
-  date: z.date().optional(),
+  date: z.date(),
   invoice_number: z.string().min(1, { message: "Invoice Number is required" }),
   id_worker: z.string().min(1, { message: "Worker is required" }),
   id_material: z.string().min(1, { message: "Material is required" }),
@@ -36,6 +37,8 @@ export const useCuttingProgressForm = (
       remarks: "",
     },
   });
+
+  const { addMaterial } = useCuttingProgressStore();
 
   const fields = [
     {
@@ -99,7 +102,6 @@ export const useCuttingProgressForm = (
 
       if (name === "rolls") {
         const inputRolls = Number(data.rolls) || 0;
-        console.log(inputRolls, maxRolls);
         if (inputRolls > maxRolls) {
           form.setValue("rolls", String(maxRolls));
         }
@@ -117,7 +119,21 @@ export const useCuttingProgressForm = (
     return () => subscription.unsubscribe();
   }, [form.watch, materials, setMaxRolls, maxRolls]);
 
-  return { form, fields };
+  const addToTable = (data: z.infer<typeof formSchema>) => {
+    const payload = {
+      date: new Date(data.date).toISOString(),
+      invoice_number: data.invoice_number,
+      id_worker: Number(data.id_worker),
+      id_staging_cutting_inventory: Number(data.id_material),
+      rolls: Number(data.rolls),
+      yards: data.yards ?? 0,
+      remarks: data.remarks,
+    };
+
+    addMaterial(payload);
+  };
+
+  return { form, fields, addToTable };
 };
 
 export const useCuttingProgressAction = () => {
