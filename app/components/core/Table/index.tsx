@@ -133,7 +133,7 @@ const Table: React.FC<TableProps> = ({
               {expandedRows.includes(idx) && details && (
                 <TableRow>
                   <TableCell
-                    colSpan={action ? headers.length + 1 : headers.length}
+                    colSpan={headers.length + 1}
                     className="bg-gray-100"
                   >
                     {details(idx)}

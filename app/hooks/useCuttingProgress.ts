@@ -7,6 +7,8 @@ import { WorkersService } from "~/services/worker.service";
 import type { StaggingMaterialToCutting } from "~/types/staggingMaterialToCutting";
 import { StaggingMaterialToCuttingService } from "~/services/staggingMaterialToCutting.service";
 import { useCuttingProgressStore } from "~/stores/useCuttingProgress";
+import CuttingProgressService from "~/services/cuttingProgress.service";
+import type { CuttingProgress } from "~/types/cuttingProgress";
 
 const formSchema = z.object({
   date: z.date(),
@@ -24,6 +26,7 @@ export const useCuttingProgressForm = (
   workers: Worker[],
   materials: StaggingMaterialToCutting[]
 ) => {
+  const [editIndex, setEditIndex] = useState<number | null>(null);
   const [maxRolls, setMaxRolls] = useState(0);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,7 +41,15 @@ export const useCuttingProgressForm = (
     },
   });
 
-  const { addMaterial } = useCuttingProgressStore();
+  const {
+    addCuttingProgress,
+    updateCuttingProgress,
+    deleteCuttingProgress,
+    resetCuttingProgress,
+  } = useCuttingProgressStore();
+  const cuttingProgressItem = useCuttingProgressStore(
+    (state) => state.cuttingProgress
+  );
 
   const fields = [
     {
@@ -120,34 +131,129 @@ export const useCuttingProgressForm = (
   }, [form.watch, materials, setMaxRolls, maxRolls]);
 
   const addToTable = (data: z.infer<typeof formSchema>) => {
+    const getPurchaseListDetail = materials.find(
+      (material) => material.id === Number(data.id_material)
+    );
+
     const payload = {
-      date: new Date(data.date).toISOString(),
-      invoice_number: data.invoice_number,
+      id_purchase_list_detail: Number(
+        getPurchaseListDetail?.id_purchase_list_detail
+      ),
+      material: getMaterialName(data.id_material),
       id_worker: Number(data.id_worker),
       id_staging_cutting_inventory: Number(data.id_material),
       rolls: Number(data.rolls),
       yards: data.yards ?? 0,
-      remarks: data.remarks,
     };
-
-    addMaterial(payload);
+    if (editIndex !== null) {
+      updateCuttingProgress(editIndex, payload);
+    } else {
+      addCuttingProgress(payload);
+    }
+    form.reset({
+      date: form.watch("date"),
+      invoice_number: form.watch("invoice_number"),
+      id_material: "",
+      rolls: "",
+      yards: "",
+      id_worker: form.watch("id_worker"),
+      remarks: form.watch("remarks"),
+    });
   };
 
-  return { form, fields, addToTable };
+  const handleEdit = (index: number) => {
+    const item = cuttingProgressItem[index];
+    if (!item) return;
+    setEditIndex(index);
+    form.setValue("id_material", String(item.id_staging_cutting_inventory));
+    form.setValue("rolls", String(item.rolls));
+    form.setValue("yards", String(item.yards));
+  };
+
+  const handleDeleteItem = async (id: number) => {
+    try {
+      await deleteCuttingProgress(id);
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
+
+  const getMaterialName = (id: string | number) => {
+    const m = materials.find((r) => r.id === Number(id));
+    return `${m?.PurchaseListDetail?.material}`;
+  };
+
+  const cuttingProgress = cuttingProgressItem.map((item, index) => ({
+    ...item,
+    id: index,
+    material: getMaterialName(item.id_staging_cutting_inventory),
+  }));
+
+  const onSubmit = async () => {
+    try {
+      const item: any = cuttingProgressItem.map((item) => ({
+        id_purchase_list_detail: Number(item.id_purchase_list_detail),
+        id_staging_cutting_inventory: Number(item.id_staging_cutting_inventory),
+        material: item.material,
+        rolls: Number(item.rolls),
+        yards: item.yards,
+        is_active: true,
+      }));
+      const payload = {
+        date: form.getValues("date") as any,
+        invoice: form.getValues("invoice_number"),
+        id_worker: Number(form.getValues("id_worker")),
+        materials: item,
+        remarks: form.getValues("remarks"),
+      };
+      if (
+        !payload.date ||
+        !payload.invoice ||
+        !payload.id_worker ||
+        !payload.materials
+      ) {
+        alert("Please fill out all required fields.");
+        return;
+      }
+      console.log(payload);
+      await CuttingProgressService.create(payload as CuttingProgress);
+      form.reset();
+      resetCuttingProgress();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return {
+    form,
+    fields,
+    addToTable,
+    cuttingProgress,
+    handleDeleteItem,
+    handleEdit,
+    onSubmit,
+  };
 };
 
 export const useCuttingProgressAction = () => {
   const [workers, setWorkers] = useState<Worker[]>([]);
+  const [data, setData] = useState<CuttingProgress[]>([]);
   const [materials, setMaterials] = useState<StaggingMaterialToCutting[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
+      const response = await CuttingProgressService.getAll();
+      console.log(response);
       const responseWorker = await WorkersService.getAll({ type: "cutters" });
       const responseMaterials = await StaggingMaterialToCuttingService.getAll([
         "completed",
       ]);
+      if (!response.data.data) {
+        setIsLoading(false);
+        setData([]);
+      }
       if (!responseWorker.data.data) {
         setIsLoading(false);
         setWorkers([]);
@@ -159,6 +265,7 @@ export const useCuttingProgressAction = () => {
       setIsLoading(false);
       setWorkers(responseWorker.data.data);
       setMaterials(responseMaterials.data.data);
+      setData(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -168,5 +275,5 @@ export const useCuttingProgressAction = () => {
     fetchData();
   }, []);
 
-  return { workers, isLoading, fetchData, setIsLoading, materials };
+  return { data, workers, isLoading, fetchData, setIsLoading, materials };
 };

@@ -4,7 +4,7 @@ import { Layouts } from "~/components/layouts";
 import { useStagingCuttingInventoryAction } from "~/hooks/useStagingCuttingInventory";
 import formatDate from "~/utils/formatDate";
 import { useState } from "react";
-import { XIcon } from "lucide-react";
+import { Pen, Trash2, XIcon } from "lucide-react";
 import {
   useCuttingProgressAction,
   useCuttingProgressForm,
@@ -25,7 +25,15 @@ const StagingCuttingInventoryPage = () => {
     isLoading: isLoadingWorkers,
     setIsLoading: setIsLoadingWorkers,
   } = useCuttingProgressAction();
-  const { form, fields, addToTable } = useCuttingProgressForm(
+  const {
+    form,
+    fields,
+    addToTable,
+    cuttingProgress,
+    handleDeleteItem,
+    handleEdit,
+    onSubmit,
+  } = useCuttingProgressForm(
     fetchDataWorkers,
     setIsLoadingWorkers,
     workers,
@@ -90,6 +98,50 @@ const StagingCuttingInventoryPage = () => {
                       <h1 className="text-lg font-semibold -mt-10 mb-2.5">
                         Items:
                       </h1>
+                      <Cores.Table
+                        headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
+                        headers={["Total Roll", "Bahan", "Yards"]}
+                        bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
+                        bodies={cuttingProgress.map((item) => [
+                          item.rolls,
+                          item.material,
+                          item.yards,
+                        ])}
+                        action={(idx) => (
+                          <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
+                            <Pen
+                              onClick={() => handleEdit(idx)}
+                              className="text-black w-2.5 h-2.5 cursor-pointer"
+                            />
+                            <Trash2
+                              onClick={() => handleDeleteItem(idx)}
+                              className="text-black w-2.5 h-2.5 cursor-pointer"
+                            />
+                          </div>
+                        )}
+                      />
+                    </div>
+                    <div className="col-span-12 text-center">
+                      {/* <Button
+                        type="button"
+                        onClick={() => {
+                          // cancelForm();
+                          closeModal();
+                        }}
+                        className="bg-transparent me-2 hover:bg-slate-900 border border-slate-700 transition duration-300 ease-in-out cursor-pointer mx-auto text-slate-700 hover:text-white text-sm"
+                      >
+                        Cancel
+                      </Button> */}
+                      <Button
+                        type="submit"
+                        onClick={() => {
+                          // closeModal();
+                          onSubmit();
+                        }}
+                        className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
+                      >
+                        Save
+                      </Button>
                     </div>
                   </>
                 </Form>

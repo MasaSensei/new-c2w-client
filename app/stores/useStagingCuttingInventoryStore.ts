@@ -38,7 +38,6 @@ export const useStagingCuttingInventoryStore =
           stagingCuttingInventory,
         ],
       }));
-      console.log(stagingCuttingInventory);
     },
     updateStagingCuttingInventory: (id, stagingCuttingInventory) => {
       set((state) => ({
