@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -26,6 +27,9 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const router = useLocation();
+  console.log(router.pathname);
+
   return (
     <html lang="en">
       <head>
@@ -35,15 +39,34 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <SidebarProvider>
-          <div className="w-screen h-screen flex">
-            <Layouts.Sidebar />
-            <div className="flex-1 flex flex-col h-screen overflow-y-scroll overflow-x-hidden">
-              <Layouts.Header />
-              <main className="flex-1">{children}</main>
+        {router.pathname !== "/login" && router.pathname !== "/register" ? (
+          <SidebarProvider>
+            <div className="w-screen h-screen flex">
+              <Layouts.Sidebar />
+              <div className="flex-1 flex flex-col h-screen overflow-y-scroll overflow-x-hidden">
+                <Layouts.Header />
+                <main className="flex-1">{children}</main>
+              </div>
+            </div>
+          </SidebarProvider>
+        ) : (
+          <div className="min-h-screen bg-neutral flex justify-center items-center">
+            <div className="w-[80vw] min-h-[80vh] bg-white text-dark grid grid-cols-1 lg:grid-cols-2 rounded-lg shadow-lg">
+              <div className="relative hidden lg:block">
+                <div
+                  className="absolute inset-0 bg-cover bg-center opacity-80 rounded-l-lg"
+                  style={{ backgroundImage: "url(/images/Citlali.jpeg)" }}
+                ></div>
+                <div className="absolute inset-0 bg-primary opacity-30 rounded-l-lg"></div>
+                <div className="absolute inset-0 bg-dark opacity-60 rounded-l-lg"></div>
+              </div>
+              <div className="flex items-center justify-center p-20 rounded-r-lg">
+                {children}
+              </div>
             </div>
           </div>
-        </SidebarProvider>
+        )}
+
         <ScrollRestoration />
         <Scripts />
       </body>

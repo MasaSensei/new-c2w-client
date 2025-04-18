@@ -11,6 +11,8 @@ import { Input } from "~/components/ui/input";
 import { Cores } from "~/components/core";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 interface Fields {
   name: string;
@@ -44,6 +46,10 @@ interface FormProps<T extends FieldValues> {
 }
 
 const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
+  const [visiblePasswords, setVisiblePasswords] = useState<
+    Record<string, boolean>
+  >({});
+
   return (
     <form
       onSubmit={props.onSubmit}
@@ -91,6 +97,39 @@ const Form = <T extends FieldValues>({ className, ...props }: FormProps<T>) => {
                       value={formField.value}
                       onChange={formField.onChange}
                     />
+                  ) : field.inputType === "password" ? (
+                    <div className="relative">
+                      <Input
+                        {...formField}
+                        type={
+                          visiblePasswords[field.name] ? "text" : "password"
+                        }
+                        placeholder={field.placeholder}
+                        className={`pr-10 ${
+                          field.disabled
+                            ? "shadow cursor-not-allowed bg-slate-100 border-slate-300 text-slate-900"
+                            : "bg-white "
+                        }`}
+                        readOnly={field.disabled}
+                      />
+                      <Button
+                        type="button"
+                        onClick={() =>
+                          setVisiblePasswords((prev) => ({
+                            ...prev,
+                            [field.name]: !prev[field.name],
+                          }))
+                        }
+                        className="bg-transparent cursor-pointer hover:bg-transparent absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary"
+                        tabIndex={-1}
+                      >
+                        {visiblePasswords[field.name] ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
+                      </Button>
+                    </div>
                   ) : (
                     <Input
                       {...formField}
