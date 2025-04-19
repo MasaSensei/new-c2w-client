@@ -5,7 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const SuppliersService = {
   async getAll() {
-    return axios.get(`${API_URL}/suppliers`);
+    return axios.get(`${API_URL}/suppliers`, {
+      withCredentials: true,
+    });
   },
 
   async create(data: Supplier) {
@@ -21,6 +23,8 @@ export const SuppliersService = {
   },
 
   async delete(id: number) {
-    return axios.delete(`${API_URL}/suppliers/${id}`);
+    return axios.delete(`${API_URL}/suppliers/${id}`, {
+      withCredentials: true,
+    });
   },
 };

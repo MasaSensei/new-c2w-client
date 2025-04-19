@@ -5,7 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const ColorsService = {
   async getAll() {
-    return axios.get(`${API_URL}/colors`);
+    return axios.get(`${API_URL}/colors`, {
+      withCredentials: true,
+    });
   },
 
   async create(data: Color) {
@@ -21,10 +23,14 @@ export const ColorsService = {
   },
 
   async delete(id: number) {
-    return axios.delete(`${API_URL}/colors/${id}`);
+    return axios.delete(`${API_URL}/colors/${id}`, {
+      withCredentials: true,
+    });
   },
 
   async get(id: number) {
-    return axios.get(`${API_URL}/colors/${id}`);
+    return axios.get(`${API_URL}/colors/${id}`, {
+      withCredentials: true,
+    });
   },
 };

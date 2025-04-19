@@ -1,6 +1,14 @@
-import type { Route } from "./+types/home";
-import MainPage from "~/components/pages/main/main";
+// routes/index.tsx (untuk "/")
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function Home() {
-  return <MainPage />;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const hasToken = document.cookie.includes("token=");
+    navigate(hasToken ? "/material-inventory" : "/login", { replace: true });
+  }, [navigate]);
+
+  return null;
 }

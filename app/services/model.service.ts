@@ -5,7 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const ModelsService = {
   async getAll() {
-    return axios.get(`${API_URL}/models`);
+    return axios.get(`${API_URL}/models`, {
+      withCredentials: true,
+    });
   },
 
   async create(data: Model) {
@@ -21,6 +23,8 @@ export const ModelsService = {
   },
 
   async delete(id: number) {
-    return axios.delete(`${API_URL}/models/${id}`);
+    return axios.delete(`${API_URL}/models/${id}`, {
+      withCredentials: true,
+    });
   },
 };

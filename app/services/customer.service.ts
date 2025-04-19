@@ -5,7 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const CustomersService = {
   async getAll() {
-    return axios.get(`${API_URL}/customers`);
+    return axios.get(`${API_URL}/customers`, {
+      withCredentials: true,
+    });
   },
 
   async create(data: Customer) {
@@ -21,6 +23,8 @@ export const CustomersService = {
   },
 
   async delete(id: number) {
-    return axios.delete(`${API_URL}/customers/${id}`);
+    return axios.delete(`${API_URL}/customers/${id}`, {
+      withCredentials: true,
+    });
   },
 };

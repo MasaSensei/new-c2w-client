@@ -5,7 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const SizesService = {
   async getAll() {
-    return axios.get(`${API_URL}/sizes`);
+    return axios.get(`${API_URL}/sizes`, {
+      withCredentials: true,
+    });
   },
 
   async create(data: Size) {
@@ -21,6 +23,8 @@ export const SizesService = {
   },
 
   async delete(id: number) {
-    return axios.delete(`${API_URL}/sizes/${id}`);
+    return axios.delete(`${API_URL}/sizes/${id}`, {
+      withCredentials: true,
+    });
   },
 };

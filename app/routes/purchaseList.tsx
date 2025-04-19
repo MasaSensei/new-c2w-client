@@ -1,5 +1,10 @@
+import { Layouts } from "~/components/layouts";
 import PurchaseListPage from "~/components/pages/purchase-list/purchaseList";
 
 export default function Size() {
-  return <PurchaseListPage />;
+  return (
+    <Layouts.PrivateRoute>
+      <PurchaseListPage />
+    </Layouts.PrivateRoute>
+  );
 }

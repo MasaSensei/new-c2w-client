@@ -5,10 +5,14 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const PurchaseListDetailService = {
   getAll() {
-    return axios.get(`${API_URL}/purchase-list-details`);
+    return axios.get(`${API_URL}/purchase-list-details`, {
+      withCredentials: true,
+    });
   },
   get(id: number) {
-    return axios.get(`${API_URL}/purchase-list-details/${id}`);
+    return axios.get(`${API_URL}/purchase-list-details/${id}`, {
+      withCredentials: true,
+    });
   },
   create(data: PurchaseListDetail[]) {
     return axios.post(`${API_URL}/purchase-list-details`, data, {
@@ -21,6 +25,8 @@ export const PurchaseListDetailService = {
     });
   },
   delete(id: number) {
-    return axios.delete(`${API_URL}/purchase-list-details/${id}`);
+    return axios.delete(`${API_URL}/purchase-list-details/${id}`, {
+      withCredentials: true,
+    });
   },
 };

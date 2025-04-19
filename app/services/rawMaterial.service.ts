@@ -5,10 +5,14 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const RawMaterialService = {
   async getAll() {
-    return axios.get(`${API_URL}/raw-materials`);
+    return axios.get(`${API_URL}/raw-materials`, {
+      withCredentials: true,
+    });
   },
   async get(id: number) {
-    return axios.get(`${API_URL}/raw-materials/${id}`);
+    return axios.get(`${API_URL}/raw-materials/${id}`, {
+      withCredentials: true,
+    });
   },
   async create(data: RawMaterial) {
     return axios.post(`${API_URL}/raw-materials`, data, {
@@ -21,6 +25,8 @@ export const RawMaterialService = {
     });
   },
   async delete(id: number) {
-    return axios.delete(`${API_URL}/raw-materials/${id}`);
+    return axios.delete(`${API_URL}/raw-materials/${id}`, {
+      withCredentials: true,
+    });
   },
 };

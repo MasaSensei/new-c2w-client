@@ -8,4 +8,8 @@ export const AuthService = {
       withCredentials: true,
     });
   },
+
+  async login(data: { username: string; password: string }) {
+    return axios.post(`${API_URL}/auth/login`, data, { withCredentials: true });
+  },
 };

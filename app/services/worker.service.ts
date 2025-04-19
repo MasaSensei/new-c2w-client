@@ -15,7 +15,9 @@ export const WorkersService = {
   },
 
   async get(id: number) {
-    return axios.get(`${API_URL}/workers/${id}`);
+    return axios.get(`${API_URL}/workers/${id}`, {
+      withCredentials: true,
+    });
   },
 
   async create(data: Worker) {

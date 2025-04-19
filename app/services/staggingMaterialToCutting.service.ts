@@ -27,6 +27,8 @@ export const StaggingMaterialToCuttingService = {
   },
 
   async delete(id: number) {
-    return axios.delete(`${API_URL}/stagging-material-to-cutters/${id}`);
+    return axios.delete(`${API_URL}/stagging-material-to-cutters/${id}`, {
+      withCredentials: true,
+    });
   },
 };

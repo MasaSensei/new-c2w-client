@@ -5,7 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const CuttingProgressService = {
   async getAll() {
-    return axios.get(`${API_URL}/cutting-progress`);
+    return axios.get(`${API_URL}/cutting-progress`, {
+      withCredentials: true,
+    });
   },
 
   async create(data: CuttingProgress) {

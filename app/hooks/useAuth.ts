@@ -79,7 +79,15 @@ export const useAuthForm = () => {
   ];
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    try {
+      const response = await AuthService.login(data);
+
+      if (response.status === 200) {
+        navigate("/material-inventory");
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
   };
 
   const onSubmitRegister = async (data: z.infer<typeof registerFormSchema>) => {
