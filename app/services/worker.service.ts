@@ -11,7 +11,7 @@ export const WorkersService = {
       params.type = type;
     }
 
-    return axios.get(`${API_URL}/workers`, { params });
+    return axios.get(`${API_URL}/workers`, { params, withCredentials: true });
   },
 
   async get(id: number) {

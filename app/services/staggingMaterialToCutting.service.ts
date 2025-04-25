@@ -11,7 +11,10 @@ export const StaggingMaterialToCuttingService = {
       params.status = status.join(",");
     }
 
-    return axios.get(`${API_URL}/stagging-material-to-cutters`, { params });
+    return axios.get(`${API_URL}/stagging-material-to-cutters`, {
+      params,
+      withCredentials: true,
+    });
   },
 
   async create(data: StaggingMaterialToCutting[]) {

@@ -79,6 +79,10 @@ export const sidebarItems = [
         title: "Tailor Staff",
         link: "/tailor-staff",
       },
+      {
+        title: "Tailor Progress",
+        link: "/tailor-progress",
+      },
     ],
   },
 ];
