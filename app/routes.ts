@@ -20,6 +20,10 @@ const simpleRoutes = [
     path: "staging-cutting-inventory",
     file: "routes/inventory/stagingCuttingInventory.tsx",
   },
+  {
+    path: "outgoing-raw-history",
+    file: "routes/inventory/outgoingRawHistory.tsx",
+  },
   { path: "customer", file: "routes/customerList.tsx" },
   { path: "cutting-staff", file: "routes/(Cutters)/cuttingStaff.tsx" },
   { path: "cutting-progress", file: "routes/(Cutters)/cuttingProgress.tsx" },

@@ -55,7 +55,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <div className="relative hidden lg:block">
                 <div
                   className="absolute inset-0 bg-cover bg-center opacity-80 rounded-l-lg"
-                  style={{ backgroundImage: "url(/images/Citlali.jpeg)" }}
+                  style={{
+                    backgroundImage: "url(/images/pattern-1-DPmtsDw_.jpg)",
+                  }}
                 ></div>
                 <div className="absolute inset-0 bg-primary opacity-30 rounded-l-lg"></div>
                 <div className="absolute inset-0 bg-dark opacity-60 rounded-l-lg"></div>

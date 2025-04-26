@@ -48,6 +48,19 @@ export const sidebarItems = [
         title: "Staging Cutting Inventory",
         link: "/staging-cutting-inventory",
       },
+      {
+        title: "Outgoing Raw History",
+        link: "/outgoing-raw-history",
+      },
+    ],
+  },
+  {
+    title: "Order Management",
+    menus: [
+      {
+        title: "Order List",
+        link: "/order-list",
+      },
     ],
   },
   {
