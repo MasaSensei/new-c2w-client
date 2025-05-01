@@ -15,10 +15,18 @@ const formSchema = z.object({
   remarks: z.string().optional(),
 });
 
+const workerMaterialPricesSchema = z.object({
+  id_material: z.string().min(1, { message: "Material is required" }),
+  id_worker: z.string().min(1, { message: "Worker is required" }),
+  price: z.string().min(1, { message: "Price is required" }),
+  remarks: z.string().optional(),
+});
+
 export const useWorkerForm = (
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   fetchData: () => Promise<void>,
-  type: string
+  type: string,
+  data: Worker[]
 ) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -26,6 +34,18 @@ export const useWorkerForm = (
       name: "",
       phone: "",
       address: "",
+      remarks: "",
+    },
+  });
+
+  const workerMaterialPricesForm = useForm<
+    z.infer<typeof workerMaterialPricesSchema>
+  >({
+    resolver: zodResolver(workerMaterialPricesSchema),
+    defaultValues: {
+      id_material: "",
+      id_worker: "",
+      price: "",
       remarks: "",
     },
   });
@@ -53,6 +73,38 @@ export const useWorkerForm = (
       label: "Address",
       inputType: "text" as const,
       placeholder: "Address",
+    },
+    {
+      name: "remarks",
+      label: "Remarks",
+      inputType: "textarea" as const,
+      placeholder: "Remarks",
+    },
+  ];
+
+  const workerMaterialPricesFields = [
+    {
+      name: "id_material",
+      label: "Material",
+      inputType: "select" as const,
+      options: data.map((material) => ({
+        value: material.id,
+        label: material.name,
+      })),
+    },
+    {
+      name: "id_worker",
+      label: "Worker",
+      inputType: "select" as const,
+      options: data.map((worker) => ({
+        value: worker.id,
+        label: worker.name,
+      })),
+    },
+    {
+      name: "price",
+      label: "Price",
+      inputType: "currency" as const,
     },
     {
       name: "remarks",

@@ -30,6 +30,7 @@ const simpleRoutes = [
   { path: "tailor-staff", file: "routes/(Tailors)/tailorStaff.tsx" },
   { path: "tailor-progress", file: "routes/(Tailors)/tailorProgress.tsx" },
   { path: "login", file: "routes/(Auth)/login.tsx" },
+  { path: "category", file: "routes/(MasterData)/category.tsx" },
   { path: "register", file: "routes/(Auth)/register.tsx" },
 ];
 

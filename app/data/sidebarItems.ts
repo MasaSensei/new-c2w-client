@@ -22,6 +22,10 @@ export const sidebarItems = [
         title: "Size",
         link: "/size",
       },
+      {
+        title: "Category",
+        link: "/category",
+      },
     ],
   },
   {
