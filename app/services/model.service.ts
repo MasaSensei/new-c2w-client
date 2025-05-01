@@ -12,12 +12,14 @@ export const ModelsService = {
 
   async create(data: Model) {
     return axios.post(`${API_URL}/models`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
 
   async update(id: number, data: Model) {
     return axios.put(`${API_URL}/models/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

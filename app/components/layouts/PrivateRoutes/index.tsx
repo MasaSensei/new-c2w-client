@@ -10,12 +10,12 @@ export function PrivateRoute({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await AuthService.checkAuth();
-        console.log(res);
-        // if (!res.ok) {
-        //   navigate("/login", { replace: true });
-        // }
+        const response = await AuthService.checkAuth();
+        if (!response) {
+          navigate("/login", { replace: true });
+        }
       } catch (err) {
+        console.error("Auth error:", err);
         navigate("/login", { replace: true });
       } finally {
         setChecking(false);
