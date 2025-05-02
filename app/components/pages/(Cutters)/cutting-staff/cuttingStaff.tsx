@@ -1,23 +1,32 @@
-import { XIcon } from "lucide-react";
+import { Pen, Trash2, XIcon } from "lucide-react";
 import { useState } from "react";
 import { Cores } from "~/components/core";
+import { Button } from "~/components/ui/button";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
+import { Separator } from "~/components/ui/separator";
 import { useWorkerForm, useWorkerAction } from "~/hooks/useWorker";
 import { formatCurrency } from "~/utils/currency";
 
 const CuttingStaffPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data, isLoading, setIsLoading, fetchData } = useWorkerAction({
-    type: "cutters",
-  });
-  const { form, fields, onSubmit } = useWorkerForm(
-    setIsLoading,
-    fetchData,
-    "cutters",
-    data
-  );
+  const { data, isLoading, setIsLoading, fetchData, materialData } =
+    useWorkerAction({
+      type: "cutters",
+    });
+  const {
+    form,
+    fields,
+    onSubmit,
+    workerMaterialPricesFields,
+    workerMaterialPricesForm,
+    addToTable,
+    handleDeleteItem,
+    handleEdit,
+    workerPricesOnSubmit,
+    workers,
+  } = useWorkerForm(setIsLoading, fetchData, "cutters", data, materialData);
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -73,15 +82,15 @@ const CuttingStaffPage = () => {
             }
             content={
               <div className="grid lg:grid-cols-12 gap-4">
-                {/* <Form {...formStaging}>
+                <Form {...workerMaterialPricesForm}>
                   <>
                     <div className="col-span-4 bg-slate-100 p-4 rounded-lg">
                       <Fragments.Form
-                        fields={fieldsStaging}
-                        control={formStaging.control}
-                        rowClassName="grid grid-cols-3 gap-4"
+                        fields={workerMaterialPricesFields}
+                        control={workerMaterialPricesForm.control}
+                        rowClassName="grid grid-cols-2 gap-4"
                         className="flex gap-5"
-                        columnClassName={`first:col-span-3 nth-2:col-span-3 last:col-span-3 ${
+                        columnClassName={`nth-3:col-span-2 last:col-span-2 ${
                           fields
                             .map((field) => field.name)
                             .filter((col) => col === "remarks")[0]
@@ -94,7 +103,7 @@ const CuttingStaffPage = () => {
                             <Button
                               className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                               onClick={() =>
-                                addToTabel(formStaging.getValues())
+                                addToTable(workerMaterialPricesForm.getValues())
                               }
                               type="button"
                             >
@@ -118,21 +127,20 @@ const CuttingStaffPage = () => {
                           "Remarks",
                         ]}
                         bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
-                        bodies={stagingCuttingInventory.map((item) => [
-                          item.rolls,
-                          item.materialName,
-                          item.yards,
-                          item.status,
+                        bodies={workers.map((item) => [
+                          item.id_category,
+                          item.id_worker_detail,
+                          item.price,
                           item.remarks || "-",
                         ])}
                         action={(idx) => (
                           <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                             <Pen
-                              onClick={() => handleEditStaging(idx)}
+                              onClick={() => handleEdit(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                             <Trash2
-                              onClick={() => handleDeleteStaging(idx)}
+                              onClick={() => handleDeleteItem(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                           </div>
@@ -154,7 +162,7 @@ const CuttingStaffPage = () => {
                         type="submit"
                         onClick={() => {
                           closeModal();
-                          onSubmitStaging();
+                          workerPricesOnSubmit();
                         }}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                       >
@@ -162,7 +170,7 @@ const CuttingStaffPage = () => {
                       </Button>
                     </div>
                   </>
-                </Form> */}
+                </Form>
               </div>
             }
           />
