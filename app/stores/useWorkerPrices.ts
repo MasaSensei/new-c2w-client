@@ -2,8 +2,8 @@ import { create } from "zustand";
 
 type WorkerPrices = {
   id: number;
-  id_worker_detail: number;
-  id_category: number;
+  id_worker: number;
+  id_material: number;
   price: number;
   remarks: string;
 };
@@ -33,9 +33,7 @@ export const useWorkerPricesStore = create<WorkerPricesStore>((set) => ({
     })),
   deleteWorkerPrices: (id: number) =>
     set((state) => ({
-      workerPrices: state.workerPrices.filter(
-        (workerPrice) => workerPrice.id !== id
-      ),
+      workerPrices: state.workerPrices.filter((_, index) => index !== id),
     })),
   resetWorkerPrices: () => set({ workerPrices: [] }),
 }));

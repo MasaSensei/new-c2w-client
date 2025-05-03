@@ -147,7 +147,8 @@ export const useWorkerForm = (
   };
 
   const handleEdit = (index: number) => {
-    const item = materialData[index];
+    const item = workerPrices[index];
+    console.log(item);
     if (!item) return;
     setEditIndex(index);
     workerMaterialPricesForm.setValue("id_material", String(item.id_material));
@@ -156,9 +157,9 @@ export const useWorkerForm = (
     workerMaterialPricesForm.setValue("remarks", item.remarks || "");
   };
 
-  const handleDeleteItem = async (id: number) => {
+  const handleDeleteItem = (id: number) => {
     try {
-      await deleteWorkerPrices(id);
+      deleteWorkerPrices(id);
     } catch (error) {
       console.error("Delete error:", error);
     }
@@ -168,25 +169,44 @@ export const useWorkerForm = (
     try {
       setIsLoading(true);
       const payload = workerPrices.flatMap((item) => ({
-        id_worker_detail: Number(item.id_worker_detail),
-        id_category: Number(item.id_category),
-        price: Number(item.price),
+        id_worker_detail: Number(item.id_material),
+        id_category: Number(item.id_material),
+        price: item.price.toString(),
         remarks: item.remarks || "-",
       }));
+      console.log(payload);
       await WorkerPriceService.create(payload);
-      resetWorkerPrices();
-      fetchData();
+      // resetWorkerPrices();
+      // fetchData();
     } catch (error) {
       console.error("Submit error:", error);
     } finally {
       setIsLoading(false);
+      resetWorkerPrices();
+      setEditIndex(null);
     }
+  };
+
+  const getWorkerName = (id: number) => {
+    const worker = data.find((worker) => worker.id === Number(id));
+    return worker ? worker.name : "";
+  };
+
+  const getMaterialName = (id: number) => {
+    const material = materialData.find(
+      (material) => material.id === Number(id)
+    );
+    return material ? material.category : "";
   };
 
   const workers = workerPrices.map((item, index) => ({
     ...item,
     id: index,
+    material: getMaterialName(item.id_material),
+    worker: getWorkerName(item.id_worker),
   }));
+
+  console.log(workers);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {

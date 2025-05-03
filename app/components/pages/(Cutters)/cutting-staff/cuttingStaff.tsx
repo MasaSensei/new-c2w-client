@@ -128,8 +128,8 @@ const CuttingStaffPage = () => {
                         ]}
                         bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
                         bodies={workers.map((item) => [
-                          item.id_category,
-                          item.id_worker_detail,
+                          item.material,
+                          item.worker,
                           item.price,
                           item.remarks || "-",
                         ])}
@@ -188,6 +188,21 @@ const CuttingStaffPage = () => {
             item.address,
           ])}
           action={() => null}
+          details={(idx) => (
+            <Cores.Table
+              className="w-full bg-slate-100 overflow-x-auto"
+              headers={["Category", "Price"]}
+              bodies={
+                data[idx]?.WorkerDetail?.flatMap(
+                  (item) =>
+                    item?.WorkerPrice?.map((item) => [
+                      item.Category?.category,
+                      formatCurrency(item.price) || 0,
+                    ]) ?? []
+                ) || []
+              }
+            />
+          )}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

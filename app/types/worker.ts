@@ -1,8 +1,15 @@
+import type { Category } from "./category";
+
 export type WorkerType = {
   id?: number;
   type: string;
   remarks: string;
   is_active?: boolean;
+};
+
+export type WorkerPrice = {
+  Category?: Category;
+  price: number;
 };
 
 export type Worker = {
@@ -23,6 +30,7 @@ export type WorkerDetail = {
   Worker?: Worker;
   id_worker_type: number;
   WorkerType?: WorkerType;
+  WorkerPrice?: WorkerPrice[];
   minimum_cost: number;
   remarks?: string;
   is_active?: boolean;

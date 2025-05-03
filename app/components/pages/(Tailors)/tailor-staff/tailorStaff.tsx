@@ -6,13 +6,16 @@ import { formatCurrency } from "~/utils/currency";
 import { Form } from "~/components/ui/form";
 
 const TailorStaffPage = () => {
-  const { data, isLoading, setIsLoading, fetchData } = useWorkerAction({
-    type: "tailors",
-  });
+  const { data, isLoading, setIsLoading, fetchData, materialData } =
+    useWorkerAction({
+      type: "tailors",
+    });
   const { form, fields, onSubmit } = useWorkerForm(
     setIsLoading,
     fetchData,
-    "tailors"
+    "tailors",
+    data,
+    materialData
   );
 
   return (
