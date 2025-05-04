@@ -31,6 +31,7 @@ const StagingCuttingInventoryPage = () => {
     addToTable,
     cuttingProgress,
     handleDeleteItem,
+    cancel,
     handleEdit,
     onSubmit,
   } = useCuttingProgressForm(
@@ -39,6 +40,8 @@ const StagingCuttingInventoryPage = () => {
     workers,
     materials
   );
+
+  const closeModal = () => setIsModalOpen(false);
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
@@ -76,7 +79,7 @@ const StagingCuttingInventoryPage = () => {
                         fields={fields}
                         control={form.control}
                         rowClassName="grid grid-cols-2 gap-4"
-                        columnClassName="last:col-span-2 nth-3:col-span-2 nth-4:col-span-2"
+                        columnClassName="last:col-span-2  nth-5:col-span-2"
                         className="flex gap-5"
                         additional={
                           <>
@@ -122,20 +125,20 @@ const StagingCuttingInventoryPage = () => {
                       />
                     </div>
                     <div className="col-span-12 text-center">
-                      {/* <Button
+                      <Button
                         type="button"
                         onClick={() => {
-                          // cancelForm();
+                          cancel();
                           closeModal();
                         }}
                         className="bg-transparent me-2 hover:bg-slate-900 border border-slate-700 transition duration-300 ease-in-out cursor-pointer mx-auto text-slate-700 hover:text-white text-sm"
                       >
                         Cancel
-                      </Button> */}
+                      </Button>
                       <Button
                         type="submit"
                         onClick={() => {
-                          // closeModal();
+                          closeModal();
                           onSubmit();
                         }}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"

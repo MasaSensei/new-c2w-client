@@ -25,6 +25,7 @@ interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   footer?: React.ReactNode;
   details?: (idx: number) => React.ReactNode;
   isLoading?: boolean;
+  columnWidths?: string[];
 }
 
 const Table: React.FC<TableProps> = ({
@@ -105,7 +106,8 @@ const Table: React.FC<TableProps> = ({
                   <TableCell
                     className={cn(
                       props.bodiesClassName,
-                      "px-5 whitespace-nowrap max-w-[150px] "
+                      props.columnWidths?.[cellIdx] ?? "w-40",
+                      "px-5 whitespace-nowrap overflow-hidden text-ellipsis "
                     )}
                     key={cellIdx}
                   >

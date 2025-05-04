@@ -6,13 +6,16 @@ export type Material = {
   materials: string;
   material?: string;
   rolls: number;
+  rolls_used: number;
   yards: number | string;
+  yards_used: number;
   is_active: boolean;
   status?: string;
 };
 
 export type CuttingProgress = {
   date: string;
+  end_date: string;
   id_worker: number;
   Worker: Worker;
   invoice: string;

@@ -9,14 +9,15 @@ const CuttingProgressPage = () => {
     useCuttingProgressAction();
   return (
     <Layouts.MainLayouts>
-      <Fragments.HeaderWithAction title="Cutting Progress" />
+      <Fragments.HeaderWithAction button={null} title="Cutting Progress" />
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
           isLoading={isLoading}
-          headers={["Date", "Invoice", "Cutters", "Total Items"]}
+          headers={["Date", "End Date", "Invoice", "Cutters", "Total Items"]}
           bodies={data?.map((item) => [
             formatDate(item.date),
+            formatDate(item.end_date),
             item.invoice,
             item.Worker.name,
             (item.CuttingProgressMaterial || []).length,
@@ -27,8 +28,22 @@ const CuttingProgressPage = () => {
               headers={["Material", "Rolls", "Yards", "Status"]}
               bodies={data[idx]?.CuttingProgressMaterial.map((item) => [
                 item.material,
-                item.rolls,
-                item.yards,
+                <div className="flex flex-col justify-start items-start gap-2">
+                  <h1 className="text-sm">
+                    Left: <span className="font-bold">{item.rolls}</span>
+                  </h1>
+                  <h1 className="text-sm text-red-500">
+                    Used: <span className="font-bold">{item.rolls_used}</span>
+                  </h1>
+                </div>,
+                <div className="flex flex-col justify-start items-start gap-2">
+                  <h1 className="text-sm">
+                    Left: <span className="font-bold">{item.yards}</span>
+                  </h1>
+                  <h1 className="text-sm text-red-500">
+                    Used: <span className="font-bold">{item.yards_used}</span>
+                  </h1>
+                </div>,
                 item.status,
               ])}
             />

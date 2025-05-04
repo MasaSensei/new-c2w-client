@@ -87,6 +87,10 @@ export const sidebarItems = [
         title: "Cutting Progress",
         link: "/cutting-progress",
       },
+      {
+        title: "Cutting Inventory",
+        link: "/cutting-inventory",
+      },
     ],
   },
   {

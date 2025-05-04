@@ -12,6 +12,7 @@ export const CuttingProgressService = {
 
   async create(data: CuttingProgress) {
     return axios.post(`${API_URL}/cutting-progress`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

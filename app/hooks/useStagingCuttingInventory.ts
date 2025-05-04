@@ -47,6 +47,8 @@ export const useStagingCuttingInventoryForm = (
     (state) => state.stagingCuttingInventory
   );
 
+  console.log(rawMaterials);
+
   const fields = [
     {
       name: "input_date",
@@ -250,7 +252,6 @@ export const useStagingCuttingInventoryAction = () => {
       }
       setIsLoading(false);
       setData(responseData.data.data);
-      console.log(responseData.data.data);
       setRawMaterials(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);

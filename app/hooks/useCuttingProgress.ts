@@ -12,6 +12,7 @@ import type { CuttingProgress } from "~/types/cuttingProgress";
 
 const formSchema = z.object({
   date: z.date(),
+  end_date: z.date(),
   invoice_number: z.string().min(1, { message: "Invoice Number is required" }),
   id_worker: z.string().min(1, { message: "Worker is required" }),
   id_material: z.string().min(1, { message: "Material is required" }),
@@ -32,6 +33,7 @@ export const useCuttingProgressForm = (
     resolver: zodResolver(formSchema),
     defaultValues: {
       date: new Date(),
+      end_date: new Date(),
       invoice_number: "",
       id_worker: "",
       id_material: "",
@@ -40,6 +42,8 @@ export const useCuttingProgressForm = (
       remarks: "",
     },
   });
+
+  console.log(materials);
 
   const {
     addCuttingProgress,
@@ -54,23 +58,18 @@ export const useCuttingProgressForm = (
   const fields = [
     {
       name: "date",
-      label: "Date",
+      label: "start Date",
+      inputType: "date" as const,
+    },
+    {
+      name: "end_date",
+      label: "end Date",
       inputType: "date" as const,
     },
     {
       name: "invoice_number",
       label: "Invoice Number",
       inputType: "text" as const,
-    },
-    {
-      name: "id_material",
-      label: "Material",
-      placeholder: "Select Material",
-      inputType: "select" as const,
-      options: materials.map((material) => ({
-        value: String(material.id),
-        label: `${material?.PurchaseListDetail?.material} (${material?.PurchaseListDetail?.rolls}x${material?.PurchaseListDetail?.yards})`,
-      })) as { value: string; label: string }[],
     },
     {
       name: "id_worker",
@@ -81,6 +80,16 @@ export const useCuttingProgressForm = (
         value: String(worker.id),
         label: worker.name,
       })),
+    },
+    {
+      name: "id_material",
+      label: "Material",
+      placeholder: "Select Material",
+      inputType: "select" as const,
+      options: materials.map((material) => ({
+        value: String(material.id),
+        label: `${material?.PurchaseListDetail?.material} (${material?.rolls}x${material?.yards})`,
+      })) as { value: string; label: string }[],
     },
     {
       name: "rolls",
@@ -106,7 +115,7 @@ export const useCuttingProgressForm = (
       const material = materials.find((material) => material.id === selectedId);
 
       if (material) {
-        setMaxRolls(material.PurchaseListDetail?.rolls || 0);
+        setMaxRolls(material?.rolls || 0);
       } else {
         setMaxRolls(0);
       }
@@ -152,10 +161,11 @@ export const useCuttingProgressForm = (
     }
     form.reset({
       date: form.watch("date"),
-      invoice_number: form.watch("invoice_number"),
+      end_date: form.watch("end_date"),
       id_material: "",
       rolls: "",
       yards: "",
+      invoice_number: form.watch("invoice_number"),
       id_worker: form.watch("id_worker"),
       remarks: form.watch("remarks"),
     });
@@ -201,6 +211,7 @@ export const useCuttingProgressForm = (
       }));
       const payload = {
         date: form.getValues("date") as any,
+        end_date: form.getValues("end_date") as any,
         invoice: form.getValues("invoice_number"),
         id_worker: Number(form.getValues("id_worker")),
         materials: item,
@@ -219,13 +230,21 @@ export const useCuttingProgressForm = (
       await CuttingProgressService.create(payload as CuttingProgress);
       form.reset();
       resetCuttingProgress();
+      fetchData();
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const cancel = () => {
+    form.reset();
+    resetCuttingProgress();
+  };
+
   return {
     form,
+    cancel,
     fields,
     addToTable,
     cuttingProgress,
