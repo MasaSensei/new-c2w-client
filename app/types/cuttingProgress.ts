@@ -14,6 +14,7 @@ export type Material = {
 };
 
 export type CuttingProgress = {
+  id?: number;
   date: string;
   end_date: string;
   id_worker: number;

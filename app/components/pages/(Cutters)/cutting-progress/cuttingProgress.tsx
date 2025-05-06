@@ -1,12 +1,25 @@
+import { XIcon } from "lucide-react";
+import { useState } from "react";
 import { Cores } from "~/components/core";
+import Button from "~/components/core/Button";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
+import { Form } from "~/components/ui/form";
 import { useCuttingProgressAction } from "~/hooks/useCuttingProgress";
 import formatDate from "~/utils/formatDate";
+import { useMaterialToCuttingTableForm } from "~/hooks/useMaterialToCuttingTable";
 
 const CuttingProgressPage = () => {
+  const { form, fields } = useMaterialToCuttingTableForm();
   const { data, isLoading, setIsLoading, fetchData } =
     useCuttingProgressAction();
+  const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
+    undefined
+  );
+  const isModalOpen = selectedIndex !== null;
+  const closeModal = () => setSelectedIndex(undefined);
+  const selectedData = data?.find((item) => item.id === selectedIndex);
+
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction button={null} title="Cutting Progress" />
@@ -22,6 +35,14 @@ const CuttingProgressPage = () => {
             item.Worker.name,
             (item.CuttingProgressMaterial || []).length,
           ])}
+          action={(idx) => (
+            <Cores.Button
+              onClick={() => setSelectedIndex(data[idx]?.id)}
+              className="bg-lime-500 hover:bg-lime-600"
+            >
+              Selesai
+            </Cores.Button>
+          )}
           details={(idx) => (
             <Cores.Table
               className="w-full bg-slate-100 overflow-x-auto"
@@ -49,6 +70,79 @@ const CuttingProgressPage = () => {
             />
           )}
         />
+        {isModalOpen && selectedData && (
+          <Layouts.ExtendedPopup>
+            <Cores.Card
+              className="w-[1300px] h-[590px] overflow-y-scroll"
+              header={
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">
+                    Send Inventory Cutters - {selectedData.invoice}
+                  </h3>
+                  <Cores.Button
+                    className="bg-transparent shadow-none hover:bg-transparent"
+                    onClick={() => closeModal()}
+                  >
+                    <XIcon className="h-4 w-4 text-black" />
+                  </Cores.Button>
+                </div>
+              }
+              content={
+                <div className="grid lg:grid-cols-12 gap-4">
+                  <Form {...form}>
+                    <>
+                      <div className="col-span-4 bg-slate-200 p-4 rounded-lg">
+                        <Fragments.Form
+                          fields={fields}
+                          control={form.control}
+                          rowClassName="grid grid-cols-2 gap-4"
+                          columnClassName="first:col-span-2 nth-2:col-span-2"
+                          className="flex gap-5"
+                          // additional={
+                          //   <>
+                          //     <Separator />
+                          //     <Button
+                          //       className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
+                          //       onClick={() => {
+                          //         addToTable(form.getValues());
+                          //       }}
+                          //       type="button"
+                          //     >
+                          //       Add Item
+                          //     </Button>
+                          //   </>
+                          // }
+                        />
+                      </div>
+                      <div className="col-span-8">
+                        <h1 className="text-lg font-semibold -mt-10 mb-2.5">
+                          Items:
+                        </h1>
+                        <Cores.Table
+                          headersClassName="text-xs text-center"
+                          headers={["Material", "Rolls", "Yards"]}
+                          bodiesClassName="text-xs w-full text-center"
+                          bodies={[]}
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="col-span-12 text-center">
+                        <Button
+                          className="bg-lime-500 hover:bg-lime-600"
+                          onClick={() => {
+                            closeModal();
+                          }}
+                        >
+                          Close
+                        </Button>
+                      </div>
+                    </>
+                  </Form>
+                </div>
+              }
+            />
+          </Layouts.ExtendedPopup>
+        )}
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>
   );
