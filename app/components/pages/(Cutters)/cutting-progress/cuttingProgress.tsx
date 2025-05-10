@@ -20,7 +20,7 @@ const CuttingProgressPage = () => {
   const closeModal = () => setSelectedIndex(undefined);
   const selectedData = data?.find((item) => item.id === selectedIndex);
   console.log(selectedData);
-  const { form, fields, addToTabel, materialToCuttingTable } =
+  const { form, fields, addToTabel, materialToCuttingTable, onSubmit } =
     useMaterialToCuttingTableForm(selectedData?.CuttingProgressMaterial);
 
   return (
@@ -142,6 +142,14 @@ const CuttingProgressPage = () => {
                           }}
                         >
                           Close
+                        </Button>
+                        <Button
+                          className="bg-lime-500 hover:bg-lime-600"
+                          onClick={() => {
+                            onSubmit();
+                          }}
+                        >
+                          Save
                         </Button>
                       </div>
                     </>

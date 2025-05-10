@@ -4,6 +4,7 @@ import * as z from "zod";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useMaterialInventoryStore } from "~/stores/useMaterialToCuttingTable";
+import { CuttersInventoryService } from "~/services/cuttersInventory.service";
 
 const formSchema = z.object({
   date: z.date(),
@@ -111,13 +112,13 @@ export const useMaterialToCuttingTableForm = (materials: any) => {
     } else {
       addItem(payload);
     }
-    // form.reset({
-    //   date: new Date(),
-    //   material: "",
-    //   rolls: "",
-    //   yard: "",
-    // });
-    // setEditIndex(null);
+    form.reset({
+      date: new Date(),
+      material: "",
+      rolls: "",
+      yard: "",
+    });
+    setEditIndex(null);
   };
 
   const handleEdit = (index: number) => {
@@ -138,17 +139,23 @@ export const useMaterialToCuttingTableForm = (materials: any) => {
     }
   };
 
+  const cancel = () => {
+    form.reset();
+    resetItems();
+  };
+
   const onSubmit = async () => {
     try {
       const item: any = materialToCuttingTableItem.map((item) => ({
-        date: new Date(item.date).toISOString(),
-        material: Number(item.material),
+        date: new Date(item.date),
+        id_cutting_progress_material: Number(item.material),
         rolls: Number(item.rolls),
         yards: Number(item.yard),
       }));
-      const payload = {
+      const payload: any = {
         items: item,
       };
+      await CuttersInventoryService.create(payload.items);
     } catch (error) {
       console.error("Submit error:", error);
     }
@@ -160,6 +167,7 @@ export const useMaterialToCuttingTableForm = (materials: any) => {
     addToTabel,
     editIndex,
     setEditIndex,
+    cancel,
     handleEdit,
     handleDeleteItem,
     onSubmit,
