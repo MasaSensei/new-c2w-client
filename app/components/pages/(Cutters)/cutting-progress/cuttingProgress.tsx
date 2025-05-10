@@ -1,16 +1,16 @@
 import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { Cores } from "~/components/core";
-import Button from "~/components/core/Button";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
 import { useCuttingProgressAction } from "~/hooks/useCuttingProgress";
 import formatDate from "~/utils/formatDate";
 import { useMaterialToCuttingTableForm } from "~/hooks/useMaterialToCuttingTable";
+import { Separator } from "~/components/ui/separator";
+import { Button } from "~/components/ui/button";
 
 const CuttingProgressPage = () => {
-  const { form, fields } = useMaterialToCuttingTableForm();
   const { data, isLoading, setIsLoading, fetchData } =
     useCuttingProgressAction();
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
@@ -19,6 +19,9 @@ const CuttingProgressPage = () => {
   const isModalOpen = selectedIndex !== null;
   const closeModal = () => setSelectedIndex(undefined);
   const selectedData = data?.find((item) => item.id === selectedIndex);
+  console.log(selectedData);
+  const { form, fields, addToTabel, materialToCuttingTable } =
+    useMaterialToCuttingTableForm(selectedData?.CuttingProgressMaterial);
 
   return (
     <Layouts.MainLayouts>
@@ -98,20 +101,21 @@ const CuttingProgressPage = () => {
                           rowClassName="grid grid-cols-2 gap-4"
                           columnClassName="first:col-span-2 nth-2:col-span-2"
                           className="flex gap-5"
-                          // additional={
-                          //   <>
-                          //     <Separator />
-                          //     <Button
-                          //       className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                          //       onClick={() => {
-                          //         addToTable(form.getValues());
-                          //       }}
-                          //       type="button"
-                          //     >
-                          //       Add Item
-                          //     </Button>
-                          //   </>
-                          // }
+                          additional={
+                            <>
+                              <Separator />
+                              <Button
+                                className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  addToTabel(form.getValues());
+                                }}
+                                type="button"
+                              >
+                                Add Item
+                              </Button>
+                            </>
+                          }
                         />
                       </div>
                       <div className="col-span-8">
@@ -122,7 +126,11 @@ const CuttingProgressPage = () => {
                           headersClassName="text-xs text-center"
                           headers={["Material", "Rolls", "Yards"]}
                           bodiesClassName="text-xs w-full text-center"
-                          bodies={[]}
+                          bodies={materialToCuttingTable.map((item) => [
+                            item.material,
+                            item.rolls,
+                            item.yard,
+                          ])}
                           className="w-full"
                         />
                       </div>

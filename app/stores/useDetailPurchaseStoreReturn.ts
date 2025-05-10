@@ -23,10 +23,9 @@ interface ReturnStore {
 export const useDetailPurchaseStoreReturn = create<ReturnStore>((set) => ({
   items: [],
   addItem: (item) => {
-    console.log(item),
-      set((state) => ({
-        items: [...state.items, item],
-      }));
+    set((state) => ({
+      items: [...state.items, item],
+    }));
   },
   updateItem: (index, item) =>
     set((state) => ({

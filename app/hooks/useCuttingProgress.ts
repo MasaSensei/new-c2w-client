@@ -43,8 +43,6 @@ export const useCuttingProgressForm = (
     },
   });
 
-  console.log(materials);
-
   const {
     addCuttingProgress,
     updateCuttingProgress,
@@ -226,7 +224,6 @@ export const useCuttingProgressForm = (
         alert("Please fill out all required fields.");
         return;
       }
-      console.log(payload);
       await CuttingProgressService.create(payload as CuttingProgress);
       form.reset();
       resetCuttingProgress();
