@@ -1,3 +1,5 @@
+import { title } from "process";
+
 export const sidebarItems = [
   {
     title: "Master Data",
@@ -59,6 +61,19 @@ export const sidebarItems = [
     ],
   },
   {
+    title: "Cutting Inventory",
+    menus: [
+      {
+        title: "Cutting Inventory",
+        link: "/cutting-inventory",
+      },
+      {
+        title: "Staging Tailor Inventory",
+        link: "/staging-tailor-inventory",
+      },
+    ],
+  },
+  {
     title: "Order Management",
     menus: [
       {
@@ -88,8 +103,8 @@ export const sidebarItems = [
         link: "/cutting-progress",
       },
       {
-        title: "Cutting Inventory",
-        link: "/cutting-inventory",
+        title: "Cutters Inventory",
+        link: "/cutters-inventory",
       },
     ],
   },

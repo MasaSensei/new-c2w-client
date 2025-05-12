@@ -175,3 +175,31 @@ export const useMaterialToCuttingTableForm = (materials: any) => {
     resetItems,
   };
 };
+
+export const useCuttersInventoryAction = () => {
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await CuttersInventoryService.getAll();
+      if (!response.data.data) {
+        setIsLoading(false);
+        setData([]);
+      }
+      setIsLoading(false);
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return { data, fetchData, isLoading, setIsLoading };
+};

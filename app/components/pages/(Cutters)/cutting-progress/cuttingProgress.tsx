@@ -6,7 +6,7 @@ import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
 import { useCuttingProgressAction } from "~/hooks/useCuttingProgress";
 import formatDate from "~/utils/formatDate";
-import { useMaterialToCuttingTableForm } from "~/hooks/useMaterialToCuttingTable";
+import { useMaterialToCuttingTableForm } from "~/hooks/useCuttersInventory";
 import { Separator } from "~/components/ui/separator";
 import { Button } from "~/components/ui/button";
 

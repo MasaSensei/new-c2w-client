@@ -47,8 +47,6 @@ export const useStagingCuttingInventoryForm = (
     (state) => state.stagingCuttingInventory
   );
 
-  console.log(rawMaterials);
-
   const fields = [
     {
       name: "input_date",

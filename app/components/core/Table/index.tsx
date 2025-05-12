@@ -107,7 +107,7 @@ const Table: React.FC<TableProps> = ({
                     className={cn(
                       props.bodiesClassName,
                       props.columnWidths?.[cellIdx] ?? "w-40",
-                      "px-5 whitespace-nowrap overflow-hidden text-ellipsis "
+                      "px-5 whitespace-nowrap"
                     )}
                     key={cellIdx}
                   >
