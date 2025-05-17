@@ -107,14 +107,14 @@ export const useStagingCuttingInventoryForm = (
       updateStagingCuttingInventory(editIndex, payload);
     } else {
       addStagingCuttingInventory(payload);
-      form.reset({
-        id_raw_material: "",
-        rolls: "",
-        yards: "",
-        status: "",
-        remarks: "",
-      });
     }
+    form.reset({
+      id_raw_material: "",
+      rolls: "",
+      yards: "",
+      status: "",
+      remarks: "",
+    });
   };
 
   const handleEdit = (index: number) => {

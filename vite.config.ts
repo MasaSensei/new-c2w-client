@@ -16,7 +16,7 @@ export default defineConfig({
       origin: [
         "towewew18.online",
         "konveksi-dev.towewew18.online",
-        "localhost",
+        "http://localhost:3002",
       ],
       credentials: true,
     },
