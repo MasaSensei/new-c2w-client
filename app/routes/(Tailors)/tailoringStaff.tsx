@@ -1,11 +1,11 @@
 import { Layouts } from "~/components/layouts";
 import type { Route } from "../+types/home";
-import TailorStaffPage from "~/components/pages/(Tailors)/tailor-staff/tailorStaff";
+import TailoringStaffPage from "~/components/pages/(Tailors)/tailoring-staff/tailoringStaff";
 
 export default function TailorStaff() {
   return (
     <Layouts.PrivateRoute>
-      <TailorStaffPage />
+      <TailoringStaffPage />
     </Layouts.PrivateRoute>
   );
 }

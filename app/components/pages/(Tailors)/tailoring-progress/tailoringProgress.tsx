@@ -2,7 +2,7 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 
-const TailorProgressPage = () => {
+const TailoringProgressPage = () => {
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction title="Tailor Progress" />
@@ -17,4 +17,4 @@ const TailorProgressPage = () => {
   );
 };
 
-export default TailorProgressPage;
+export default TailoringProgressPage;

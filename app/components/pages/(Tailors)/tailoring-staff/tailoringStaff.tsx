@@ -5,7 +5,7 @@ import { useWorkerForm, useWorkerAction } from "~/hooks/useWorker";
 import { formatCurrency } from "~/utils/currency";
 import { Form } from "~/components/ui/form";
 
-const TailorStaffPage = () => {
+const TailoringStaffPage = () => {
   const { data, isLoading, setIsLoading, fetchData, materialData } =
     useWorkerAction({
       type: "tailors",
@@ -61,4 +61,4 @@ const TailorStaffPage = () => {
   );
 };
 
-export default TailorStaffPage;
+export default TailoringStaffPage;

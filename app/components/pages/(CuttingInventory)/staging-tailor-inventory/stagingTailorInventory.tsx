@@ -4,7 +4,6 @@ import { Button } from "~/components/ui/button";
 import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
-import { useStagingCuttingInventoryAction } from "~/hooks/useStagingCuttingInventory";
 import formatDate from "~/utils/formatDate";
 import { useState } from "react";
 import { Pen, Trash2, XIcon } from "lucide-react";
@@ -16,23 +15,23 @@ const StagingTailorInventoryPage = () => {
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
-        title="Staging Cutting Inventory"
-        // button={
-        //   <Cores.Button
-        //     onClick={() => setIsModalOpen(true)}
-        //     className="bg-lime-500 hover:bg-lime-600"
-        //   >
-        //     Send to Cutters
-        //   </Cores.Button>
-        // }
+        title="Staging Tailors Inventory"
+        button={
+          <Cores.Button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-lime-500 hover:bg-lime-600"
+          >
+            Send to Tailors
+          </Cores.Button>
+        }
       />
-      {/* {isModalOpen && (
+      {isModalOpen && (
         <Layouts.ExtendedPopup>
           <Cores.Card
             className="w-[1300px] h-[590px] overflow-y-scroll"
             header={
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold">Send to Cutting</h3>
+                <h3 className="font-semibold">Send to Tailors</h3>
                 <Cores.Button
                   className="bg-transparent shadow-none hover:bg-transparent"
                   onClick={() => setIsModalOpen(false)}
@@ -43,7 +42,7 @@ const StagingTailorInventoryPage = () => {
             }
             content={
               <div className="grid lg:grid-cols-12 gap-4">
-                <Form {...form}>
+                {/* <Form {...form}>
                   <>
                     <div className="col-span-4 bg-slate-200 p-4 rounded-lg">
                       <Fragments.Form
@@ -118,12 +117,12 @@ const StagingTailorInventoryPage = () => {
                       </Button>
                     </div>
                   </>
-                </Form>
+                </Form> */}
               </div>
             }
           />
         </Layouts.ExtendedPopup>
-      )} */}
+      )}
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
@@ -131,7 +130,7 @@ const StagingTailorInventoryPage = () => {
           headers={["Date", "Material", "Rolls", "Yards", "Status", "Remarks"]}
           bodies={data.map((item, idx) => [
             formatDate(item.input_date),
-            item.PurchaseListDetail?.material,
+            item.CuttingInventoryDetail?.CuttingInventory?.item,
             item.rolls,
             item.yards,
             item.status,

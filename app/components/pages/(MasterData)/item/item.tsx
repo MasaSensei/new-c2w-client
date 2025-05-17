@@ -2,7 +2,7 @@ import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
-import { useItemForm, useItemAction } from "~/hooks/useItem";
+import { useItemForm, useItemAction } from "../../../../hooks/useItem";
 
 const ItemPage = () => {
   const { data, fetchData, isLoading, setIsLoading } = useItemAction();

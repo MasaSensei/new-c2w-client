@@ -28,8 +28,11 @@ const simpleRoutes = [
   { path: "cutting-staff", file: "routes/(Cutters)/cuttingStaff.tsx" },
   { path: "cutting-progress", file: "routes/(Cutters)/cuttingProgress.tsx" },
   { path: "cutters-inventory", file: "routes/(Cutters)/cuttersInventory.tsx" },
-  { path: "tailor-staff", file: "routes/(Tailors)/tailorStaff.tsx" },
-  { path: "tailor-progress", file: "routes/(Tailors)/tailorProgress.tsx" },
+  { path: "tailoring-staff", file: "routes/(Tailors)/tailoringStaff.tsx" },
+  {
+    path: "tailoring-progress",
+    file: "routes/(Tailors)/tailoringProgress.tsx",
+  },
   { path: "login", file: "routes/(Auth)/login.tsx" },
   { path: "category", file: "routes/(MasterData)/category.tsx" },
   { path: "register", file: "routes/(Auth)/register.tsx" },

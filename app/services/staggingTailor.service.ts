@@ -3,15 +3,8 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const StaggingTailorService = {
-  async getAll(status?: string[]) {
-    const params: any = {};
-
-    if (status && status.length > 0) {
-      params.status = status.join(",");
-    }
-
+  async getAll() {
     return axios.get(`${API_URL}/stagging-to-tailors`, {
-      params,
       withCredentials: true,
     });
   },

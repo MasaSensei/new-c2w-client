@@ -72,6 +72,19 @@ export const sidebarItems = [
     ],
   },
   {
+    title: "Tailoring Inventory",
+    menus: [
+      {
+        title: "Tailoring Inventory",
+        link: "/tailoring-inventory",
+      },
+      {
+        title: "Staging Sewing Inventory",
+        link: "/staging-sewing-inventory",
+      },
+    ],
+  },
+  {
     title: "Order Management",
     menus: [
       {
@@ -111,11 +124,15 @@ export const sidebarItems = [
     menus: [
       {
         title: "Tailor Staff",
-        link: "/tailor-staff",
+        link: "/tailoring-staff",
       },
       {
         title: "Tailor Progress",
-        link: "/tailor-progress",
+        link: "/tailoring-progress",
+      },
+      {
+        title: "Tailors Inventory",
+        link: "/tailors-inventory",
       },
     ],
   },

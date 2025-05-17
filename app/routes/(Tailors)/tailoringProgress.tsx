@@ -1,10 +1,9 @@
 import { Layouts } from "~/components/layouts";
-import TailorProgressPage from "~/components/pages/(Tailors)/tailor-progress/tailorProgress";
-
+import TailoringProgressPage from "~/components/pages/(Tailors)/tailoring-progress/tailoringProgress";
 export default function TailorProgress() {
   return (
     <Layouts.PrivateRoute>
-      <TailorProgressPage />
+      <TailoringProgressPage />
     </Layouts.PrivateRoute>
   );
 }
