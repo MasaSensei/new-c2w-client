@@ -8,9 +8,21 @@ import formatDate from "~/utils/formatDate";
 import { useState } from "react";
 import { Pen, Trash2, XIcon } from "lucide-react";
 import { useStaggingTailorsInventoryAction } from "~/hooks/useStagingTailorsInventory";
+import {
+  useTailoringProgressAction,
+  useTailoringProgressForm,
+} from "~/hooks/useTailoringProgress";
 
 const StagingTailorInventoryPage = () => {
   const { data, isLoading, setIsLoading } = useStaggingTailorsInventoryAction();
+  const { workers, materials, fetchData } = useTailoringProgressAction();
+  const { form, fields } = useTailoringProgressForm(
+    fetchData,
+    setIsLoading,
+    workers,
+    materials
+  );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <Layouts.MainLayouts>
@@ -42,7 +54,7 @@ const StagingTailorInventoryPage = () => {
             }
             content={
               <div className="grid lg:grid-cols-12 gap-4">
-                {/* <Form {...form}>
+                <Form {...form}>
                   <>
                     <div className="col-span-4 bg-slate-200 p-4 rounded-lg">
                       <Fragments.Form
@@ -56,9 +68,9 @@ const StagingTailorInventoryPage = () => {
                             <Separator />
                             <Button
                               className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                              onClick={() => {
-                                addToTable(form.getValues());
-                              }}
+                              // onClick={() => {
+                              //   addToTable(form.getValues());
+                              // }}
                               type="button"
                             >
                               Add Item
@@ -75,19 +87,20 @@ const StagingTailorInventoryPage = () => {
                         headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
                         headers={["Total Roll", "Bahan", "Yards"]}
                         bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
-                        bodies={cuttingProgress.map((item) => [
-                          item.rolls,
-                          item.material,
-                          item.yards,
-                        ])}
+                        // bodies={cuttingProgress.map((item) => [
+                        //   item.rolls,
+                        //   item.material,
+                        //   item.yards,
+                        // ])}
+                        bodies={[]}
                         action={(idx) => (
                           <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                             <Pen
-                              onClick={() => handleEdit(idx)}
+                              // onClick={() => handleEdit(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                             <Trash2
-                              onClick={() => handleDeleteItem(idx)}
+                              // onClick={() => handleDeleteItem(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                           </div>
@@ -97,27 +110,27 @@ const StagingTailorInventoryPage = () => {
                     <div className="col-span-12 text-center">
                       <Button
                         type="button"
-                        onClick={() => {
-                          cancel();
-                          closeModal();
-                        }}
+                        // onClick={() => {
+                        //   cancel();
+                        //   closeModal();
+                        // }}
                         className="bg-transparent me-2 hover:bg-slate-900 border border-slate-700 transition duration-300 ease-in-out cursor-pointer mx-auto text-slate-700 hover:text-white text-sm"
                       >
                         Cancel
                       </Button>
                       <Button
                         type="submit"
-                        onClick={() => {
-                          closeModal();
-                          onSubmit();
-                        }}
+                        // onClick={() => {
+                        //   closeModal();
+                        //   onSubmit();
+                        // }}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                       >
                         Save
                       </Button>
                     </div>
                   </>
-                </Form> */}
+                </Form>
               </div>
             }
           />

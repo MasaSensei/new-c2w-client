@@ -17,14 +17,14 @@ const TailoringInventoryPage = () => {
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
-        title="Cutting Inventory"
+        title="Tailoring Inventory"
         button={
           <div className="flex gap-2 flex-nowrap items-center justify-center">
             <Cores.Button
               onClick={() => setIsModalOpen(true)}
               className="bg-slate-500 hover:bg-slate-600"
             >
-              Send to Tailor
+              Send to Accessories Workers
             </Cores.Button>
           </div>
         }

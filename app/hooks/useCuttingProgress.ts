@@ -261,7 +261,7 @@ export const useCuttingProgressAction = () => {
     try {
       setIsLoading(true);
       const response = await CuttingProgressService.getAll();
-      console.log(response);
+
       const responseWorker = await WorkersService.getAll({ type: "cutters" });
       const responseMaterials = await StaggingMaterialToCuttingService.getAll([
         "completed",

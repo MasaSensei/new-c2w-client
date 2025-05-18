@@ -69,6 +69,10 @@ export const sidebarItems = [
         title: "Staging Tailor Inventory",
         link: "/staging-tailor-inventory",
       },
+      {
+        title: "Outgoing Cutting History",
+        link: "/outgoing-cutting-history",
+      },
     ],
   },
   {

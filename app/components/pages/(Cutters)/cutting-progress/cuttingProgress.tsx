@@ -19,7 +19,7 @@ const CuttingProgressPage = () => {
   const isModalOpen = selectedIndex !== null;
   const closeModal = () => setSelectedIndex(undefined);
   const selectedData = data?.find((item) => item.id === selectedIndex);
-  console.log(selectedData);
+
   const { form, fields, addToTabel, materialToCuttingTable, onSubmit } =
     useMaterialToCuttingTableForm(selectedData?.CuttingProgressMaterial);
 

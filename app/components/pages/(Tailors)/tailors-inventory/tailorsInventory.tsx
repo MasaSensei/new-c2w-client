@@ -8,9 +8,11 @@ import { Pen, Trash2, XIcon } from "lucide-react";
 import { Form } from "~/components/ui/form";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { useTailoringInventoryForm } from "~/hooks/useTailoringInventory";
 
 const TailorsInventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { form, fields } = useTailoringInventoryForm();
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
@@ -43,7 +45,7 @@ const TailorsInventoryPage = () => {
             }
             content={
               <div className="grid lg:grid-cols-12 gap-4">
-                {/* <Form {...form}>
+                <Form {...form}>
                   <>
                     <div className="col-span-4 bg-slate-100 p-4 rounded-lg">
                       <Fragments.Form
@@ -63,7 +65,7 @@ const TailorsInventoryPage = () => {
                             <Separator className="my-2.5" />
                             <Button
                               className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                              onClick={() => addToTable(form.getValues())}
+                              // onClick={() => addToTable(form.getValues())}
                               type="button"
                             >
                               Add Item
@@ -80,20 +82,21 @@ const TailorsInventoryPage = () => {
                         headersClassName="text-xs nth-1:text-start nth-2:text-end text-center"
                         headers={["Bahan", "Rolls", "Yards", "Supplier"]}
                         bodiesClassName="text-xs nth-1:text-start nth-2:text-end text-center w-full"
-                        bodies={cuttingInventory?.map((item) => [
-                          item.materialName,
-                          item.rolls,
-                          item.yard,
-                          item.workerName,
-                        ])}
+                        // bodies={cuttingInventory?.map((item) => [
+                        //   item.materialName,
+                        //   item.rolls,
+                        //   item.yard,
+                        //   item.workerName,
+                        // ])}
+                        bodies={[]}
                         action={(idx) => (
                           <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                             <Pen
-                              onClick={() => handleEdit(idx)}
+                              // onClick={() => handleEdit(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                             <Trash2
-                              onClick={() => handleDelete(idx)}
+                              // onClick={() => handleDelete(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                           </div>
@@ -104,7 +107,7 @@ const TailorsInventoryPage = () => {
                       <Button
                         type="button"
                         onClick={() => {
-                          cancel();
+                          // cancel();
                           setIsModalOpen(false);
                         }}
                         className="bg-transparent me-2 hover:bg-slate-900 border border-slate-700 transition duration-300 ease-in-out cursor-pointer mx-auto text-slate-700 hover:text-white text-sm"
@@ -114,7 +117,7 @@ const TailorsInventoryPage = () => {
                       <Button
                         type="submit"
                         onClick={() => {
-                          onSubmit();
+                          // onSubmit();
                           setIsModalOpen(false);
                         }}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
@@ -123,7 +126,7 @@ const TailorsInventoryPage = () => {
                       </Button>
                     </div>
                   </>
-                </Form> */}
+                </Form>
               </div>
             }
           />
