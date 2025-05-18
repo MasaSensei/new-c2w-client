@@ -1,68 +1,32 @@
 import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
-import { useWorkerForm, useWorkerAction } from "~/hooks/useWorker";
-import { formatCurrency } from "~/utils/currency";
-import { Form } from "~/components/ui/form";
-import { useState } from "react";
-import { Button } from "~/components/ui/button";
+import formatDate from "~/utils/formatDate";
 import { Pen, Trash2, XIcon } from "lucide-react";
+import { Form } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
+import { Button } from "~/components/ui/button";
+import { useState } from "react";
 
-const TailoringStaffPage = () => {
+const TailoringInventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data, isLoading, setIsLoading, fetchData, materialData } =
-    useWorkerAction({
-      type: "tailors",
-    });
-  const {
-    form,
-    fields,
-    onSubmit,
-    workerMaterialPricesFields,
-    workerMaterialPricesForm,
-    addToTable,
-    handleDeleteItem,
-    handleEdit,
-    workerPricesOnSubmit,
-    workers,
-  } = useWorkerForm(setIsLoading, fetchData, "tailors", data, materialData);
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
-        title="Tailor Staff"
+        title="Cutting Inventory"
         button={
-          <Cores.Popup
-            title="Add Cutters"
-            button={
-              <div className="flex gap-2 flex-nowrap items-center justify-center">
-                <Cores.Button
-                  onClick={() => setIsModalOpen(true)}
-                  className="bg-slate-500 hover:bg-slate-600"
-                >
-                  Add Material Prices
-                </Cores.Button>
-                <Cores.Button className="bg-lime-500 hover:bg-lime-600">
-                  Add
-                </Cores.Button>
-              </div>
-            }
-            content={
-              <Form {...form}>
-                <Fragments.Form
-                  fields={fields}
-                  control={form.control}
-                  columnClassName="mb-5"
-                  className="flex flex-col gap-5"
-                  onSubmit={form.handleSubmit(onSubmit)}
-                />
-              </Form>
-            }
-          />
+          <div className="flex gap-2 flex-nowrap items-center justify-center">
+            <Cores.Button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-slate-500 hover:bg-slate-600"
+            >
+              Send to Tailor
+            </Cores.Button>
+          </div>
         }
       />
       {isModalOpen && (
@@ -82,15 +46,15 @@ const TailoringStaffPage = () => {
             }
             content={
               <div className="grid lg:grid-cols-12 gap-4">
-                <Form {...workerMaterialPricesForm}>
+                {/* <Form {...form}>
                   <>
                     <div className="col-span-4 bg-slate-100 p-4 rounded-lg">
                       <Fragments.Form
-                        fields={workerMaterialPricesFields}
-                        control={workerMaterialPricesForm.control}
-                        rowClassName="grid grid-cols-2 gap-4"
+                        fields={fields}
+                        control={form.control}
+                        rowClassName="grid grid-cols-3 gap-4"
                         className="flex gap-5"
-                        columnClassName={`nth-3:col-span-2 last:col-span-2 ${
+                        columnClassName={`first:col-span-3 nth-2:col-span-3 last:col-span-3 ${
                           fields
                             .map((field) => field.name)
                             .filter((col) => col === "remarks")[0]
@@ -102,9 +66,7 @@ const TailoringStaffPage = () => {
                             <Separator className="my-2.5" />
                             <Button
                               className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                              onClick={() =>
-                                addToTable(workerMaterialPricesForm.getValues())
-                              }
+                              onClick={() => addToTabel(form.getValues())}
                               type="button"
                             >
                               Add Item
@@ -127,10 +89,11 @@ const TailoringStaffPage = () => {
                           "Remarks",
                         ]}
                         bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
-                        bodies={workers.map((item) => [
-                          item.material,
-                          item.worker,
-                          item.price,
+                        bodies={staggingTailorInventory.map((item) => [
+                          item.rolls,
+                          item.materialName,
+                          item.yards,
+                          item.status,
                           item.remarks || "-",
                         ])}
                         action={(idx) => (
@@ -140,7 +103,7 @@ const TailoringStaffPage = () => {
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                             <Trash2
-                              onClick={() => handleDeleteItem(idx)}
+                              onClick={() => handleDelete(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                           </div>
@@ -151,7 +114,7 @@ const TailoringStaffPage = () => {
                       <Button
                         type="button"
                         onClick={() => {
-                          // cancelForm();
+                          cancelForm();
                           closeModal();
                         }}
                         className="bg-transparent me-2 hover:bg-slate-900 border border-slate-700 transition duration-300 ease-in-out cursor-pointer mx-auto text-slate-700 hover:text-white text-sm"
@@ -162,7 +125,7 @@ const TailoringStaffPage = () => {
                         type="submit"
                         onClick={() => {
                           closeModal();
-                          workerPricesOnSubmit();
+                          onSubmit();
                         }}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                       >
@@ -170,7 +133,7 @@ const TailoringStaffPage = () => {
                       </Button>
                     </div>
                   </>
-                </Form>
+                </Form> */}
               </div>
             }
           />
@@ -178,19 +141,27 @@ const TailoringStaffPage = () => {
       )}
       <Layouts.SectionLayouts>
         <Cores.Table
-          isLoading={isLoading}
           seachable
-          headers={["Name", "Minimum Cost", "Contact No", "Address"]}
-          bodies={data.map((item) => [
-            item.name,
-            formatCurrency(item?.WorkerDetail?.[0]?.minimum_cost || 0),
-            item.number,
-            item.address,
-          ])}
+          //   isLoading={isLoading}
+          headers={["Material", "Total Rolls", "Total Yards"]}
+          bodies={[]}
+          //   bodies={data?.map((item) => [item.item, item.rolls, item.yards])}
+          //   details={(idx) => (
+          //     <Cores.Table
+          //       headers={["Date", "Worker", "Rolls", "Yards"]}
+          //       bodies={data[idx].CuttingInventoryDetail.map((item: any) => [
+          //         formatDate(item.CuttersInventory.date),
+          //         item.CuttersInventory.CuttingProgressMaterial.CuttingProgress
+          //           .Worker.name,
+          //         item.rolls,
+          //         item.yards,
+          //       ])}
+          //     />
+          //   )}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>
   );
 };
 
-export default TailoringStaffPage;
+export default TailoringInventoryPage;

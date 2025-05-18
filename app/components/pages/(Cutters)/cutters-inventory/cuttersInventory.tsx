@@ -26,7 +26,7 @@ const CuttersInventoryPage = () => {
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
-        title="Cutting Inventory"
+        title="Cutters Inventory"
         button={
           <div className="flex gap-2 flex-nowrap items-center justify-center">
             <Cores.Button

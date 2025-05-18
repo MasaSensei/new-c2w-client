@@ -33,6 +33,10 @@ const simpleRoutes = [
     path: "tailoring-progress",
     file: "routes/(Tailors)/tailoringProgress.tsx",
   },
+  {
+    path: "tailors-inventory",
+    file: "routes/(Tailors)/tailorsInventory.tsx",
+  },
   { path: "login", file: "routes/(Auth)/login.tsx" },
   { path: "category", file: "routes/(MasterData)/category.tsx" },
   { path: "register", file: "routes/(Auth)/register.tsx" },
@@ -43,6 +47,18 @@ const simpleRoutes = [
   {
     path: "staging-tailor-inventory",
     file: "routes/(CuttingInventory)/stagingTailorInventory.tsx",
+  },
+  {
+    path: "outgoing-cutting-history",
+    file: "routes/(CuttingInventory)/outgoingCuttingHistory.tsx",
+  },
+  {
+    path: "tailoring-inventory",
+    file: "routes/(TailoringInventory)/tailoringInventory.tsx",
+  },
+  {
+    path: "outgoing-tailoring-history",
+    file: "routes/(TailoringInventory)/outgoingTailoringHistory.tsx",
   },
 ];
 

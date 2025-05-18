@@ -78,10 +78,6 @@ export const sidebarItems = [
         title: "Tailoring Inventory",
         link: "/tailoring-inventory",
       },
-      {
-        title: "Staging Sewing Inventory",
-        link: "/staging-sewing-inventory",
-      },
     ],
   },
   {
