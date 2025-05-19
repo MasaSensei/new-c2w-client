@@ -12,12 +12,14 @@ export const CustomersService = {
 
   async create(data: Customer) {
     return axios.post(`${API_URL}/customers`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
 
   async update(id: number, data: Customer) {
     return axios.put(`${API_URL}/customers/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

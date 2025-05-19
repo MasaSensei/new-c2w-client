@@ -12,12 +12,14 @@ export const ColorsService = {
 
   async create(data: Color) {
     return axios.post(`${API_URL}/colors`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
 
   async update(id: number, data: Color) {
     return axios.put(`${API_URL}/colors/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

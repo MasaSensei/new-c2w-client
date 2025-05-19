@@ -16,11 +16,13 @@ export const ItemsService = {
   },
   async create(data: Item) {
     return axios.post(`${API_URL}/items`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
   async update(id: number, data: Item) {
     return axios.put(`${API_URL}/items/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

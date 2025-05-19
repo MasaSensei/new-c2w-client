@@ -19,12 +19,14 @@ export const StaggingMaterialToCuttingService = {
 
   async create(data: StaggingMaterialToCutting[]) {
     return axios.post(`${API_URL}/stagging-material-to-cutters`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
 
   async update(id: number, data: StaggingMaterialToCutting) {
     return axios.put(`${API_URL}/stagging-material-to-cutters/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

@@ -22,6 +22,7 @@ export const WorkersService = {
 
   async create(data: Worker) {
     return axios.post(`${API_URL}/workers`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
