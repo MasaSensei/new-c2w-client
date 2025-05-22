@@ -19,6 +19,7 @@ export const CategoriesService = {
 
   async update(id: number, data: Category) {
     return axios.put(`${API_URL}/category/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

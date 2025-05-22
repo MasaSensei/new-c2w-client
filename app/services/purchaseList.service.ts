@@ -16,11 +16,13 @@ export const PurchaseListService = {
   },
   create(data: PurchaseList) {
     return axios.post(`${API_URL}/purchase-lists`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
   update(id: number, data: PurchaseList) {
     return axios.put(`${API_URL}/purchase-lists/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

@@ -16,11 +16,13 @@ export const PurchaseListDetailServiceReturn = {
   },
   create(data: PurchaseListDetail[]) {
     return axios.post(`${API_URL}/purchase-list-detail-returns`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
   update(id: number, data: PurchaseListDetail) {
     return axios.put(`${API_URL}/purchase-list-detail-returns/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

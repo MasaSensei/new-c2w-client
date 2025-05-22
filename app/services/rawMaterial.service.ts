@@ -16,11 +16,13 @@ export const RawMaterialService = {
   },
   async create(data: RawMaterial) {
     return axios.post(`${API_URL}/raw-materials`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
   async update(id: number, data: RawMaterial) {
     return axios.put(`${API_URL}/raw-materials/${id}`, data, {
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },
