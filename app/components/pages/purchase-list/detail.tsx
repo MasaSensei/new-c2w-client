@@ -307,6 +307,7 @@ const PurchaseListDetailPage = () => {
                             Items:
                           </h1>
                           <Cores.Table
+                            isTableAuto
                             headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
                             headers={[
                               "Total Roll",
@@ -431,6 +432,7 @@ const PurchaseListDetailPage = () => {
           <div className="mt-4">
             <h3 className="font-semibold">Item Purchased:</h3>
             <Cores.Table
+              isTableAuto
               isLoading={isLoading}
               headers={[
                 "Bahan",

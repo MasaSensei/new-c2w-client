@@ -51,6 +51,7 @@ const PurchaseListPage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
+          isTableAuto
           headers={[
             "Tanggal",
             "Supplier",

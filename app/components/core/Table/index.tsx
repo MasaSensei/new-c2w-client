@@ -25,6 +25,7 @@ interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   footer?: React.ReactNode;
   details?: (idx: number) => React.ReactNode;
   isLoading?: boolean;
+  isTableAuto?: boolean;
   columnWidths?: string[];
 }
 
@@ -51,10 +52,16 @@ const Table: React.FC<TableProps> = ({
     <ShadcnTable
       className={cn(
         props.className,
-        "max-w-full table-fixed border overflow-x-auto"
+        `max-w-full ${
+          props.isTableAuto ? "table-auto" : "table-fixed"
+        } border overflow-x-auto`
       )}
     >
-      <TableHeader className="bg-[#F6F7F9] text-[#758090]">
+      <TableHeader
+        className={`bg-[#F6F7F9] text-[#758090] ${
+          props.isTableAuto ? "table-auto" : "table-fixed"
+        }`}
+      >
         <TableRow>
           {headers.map((header, idx) => (
             <TableHead
@@ -115,7 +122,7 @@ const Table: React.FC<TableProps> = ({
                   </TableCell>
                 ))}
                 {(action || details) && (
-                  <TableCell className="justify-center flex gap-2">
+                  <TableCell className="justify-center flex gap-4 w-max">
                     {details && (
                       <button
                         onClick={() => toggleRow(idx)}
