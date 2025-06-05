@@ -6,10 +6,12 @@ import Card from "./Card";
 import CurrencyInput from "./CurrencyInput";
 import DatePicker from "./DatePicker";
 import DropDown from "./DropDown";
+import Pagination from "./Pagination";
 
 export const Cores = {
   Button,
   Table,
+  Pagination,
   Popup,
   Select,
   Card,

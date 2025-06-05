@@ -3,6 +3,10 @@ export const sidebarItems = [
     title: "Master Data",
     menus: [
       {
+        title: "Supplier",
+        link: "/supplier",
+      },
+      {
         title: "Code",
         link: "/code",
       },
@@ -31,10 +35,6 @@ export const sidebarItems = [
   {
     title: "Procurement",
     menus: [
-      {
-        title: "Supplier",
-        link: "/supplier",
-      },
       {
         title: "Purchase List",
         link: "/purchase-list",
