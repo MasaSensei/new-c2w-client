@@ -16,12 +16,8 @@ import {
 const StagingTailorInventoryPage = () => {
   const { data, isLoading, setIsLoading } = useStaggingTailorsInventoryAction();
   const { workers, materials, fetchData } = useTailoringProgressAction();
-  const { form, fields } = useTailoringProgressForm(
-    fetchData,
-    setIsLoading,
-    workers,
-    materials
-  );
+  const { form, fields, addToTable, onSubmit, tailoringProgress } =
+    useTailoringProgressForm(fetchData, setIsLoading, workers, materials);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
@@ -68,9 +64,9 @@ const StagingTailorInventoryPage = () => {
                             <Separator />
                             <Button
                               className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                              // onClick={() => {
-                              //   addToTable(form.getValues());
-                              // }}
+                              onClick={() => {
+                                addToTable(form.getValues());
+                              }}
                               type="button"
                             >
                               Add Item
@@ -87,12 +83,11 @@ const StagingTailorInventoryPage = () => {
                         headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
                         headers={["Total Roll", "Bahan", "Yards"]}
                         bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
-                        // bodies={cuttingProgress.map((item) => [
-                        //   item.rolls,
-                        //   item.material,
-                        //   item.yards,
-                        // ])}
-                        bodies={[]}
+                        bodies={tailoringProgress.map((item) => [
+                          item.rolls,
+                          item.material,
+                          item.yards,
+                        ])}
                         action={(idx) => (
                           <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                             <Pen
@@ -120,10 +115,10 @@ const StagingTailorInventoryPage = () => {
                       </Button>
                       <Button
                         type="submit"
-                        // onClick={() => {
-                        //   closeModal();
-                        //   onSubmit();
-                        // }}
+                        onClick={() => {
+                          // closeModal();
+                          onSubmit();
+                        }}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
                       >
                         Save

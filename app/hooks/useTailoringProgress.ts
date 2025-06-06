@@ -4,6 +4,7 @@ import * as z from "zod";
 import { useEffect, useState } from "react";
 import { WorkersService } from "~/services/worker.service";
 import { StaggingTailorService } from "~/services/staggingTailor.service";
+import { useTailoringProgressStore } from "~/stores/useTailoringProgress";
 
 const formSchema = z.object({
   date: z.date(),
@@ -38,6 +39,16 @@ export const useTailoringProgressForm = (
     },
   });
 
+  const {
+    addTailoringProgress,
+    updateTailoringProgress,
+    deleteTailoringProgress,
+    resetTailoringProgress,
+  } = useTailoringProgressStore();
+  const tailoringProgressItem = useTailoringProgressStore(
+    (state) => state.tailoringProgress
+  );
+
   const fields = [
     {
       name: "date",
@@ -57,7 +68,7 @@ export const useTailoringProgressForm = (
     {
       name: "id_worker",
       label: "Worker",
-      placeholder: "Select Cutters",
+      placeholder: "Select Tailor",
       inputType: "select" as const,
       options: workers.map((worker) => ({
         value: String(worker.id),
@@ -122,7 +133,85 @@ export const useTailoringProgressForm = (
     return () => subscription.unsubscribe();
   }, [form.watch, materials, setMaxRolls, maxRolls]);
 
-  return { fields, form };
+  const addToTable = (data: z.infer<typeof formSchema>) => {
+    const getCuttingInventoryDetail = materials.find(
+      (material) => material.id === Number(data.id_material)
+    );
+
+    const payload: any = {
+      id_cutting_inventory_detail: Number(
+        getCuttingInventoryDetail?.id_cutting_inventory_detail
+      ),
+      material:
+        getCuttingInventoryDetail?.CuttingInventoryDetail?.CuttingInventory
+          ?.item,
+      id_worker: Number(data.id_worker),
+      id_staging_tailoring_inventory: Number(data.id_material),
+      rolls: Number(data.rolls),
+      yards: data.yards ?? 0,
+    };
+    if (editIndex !== null) {
+      updateTailoringProgress(editIndex, payload);
+    } else {
+      addTailoringProgress(payload);
+    }
+    form.reset({
+      date: form.watch("date"),
+      end_date: form.watch("end_date"),
+      id_material: "",
+      rolls: "",
+      yards: "",
+      invoice_number: form.watch("invoice_number"),
+      id_worker: form.watch("id_worker"),
+      remarks: form.watch("remarks"),
+    });
+    console.log(payload);
+  };
+
+  const onSubmit = async () => {
+    try {
+      const item: any = tailoringProgressItem.map((item) => ({
+        id_cutting_inventory_detail: item.id_cutting_inventory_detail,
+        id_staging_tailoring_inventory: item.id_staging_tailor_inventory,
+
+        material: item.material,
+        rolls: Number(item.rolls),
+        yards: item.yards,
+        is_active: true,
+      }));
+      const payload = {
+        date: form.getValues("date") as any,
+        end_date: form.getValues("end_date") as any,
+        invoice: form.getValues("invoice_number"),
+        id_worker: Number(form.getValues("id_worker")) as any,
+        materials: item,
+        remarks: form.getValues("remarks"),
+      };
+      if (
+        !payload.date ||
+        !payload.invoice ||
+        !payload.id_worker ||
+        !payload.materials
+      ) {
+        alert("Please fill out all required fields.");
+        return;
+      }
+      console.log(item);
+      console.log(payload);
+      // await TailoringProgressService.create(payload as TailoringProgress);
+      // form.reset();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const tailoringProgress = tailoringProgressItem.map((item, index) => ({
+    ...item,
+    id: index,
+    material: item.material,
+  }));
+
+  return { fields, form, addToTable, onSubmit, tailoringProgress };
 };
 
 export const useTailoringProgressAction = () => {

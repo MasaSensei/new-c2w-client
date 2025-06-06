@@ -165,7 +165,7 @@ export const useCuttingInventoryForm = (material: any) => {
         date: new Date(item.date).toISOString(),
         material: item.material,
         item: getMaterialName(item.material),
-        worker: item.worker,
+        worker: Number(item.worker),
         rolls: Number(item.rolls),
         yards: Number(item.yard),
       }));
