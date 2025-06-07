@@ -11,7 +11,6 @@ export const CuttersInventoryService = {
   },
 
   async create(data: any) {
-    console.log(data);
     return axios.post(`${API_URL}/cutters-inventories`, data, {
       withCredentials: true,
       headers: { "Content-Type": "application/json" },

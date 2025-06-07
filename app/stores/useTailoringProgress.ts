@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 type TailoringProgress = {
   id_cutting_inventory_detail: number;
-  id_staging_tailor_inventory: number;
+  id_staging_tailoring_inventory: number;
   material?: string;
   rolls: number;
   yards: number | string;

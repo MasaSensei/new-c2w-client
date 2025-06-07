@@ -85,10 +85,7 @@ export const useMaterialToCuttingTableForm = (materials: any) => {
   }, [materials, maxYards, form.watch, setMaxYards]);
 
   const getMaterialName = (id: string | number) => {
-    console.log(id);
     const m = materials.find((r: any) => r.id === Number(id));
-    console.log(m);
-    console.log(materials);
     return `${m?.material}` || "";
   };
 

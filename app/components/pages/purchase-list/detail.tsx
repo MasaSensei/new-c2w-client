@@ -68,6 +68,14 @@ const PurchaseListDetailPage = () => {
         button={
           <div className="flex items-center justify-between gap-2">
             <Cores.Button
+              onClick={() => {
+                window.history.back();
+              }}
+              className="bg-slate-500 hover:bg-slate-600"
+            >
+              Back
+            </Cores.Button>
+            <Cores.Button
               onClick={() => setIsModalOpen(true)}
               className="bg-lime-500 hover:bg-lime-600"
             >

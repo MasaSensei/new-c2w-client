@@ -16,8 +16,15 @@ import {
 const StagingTailorInventoryPage = () => {
   const { data, isLoading, setIsLoading } = useStaggingTailorsInventoryAction();
   const { workers, materials, fetchData } = useTailoringProgressAction();
-  const { form, fields, addToTable, onSubmit, tailoringProgress } =
-    useTailoringProgressForm(fetchData, setIsLoading, workers, materials);
+  const {
+    form,
+    fields,
+    addToTable,
+    onSubmit,
+    tailoringProgress,
+    handleDeleteItem,
+    handleEdit,
+  } = useTailoringProgressForm(fetchData, setIsLoading, workers, materials);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
@@ -91,11 +98,11 @@ const StagingTailorInventoryPage = () => {
                         action={(idx) => (
                           <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                             <Pen
-                              // onClick={() => handleEdit(idx)}
+                              onClick={() => handleEdit(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                             <Trash2
-                              // onClick={() => handleDeleteItem(idx)}
+                              onClick={() => handleDeleteItem(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                           </div>

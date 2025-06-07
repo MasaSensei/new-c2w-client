@@ -8,6 +8,8 @@ import { useState } from "react";
 import { Pen, Trash2, XIcon } from "lucide-react";
 import formatDate from "~/utils/formatDate";
 import { useMaterialToTailorTableForm } from "~/hooks/useTailorsInventory";
+import { useTailoringProgressAction } from "~/hooks/useTailoringProgress";
+import { useTailorsInventoryAction } from "~/hooks/useTailorsInventory";
 
 const TailoringProgressPage = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
@@ -15,7 +17,24 @@ const TailoringProgressPage = () => {
   );
   const isModalOpen = selectedIndex !== null;
   const closeModal = () => setSelectedIndex(undefined);
-  const { form, fields } = useMaterialToTailorTableForm([]);
+  const { size } = useTailorsInventoryAction();
+  const { data } = useTailoringProgressAction();
+
+  const selectedData = data?.find((item) => item.id === selectedIndex);
+  const {
+    form,
+    fields,
+    addToTable,
+    cancel,
+    onSubmit,
+    handleDelete,
+    handleEdit,
+    materialToTailorTable,
+  } = useMaterialToTailorTableForm(
+    selectedData?.TailoringProgressMaterial,
+    size
+  );
+  console.log(data);
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction title="Tailor Progress" />
@@ -23,14 +42,15 @@ const TailoringProgressPage = () => {
         <Cores.Table
           seachable
           headers={["Date", "Invoice", "Tailors", "Total Items"]}
-          bodies={[
-            ["2023-01-01", "INV-001", "John Doe", "100"],
-            ["2023-01-02", "INV-002", "Jane Doe", "200"],
-            ["2023-01-03", "INV-003", "Bob Smith", "300"],
-          ]}
+          bodies={data?.map((item) => [
+            formatDate(item.date),
+            item.PurchaseListDetail?.PurchaseList?.invoice_number,
+            item.Worker?.name,
+            item.total_items,
+          ])}
           action={(idx) => (
             <Cores.Button
-              onClick={() => setSelectedIndex(1)}
+              onClick={() => setSelectedIndex(data[idx]?.id)}
               className="bg-lime-500 hover:bg-lime-600"
             >
               Selesai
@@ -40,89 +60,26 @@ const TailoringProgressPage = () => {
             <Cores.Table
               className="w-full bg-slate-100 overflow-x-auto"
               headers={["Material", "Rolls", "Yards", "Status"]}
-              // bodies={data[idx]?.CuttingProgressMaterial.map((item) => [
-              //   item.material,
-              //   <div className="flex flex-col justify-start items-start gap-2">
-              //     <h1 className="text-sm">
-              //       Left: <span className="font-bold">{item.rolls}</span>
-              //     </h1>
-              //     <h1 className="text-sm text-red-500">
-              //       Used: <span className="font-bold">{item.rolls_used}</span>
-              //     </h1>
-              //   </div>,
-              //   <div className="flex flex-col justify-start items-start gap-2">
-              //     <h1 className="text-sm">
-              //       Left: <span className="font-bold">{item.yards}</span>
-              //     </h1>
-              //     <h1 className="text-sm text-red-500">
-              //       Used: <span className="font-bold">{item.yards_used}</span>
-              //     </h1>
-              //   </div>,
-              //   item.status,
-              // ])}
-              bodies={[
-                [
-                  "Material 1",
-                  <div className="flex flex-col justify-start items-start gap-2">
-                    <h1 className="text-sm">
-                      Left: <span className="font-bold">1</span>
-                    </h1>
-                    <h1 className="text-sm text-red-500">
-                      Used: <span className="font-bold">1</span>
-                    </h1>
-                  </div>,
-                  <div className="flex flex-col justify-start items-start gap-2">
-                    <h1 className="text-sm">
-                      Left: <span className="font-bold">1</span>
-                    </h1>
-                    <h1 className="text-sm text-red-500">
-                      Used: <span className="font-bold">1</span>
-                    </h1>
-                  </div>,
-                  "Status 1",
-                ],
-                [
-                  "Material 2",
-                  <div className="flex flex-col justify-start items-start gap-2">
-                    <h1 className="text-sm">
-                      Left: <span className="font-bold">1</span>
-                    </h1>
-                    <h1 className="text-sm text-red-500">
-                      Used: <span className="font-bold">1</span>
-                    </h1>
-                  </div>,
-                  <div className="flex flex-col justify-start items-start gap-2">
-                    <h1 className="text-sm">
-                      Left: <span className="font-bold">1</span>
-                    </h1>
-                    <h1 className="text-sm text-red-500">
-                      Used: <span className="font-bold">1</span>
-                    </h1>
-                  </div>,
-                  ,
-                  "Status 2",
-                ],
-                [
-                  "Material 3",
-                  <div className="flex flex-col justify-start items-start gap-2">
-                    <h1 className="text-sm">
-                      Left: <span className="font-bold">1</span>
-                    </h1>
-                    <h1 className="text-sm text-red-500">
-                      Used: <span className="font-bold">1</span>
-                    </h1>
-                  </div>,
-                  <div className="flex flex-col justify-start items-start gap-2">
-                    <h1 className="text-sm">
-                      Left: <span className="font-bold">1</span>
-                    </h1>
-                    <h1 className="text-sm text-red-500">
-                      Used: <span className="font-bold">1</span>
-                    </h1>
-                  </div>,
-                  "Status 3",
-                ],
-              ]}
+              bodies={data[idx]?.TailoringProgressMaterial.map((item: any) => [
+                item.material,
+                <div className="flex flex-col justify-start items-start gap-2">
+                  <h1 className="text-sm">
+                    Left: <span className="font-bold">{item.rolls}</span>
+                  </h1>
+                  <h1 className="text-sm text-red-500">
+                    Used: <span className="font-bold">{item.rolls_used}</span>
+                  </h1>
+                </div>,
+                <div className="flex flex-col justify-start items-start gap-2">
+                  <h1 className="text-sm">
+                    Left: <span className="font-bold">{item.yards}</span>
+                  </h1>
+                  <h1 className="text-sm text-red-500">
+                    Used: <span className="font-bold">{item.yards_used}</span>
+                  </h1>
+                </div>,
+                item.status,
+              ])}
             />
           )}
         />
@@ -158,10 +115,10 @@ const TailoringProgressPage = () => {
                               <Separator />
                               <Button
                                 className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                                // onClick={(e) => {
-                                //   e.preventDefault();
-                                //   addToTabel(form.getValues());
-                                // }}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  addToTable(form.getValues());
+                                }}
                                 type="button"
                               >
                                 Add Item
@@ -176,20 +133,32 @@ const TailoringProgressPage = () => {
                         </h1>
                         <Cores.Table
                           headersClassName="text-xs text-center"
-                          headers={["Material", "Rolls", "Yards"]}
+                          headers={["Material", "Rolls", "Yards", "Size"]}
                           bodiesClassName="text-xs w-full text-center"
-                          // bodies={materialToCuttingTable.map((item) => [
-                          //   item.material,
-                          //   item.rolls,
-                          //   item.yard,
-                          // ])}
-                          bodies={[]}
+                          bodies={materialToTailorTable.map((item) => [
+                            item.material,
+                            item.pcs,
+                            item.yards,
+                            item.size,
+                          ])}
                           className="w-full"
+                          action={(idx) => (
+                            <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
+                              <Pen
+                                onClick={() => handleEdit(idx)}
+                                className="text-black w-2.5 h-2.5 cursor-pointer"
+                              />
+                              <Trash2
+                                onClick={() => handleDelete(idx)}
+                                className="text-black w-2.5 h-2.5 cursor-pointer"
+                              />
+                            </div>
+                          )}
                         />
                       </div>
                       <div className="col-span-12 text-center">
                         <Button
-                          className="bg-lime-500 hover:bg-lime-600"
+                          className="bg-lime-500 me-2 hover:bg-lime-600"
                           onClick={() => {
                             closeModal();
                           }}
@@ -199,7 +168,7 @@ const TailoringProgressPage = () => {
                         <Button
                           className="bg-lime-500 hover:bg-lime-600"
                           onClick={() => {
-                            // onSubmit();
+                            onSubmit();
                           }}
                         >
                           Save

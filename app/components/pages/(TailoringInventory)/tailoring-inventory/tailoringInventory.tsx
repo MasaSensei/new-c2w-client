@@ -7,10 +7,12 @@ import { Form } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
+import { useTailoringInventoryAction } from "~/hooks/useTailoringInventory";
 
 const TailoringInventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { data, fetchData, isLoading } = useTailoringInventoryAction();
+  console.log(data);
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -142,22 +144,21 @@ const TailoringInventoryPage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
-          //   isLoading={isLoading}
-          headers={["Material", "Total Rolls", "Total Yards"]}
-          bodies={[]}
-          //   bodies={data?.map((item) => [item.item, item.rolls, item.yards])}
-          //   details={(idx) => (
-          //     <Cores.Table
-          //       headers={["Date", "Worker", "Rolls", "Yards"]}
-          //       bodies={data[idx].CuttingInventoryDetail.map((item: any) => [
-          //         formatDate(item.CuttersInventory.date),
-          //         item.CuttersInventory.CuttingProgressMaterial.CuttingProgress
-          //           .Worker.name,
-          //         item.rolls,
-          //         item.yards,
-          //       ])}
-          //     />
-          //   )}
+          isLoading={isLoading}
+          headers={["Material", "Total Item"]}
+          bodies={data?.map((item) => [item.item, item.total_pcs])}
+          details={(idx) => (
+            <Cores.Table
+              headers={["Date", "Worker", "Size", "Pcs"]}
+              bodies={data[idx].TailoringInventoryDetail.map((item: any) => [
+                formatDate(item.date),
+                item.TailorsInventory.TailoringProgressMaterial
+                  .TailoringProgress.Worker.name,
+                item.TailorsInventory.Size.size,
+                item.pcs,
+              ])}
+            />
+          )}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

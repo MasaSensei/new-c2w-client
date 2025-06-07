@@ -9,10 +9,22 @@ import { Form } from "~/components/ui/form";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { useTailoringInventoryForm } from "~/hooks/useTailoringInventory";
+import { useTailorsInventoryAction } from "~/hooks/useTailorsInventory";
 
 const TailorsInventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { form, fields } = useTailoringInventoryForm();
+  const { data, fetchData, isLoading, setIsLoading, size } =
+    useTailorsInventoryAction();
+  const {
+    form,
+    fields,
+    addToTable,
+    tailoringInventory,
+    handleDelete,
+    handleEdit,
+    cancel,
+    onSubmit,
+  } = useTailoringInventoryForm(data);
   return (
     <Layouts.MainLayouts>
       <Fragments.HeaderWithAction
@@ -65,7 +77,7 @@ const TailorsInventoryPage = () => {
                             <Separator className="my-2.5" />
                             <Button
                               className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                              // onClick={() => addToTable(form.getValues())}
+                              onClick={() => addToTable(form.getValues())}
                               type="button"
                             >
                               Add Item
@@ -80,23 +92,23 @@ const TailorsInventoryPage = () => {
                       </h1>
                       <Cores.Table
                         headersClassName="text-xs nth-1:text-start nth-2:text-end text-center"
-                        headers={["Bahan", "Rolls", "Yards", "Supplier"]}
+                        headers={["Bahan", "Pcs", "Yards", "Size", "Tailors"]}
                         bodiesClassName="text-xs nth-1:text-start nth-2:text-end text-center w-full"
-                        // bodies={cuttingInventory?.map((item) => [
-                        //   item.materialName,
-                        //   item.rolls,
-                        //   item.yard,
-                        //   item.workerName,
-                        // ])}
-                        bodies={[]}
+                        bodies={tailoringInventory?.map((item) => [
+                          item.materialName,
+                          item.pcs,
+                          item.yards,
+                          item.size,
+                          item.worker,
+                        ])}
                         action={(idx) => (
                           <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                             <Pen
-                              // onClick={() => handleEdit(idx)}
+                              onClick={() => handleEdit(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                             <Trash2
-                              // onClick={() => handleDelete(idx)}
+                              onClick={() => handleDelete(idx)}
                               className="text-black w-2.5 h-2.5 cursor-pointer"
                             />
                           </div>
@@ -107,7 +119,7 @@ const TailorsInventoryPage = () => {
                       <Button
                         type="button"
                         onClick={() => {
-                          // cancel();
+                          cancel();
                           setIsModalOpen(false);
                         }}
                         className="bg-transparent me-2 hover:bg-slate-900 border border-slate-700 transition duration-300 ease-in-out cursor-pointer mx-auto text-slate-700 hover:text-white text-sm"
@@ -117,7 +129,7 @@ const TailorsInventoryPage = () => {
                       <Button
                         type="submit"
                         onClick={() => {
-                          // onSubmit();
+                          onSubmit();
                           setIsModalOpen(false);
                         }}
                         className="bg-lime-700 ms-2 hover:bg-lime-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
@@ -135,16 +147,23 @@ const TailorsInventoryPage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
-          // isLoading={isLoading}
-          headers={["Input Date", "Material", "Cutters", "Yards", "status"]}
-          // bodies={data?.map((item) => [
-          //   formatDate(item.date),
-          //   item.CuttingProgressMaterial.material,
-          //   item.CuttingProgressMaterial.CuttingProgress.Worker.name,
-          //   item.yards,
-          //   item.CuttingProgressMaterial.status,
-          // ])}
-          bodies={[]}
+          isTableAuto
+          headers={[
+            "Input Date",
+            "Material",
+            "Tailors",
+            "Yards",
+            "Size",
+            "Pcs",
+          ]}
+          bodies={data?.map((item) => [
+            formatDate(item.date),
+            item.TailoringProgressMaterial.material,
+            item.TailoringProgressMaterial.TailoringProgress.Worker.name,
+            item.yards,
+            item.Size.size,
+            item.pcs,
+          ])}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

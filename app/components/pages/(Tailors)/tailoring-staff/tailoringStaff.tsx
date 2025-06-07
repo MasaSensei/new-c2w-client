@@ -36,33 +36,33 @@ const TailoringStaffPage = () => {
       <Fragments.HeaderWithAction
         title="Tailor Staff"
         button={
-          <Cores.Popup
-            title="Add Cutters"
-            button={
-              <div className="flex gap-2 flex-nowrap items-center justify-center">
-                <Cores.Button
-                  onClick={() => setIsModalOpen(true)}
-                  className="bg-slate-500 hover:bg-slate-600"
-                >
-                  Add Material Prices
-                </Cores.Button>
+          <div className="flex gap-2 flex-nowrap items-center justify-center">
+            <Cores.Button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-slate-500 hover:bg-slate-600"
+            >
+              Add Material Prices
+            </Cores.Button>
+            <Cores.Popup
+              title="Add Cutters"
+              button={
                 <Cores.Button className="bg-lime-500 hover:bg-lime-600">
                   Add
                 </Cores.Button>
-              </div>
-            }
-            content={
-              <Form {...form}>
-                <Fragments.Form
-                  fields={fields}
-                  control={form.control}
-                  columnClassName="mb-5"
-                  className="flex flex-col gap-5"
-                  onSubmit={form.handleSubmit(onSubmit)}
-                />
-              </Form>
-            }
-          />
+              }
+              content={
+                <Form {...form}>
+                  <Fragments.Form
+                    fields={fields}
+                    control={form.control}
+                    columnClassName="mb-5"
+                    className="flex flex-col gap-5"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                  />
+                </Form>
+              }
+            />
+          </div>
         }
       />
       {isModalOpen && (
@@ -187,6 +187,21 @@ const TailoringStaffPage = () => {
             item.number,
             item.address,
           ])}
+          details={(idx) => (
+            <Cores.Table
+              className="w-full bg-slate-100 overflow-x-auto"
+              headers={["Category", "Price"]}
+              bodies={
+                data[idx]?.WorkerDetail?.flatMap(
+                  (item) =>
+                    item?.WorkerPrice?.map((item) => [
+                      item.Category?.category,
+                      formatCurrency(item.price) || 0,
+                    ]) ?? []
+                ) || []
+              }
+            />
+          )}
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

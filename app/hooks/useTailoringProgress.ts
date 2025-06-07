@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { WorkersService } from "~/services/worker.service";
 import { StaggingTailorService } from "~/services/staggingTailor.service";
 import { useTailoringProgressStore } from "~/stores/useTailoringProgress";
+import TailoringProgressService from "~/services/tailoringProgress.service";
 
 const formSchema = z.object({
   date: z.date(),
@@ -165,14 +166,30 @@ export const useTailoringProgressForm = (
       id_worker: form.watch("id_worker"),
       remarks: form.watch("remarks"),
     });
-    console.log(payload);
+  };
+
+  const handleEdit = (index: number) => {
+    const item = tailoringProgressItem[index];
+    if (!item) return;
+    setEditIndex(index);
+    form.setValue("id_material", String(item.id_staging_tailoring_inventory));
+    form.setValue("rolls", String(item.rolls));
+    form.setValue("yards", String(item.yards));
+  };
+
+  const handleDeleteItem = async (id: number) => {
+    try {
+      await deleteTailoringProgress(id);
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
   };
 
   const onSubmit = async () => {
     try {
       const item: any = tailoringProgressItem.map((item) => ({
         id_cutting_inventory_detail: item.id_cutting_inventory_detail,
-        id_staging_tailoring_inventory: item.id_staging_tailor_inventory,
+        id_staging_tailoring_inventory: item.id_staging_tailoring_inventory,
 
         material: item.material,
         rolls: Number(item.rolls),
@@ -196,10 +213,8 @@ export const useTailoringProgressForm = (
         alert("Please fill out all required fields.");
         return;
       }
-      console.log(item);
-      console.log(payload);
-      // await TailoringProgressService.create(payload as TailoringProgress);
-      // form.reset();
+      await TailoringProgressService.create(payload);
+      form.reset();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -211,7 +226,15 @@ export const useTailoringProgressForm = (
     material: item.material,
   }));
 
-  return { fields, form, addToTable, onSubmit, tailoringProgress };
+  return {
+    fields,
+    form,
+    addToTable,
+    onSubmit,
+    tailoringProgress,
+    handleEdit,
+    handleDeleteItem,
+  };
 };
 
 export const useTailoringProgressAction = () => {
@@ -223,15 +246,19 @@ export const useTailoringProgressAction = () => {
     try {
       const responseWorker = await WorkersService.getAll({ type: "tailors" });
       const responseMaterials = await StaggingTailorService.getAll();
+      const response = await TailoringProgressService.getAll();
       if (!responseWorker.data.data) {
         setData([]);
       }
       if (!responseMaterials.data.data) {
         setData([]);
       }
+      if (!response.data.data) {
+        setData([]);
+      }
       setWorkers(responseWorker.data.data);
       setMaterials(responseMaterials.data.data);
-      setData(responseMaterials.data.data);
+      setData(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
