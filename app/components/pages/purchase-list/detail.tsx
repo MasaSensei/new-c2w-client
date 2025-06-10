@@ -122,7 +122,7 @@ const PurchaseListDetailPage = () => {
                               control={control}
                               rowClassName="grid grid-cols-4 gap-4"
                               className="flex gap-5"
-                              columnClassName={`first:col-span-2 nth-2:col-span-2 nth-3:col-span-4 nth-5:col-span-3 last:col-span-4 ${
+                              columnClassName={`nth-2:col-span-2 nth-3:col-span-2 nth-6:col-span-3 last:col-span-4 ${
                                 fields
                                   .map((field) => field.name)
                                   .filter((col) => col === "remarks")[0]
@@ -151,18 +151,18 @@ const PurchaseListDetailPage = () => {
                             Items:
                           </h1>
                           <Cores.Table
-                            headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
+                            headersClassName="text-xs w-full first:text-start nth-2:text-end text-center"
                             headers={[
-                              "Total Roll",
                               "Bahan",
+                              "Total Roll",
                               "Total Yard",
                               "Sub Total",
                               "Remarks",
                             ]}
-                            bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
+                            bodiesClassName="text-xs w-full first:text-start nth-2:text-end text-center"
                             bodies={purchaseItemsReturn.map((item) => [
-                              item.total_roll,
                               item.materialName,
+                              item.total_roll,
                               item.length_in_yard,
                               formatCurrency(item.sub_total),
                               item.remarks,
@@ -209,7 +209,7 @@ const PurchaseListDetailPage = () => {
                             control={control}
                             rowClassName="grid grid-cols-3 gap-4"
                             className="flex gap-5"
-                            columnClassName={`first:col-span-3  last:col-span-3 ${
+                            columnClassName={`first:col-span-2 last:col-span-3 ${
                               fields
                                 .map((field) => field.name)
                                 .filter((col) => col === "remarks")[0]
@@ -240,7 +240,7 @@ const PurchaseListDetailPage = () => {
                                   </div>
                                   <div className="flex flex-col gap-2">
                                     <Label htmlFor="total_roll">
-                                      Total Roll
+                                      Yard Per Roll
                                     </Label>
                                     <Input
                                       className="bg-white"
@@ -253,7 +253,7 @@ const PurchaseListDetailPage = () => {
                                           total_roll: e.target.value,
                                         })
                                       }
-                                      placeholder="Total Roll"
+                                      placeholder="Yard Per Roll"
                                     />
                                   </div>
                                   <div className="flex items-center">
@@ -273,7 +273,7 @@ const PurchaseListDetailPage = () => {
                                   {rollItems.length > 0 ? (
                                     <Cores.Table
                                       headers={[
-                                        "Jumlah Roll",
+                                        "Yard Per Roll",
                                         "Length in Yard",
                                       ]}
                                       bodies={rollItems.map((item) => [

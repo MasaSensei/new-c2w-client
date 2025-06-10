@@ -101,7 +101,7 @@ export const usePurchaseDetailForm = (
     );
     const yardPerRoll = rolls.reduce(
       (sum, r) =>
-        sum + Number(r.length_in_yard || 0) / Number(r.total_roll || 0),
+        sum + Number(r.length_in_yard || 0) * Number(r.total_roll || 0),
       0
     );
     const totalYard = Math.floor(yardPerRoll * 10) / 10;
@@ -188,7 +188,7 @@ export const usePurchaseDetailForm = (
     const payload = {
       ...data,
       length_in_yard:
-        Math.floor((Number(totalYard) / Number(totalRoll)) * 10) / 10,
+        Math.floor(Number(totalYard) * Number(totalRoll) * 10) / 10,
     };
 
     if (editIndex !== null) {
@@ -302,18 +302,31 @@ export const usePurchaseDetailForm = (
 
   const fields = [
     {
-      name: "material",
-      label: "Material",
-      inputType: "select" as const,
-      placeholder: "Raw Material",
-      options: rawMaterials.map((m) => ({
-        value: String(m.id),
-        label: getMaterialName(m.id || 0),
-      })),
+      name: "item",
+      label: "Item",
+      inputType: "text" as const,
+      placeholder: "Item Name",
     },
     {
+      name: "color",
+      label: "Color",
+      inputType: "text" as const,
+      placeholder: "Color Name",
+    },
+
+    // {
+    //   name: "material",
+    //   label: "Material",
+    //   inputType: "select" as const,
+    //   placeholder: "Raw Material",
+    //   options: rawMaterials.map((m) => ({
+    //     value: String(m.id),
+    //     label: getMaterialName(m.id || 0),
+    //   })),
+    // },
+    {
       name: "yard_per_roll",
-      label: "Yard/Roll",
+      label: "Total Roll",
       inputType: "number" as const,
       disabled: true,
     },
