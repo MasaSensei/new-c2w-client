@@ -273,12 +273,12 @@ const PurchaseListDetailPage = () => {
                                   {rollItems.length > 0 ? (
                                     <Cores.Table
                                       headers={[
-                                        "Yard Per Roll",
                                         "Length in Yard",
+                                        "Yard Per Roll",
                                       ]}
                                       bodies={rollItems.map((item) => [
-                                        item.total_roll,
                                         item.length_in_yard,
+                                        item.total_roll,
                                       ])}
                                       action={(idx) => (
                                         <Cores.Button
@@ -316,21 +316,21 @@ const PurchaseListDetailPage = () => {
                           </h1>
                           <Cores.Table
                             isTableAuto
-                            headersClassName="text-xs nth-2:text-start nth-3:text-end text-center"
+                            headersClassName="text-xs  nth-3:text-end text-center"
                             headers={[
-                              "Total Roll",
                               "Bahan",
-                              "Yard per Roll",
+                              "Total Item",
                               "Sub Total",
                               "Remarks",
                             ]}
-                            bodiesClassName="text-xs w-full nth-2:text-start nth-3:text-end text-center"
+                            bodiesClassName="text-xs w-full  nth-3:text-end text-center"
                             bodies={purchaseItemsWithLabel.map((item) => [
-                              item?.rollItems
-                                ?.map((i) => i.total_roll)
-                                .reduce((a, b) => Number(a) + Number(b), 0),
-                              item.materialName,
-                              item.yard_per_roll + " yd",
+                              `${item.item} (${item.color})`,
+                              item?.rollItems?.length,
+                              // item?.rollItems
+                              //   ?.map((i) => i.total_roll)
+                              //   .reduce((a, b) => Number(a) + Number(b), 0),
+                              // item.yard_per_roll + " yd",
                               formatCurrency(item.sub_total),
                               item.remarks,
                             ])}
@@ -344,13 +344,13 @@ const PurchaseListDetailPage = () => {
                                   /yard
                                 </h4>
                                 <Cores.Table
-                                  headers={["Jumlah Roll", "Length in Yard"]}
+                                  headers={["Length in Yard", "Jumlah Roll"]}
                                   className="w-96 overflow-x-auto"
                                   bodies={(
                                     purchaseItemsWithLabel[idx]?.rollItems ?? []
                                   ).map((item) => [
-                                    item.total_roll,
                                     item.length_in_yard,
+                                    item.total_roll,
                                   ])}
                                 />
                               </div>

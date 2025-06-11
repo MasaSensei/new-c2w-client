@@ -20,6 +20,8 @@ const formSchema = z.object({
   material: z.string(),
   price_per_yard: z.string(),
   length_in_yard: z.string(),
+  color: z.string(),
+  item: z.string(),
   yard_per_roll: z.string(),
   sub_total: z.string(),
   remarks: z.string().optional(),
@@ -38,6 +40,8 @@ export const usePurchaseDetailForm = (
       jatuh_tempo: "",
       total_roll: "",
       material: "",
+      color: "",
+      item: "",
       price_per_yard: "",
       length_in_yard: "",
       yard_per_roll: "",
@@ -144,7 +148,7 @@ export const usePurchaseDetailForm = (
     setTempRoll({ total_roll: "", length_in_yard: "" });
 
     const { totalRoll, totalYard, subTotal } = calculateTotals(item.rollItems);
-    form.setValue("material", item.material);
+    form.setValue("material", `${item.materialName}`);
     form.setValue("price_per_yard", item.price_per_yard);
     form.setValue("remarks", item.remarks || "");
     form.setValue("total_roll", totalRoll.toString());
@@ -164,6 +168,7 @@ export const usePurchaseDetailForm = (
 
   const addToTabel = (data: z.infer<typeof formSchema>) => {
     const newItem = { ...data, rollItems };
+    console.log(newItem);
 
     if (editIndex !== null) {
       updateItem(editIndex, newItem);
@@ -243,7 +248,12 @@ export const usePurchaseDetailForm = (
             id_purchase_list: Number(router.purchaseListId),
             rolls: Number(roll.total_roll),
             id_raw_material: Number(i.material),
-            material: getMaterialName(i.material),
+            item: i.item,
+            invoice: i.invoice,
+            date: i.date,
+            supplier: i.supplier,
+            color: i.color,
+            // material: getMaterialName(i.material),
             price_per_yard: Number(i.price_per_yard),
             yards: Number(roll.length_in_yard),
             total: (
@@ -253,10 +263,11 @@ export const usePurchaseDetailForm = (
             remarks: i.remarks || "-",
           }))
         );
+      console.log(payload);
 
-      await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
-      resetItems();
-      fetchData();
+      // await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
+      // resetItems();
+      // fetchData();
     } catch (error) {
       console.error("Gagal submit:", error);
     }
@@ -301,6 +312,24 @@ export const usePurchaseDetailForm = (
   };
 
   const fields = [
+    {
+      name: "date",
+      label: "Date",
+      inputType: "date" as const,
+      placeholder: "Date",
+    },
+    {
+      name: "invoice",
+      label: "Invoice",
+      inputType: "text" as const,
+      placeholder: "Invoice",
+    },
+    {
+      name: "supplier",
+      label: "Supplier",
+      inputType: "text" as const,
+      placeholder: "Supplier Name",
+    },
     {
       name: "item",
       label: "Item",

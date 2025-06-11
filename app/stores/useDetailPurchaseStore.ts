@@ -7,7 +7,12 @@ type RollItem = {
 
 type PurchaseItem = {
   total_roll: string;
+  date?: Date;
+  supplier?: string;
+  invoice?: string;
   material: string;
+  color: string;
+  item: string;
   price_per_yard: string;
   length_in_yard: string;
   yard_per_roll: string;
