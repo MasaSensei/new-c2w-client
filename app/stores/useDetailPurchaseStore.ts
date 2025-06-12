@@ -35,7 +35,8 @@ export const usePurchaseStore = create<PurchaseStore>((set) => ({
     set((state) => {
       const existingIndex = state.items.findIndex(
         (item) =>
-          item.material === newItem.material &&
+          item.item === newItem.item &&
+          item.color === newItem.color &&
           item.price_per_yard === newItem.price_per_yard
       );
 
