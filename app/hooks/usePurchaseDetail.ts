@@ -247,11 +247,11 @@ export const usePurchaseDetailForm = (
           i?.rollItems?.map((roll) => ({
             id_purchase_list: Number(router.purchaseListId),
             rolls: Number(roll.total_roll),
-            id_raw_material: Number(i.material),
+            id_raw_material: 1,
             item: i.item,
             invoice: i.invoice,
             date: i.date,
-            supplier: i.supplier,
+            supplier: 1,
             color: i.color,
             // material: getMaterialName(i.material),
             price_per_yard: Number(i.price_per_yard),
@@ -263,9 +263,9 @@ export const usePurchaseDetailForm = (
             remarks: i.remarks || "-",
           }))
         );
-      console.log(payload);
+      // console.log(payload);
 
-      // await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
+      await PurchaseListDetailService.create(payload as PurchaseListDetail[]);
       // resetItems();
       // fetchData();
     } catch (error) {
