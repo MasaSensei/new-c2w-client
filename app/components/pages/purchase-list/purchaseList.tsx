@@ -99,7 +99,7 @@ const PurchaseListPage = () => {
                           control={control}
                           rowClassName="grid grid-cols-3 gap-4"
                           className="flex gap-5"
-                          columnClassName={`first:col-span-2 last:col-span-3 ${
+                          columnClassName={`first:col-span-2 nth-3:col-span-3 last:col-span-3 ${
                             fields
                               .map((field) => field.name)
                               .filter((col) => col === "remarks")[0]

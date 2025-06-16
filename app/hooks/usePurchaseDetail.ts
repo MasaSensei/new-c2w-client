@@ -15,7 +15,7 @@ import { PurchaseListDetailServiceReturn } from "~/services/purchaseListDetailRe
 
 const formSchema = z.object({
   date: z.date().optional(),
-  jatuh_tempo: z.string(),
+  jatuh_tempo: z.string().optional(),
   total_roll: z.string(),
   material: z.string(),
   price_per_yard: z.string(),
@@ -254,8 +254,10 @@ export const usePurchaseDetailForm = (
             supplier: 1,
             color: i.color,
             // material: getMaterialName(i.material),
+            status: "Pending",
             price_per_yard: Number(i.price_per_yard),
             yards: Number(roll.length_in_yard),
+            jatuh_tempo: new Date(),
             total: (
               Number(roll.length_in_yard) * Number(i.price_per_yard)
             ).toString(),
@@ -292,6 +294,7 @@ export const usePurchaseDetailForm = (
           price_per_yard: Number(i.sub_total || 0),
           yards: Number(i.length_in_yard || 0),
           total: i.sub_total.toString(),
+          nominal: i.sub_total.toString(),
           is_active: true,
           remarks: i.remarks || "-",
         })
@@ -323,6 +326,12 @@ export const usePurchaseDetailForm = (
       label: "Invoice",
       inputType: "text" as const,
       placeholder: "Invoice",
+    },
+    {
+      name: "jatuh_tempo",
+      label: "Jatuh Tempo",
+      inputType: "date" as const,
+      placeholder: "Jatuh Tempo",
     },
     {
       name: "supplier",

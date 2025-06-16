@@ -10,7 +10,7 @@ export const PurchaseListDetailService = {
     });
   },
   get(id: number) {
-    return axios.get(`${API_URL}/purchase-list-details/${id}`, {
+    return axios.get(`${API_URL}/purchase-list-details`, {
       withCredentials: true,
     });
   },
