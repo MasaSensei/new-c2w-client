@@ -111,9 +111,7 @@ const PurchaseListPage = () => {
                               <Separator className="my-2.5" />
                               <div className="gap-2 flex items-end justify-center">
                                 <div className="flex flex-col gap-2">
-                                  <Label htmlFor="length_in_yard">
-                                    Length in Yard
-                                  </Label>
+                                  <Label htmlFor="length_in_yard">Yard</Label>
                                   <Input
                                     className="bg-white"
                                     type="text"
@@ -232,7 +230,7 @@ const PurchaseListPage = () => {
                                 /yard
                               </h4>
                               <Cores.Table
-                                headers={["Length in Yard", "Jumlah Roll"]}
+                                headers={["Yard", "Roll"]}
                                 className="w-96 overflow-x-auto"
                                 bodies={(
                                   purchaseItemsWithLabel[idx]?.rollItems ?? []
