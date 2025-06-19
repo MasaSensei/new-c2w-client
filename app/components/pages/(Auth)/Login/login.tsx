@@ -5,6 +5,7 @@ import { useAuthForm } from "~/hooks/useAuth";
 
 const LoginPage = () => {
   const { loginFields, loginForm, onSubmit } = useAuthForm();
+
   return (
     <div className="max-w-md w-full">
       <div className="mb-10">
@@ -15,6 +16,7 @@ const LoginPage = () => {
           Welcome to the Cloth to Wear platform.
         </h4>
       </div>
+
       <Form {...loginForm}>
         <Fragments.Form
           fields={loginFields}
@@ -24,6 +26,7 @@ const LoginPage = () => {
           onSubmit={loginForm.handleSubmit(onSubmit)}
         />
       </Form>
+
       <div className="flex mt-2 justify-end">
         <Link
           to="/register"

@@ -4,35 +4,51 @@ import * as z from "zod";
 import { AuthService } from "~/services/auth.service";
 import { useNavigate } from "react-router";
 
-const formSchema = z.object({
+// ----- Schema -----
+const loginSchema = z.object({
   username: z.string().min(1, { message: "Email is required" }),
   password: z.string().min(1, { message: "Password is required" }),
 });
 
-const registerFormSchema = z
-  .object({
-    username: z.string().min(1, { message: "Email is required" }),
-    password: z.string().min(1, { message: "Password is required" }),
-    confirm_password: z
-      .string()
-      .min(1, { message: "Confirm Password is required" }),
-  })
-  .refine((data) => data.password === data.confirm_password, {
+const baseRegisterSchema = loginSchema.extend({
+  confirm_password: z
+    .string()
+    .min(1, { message: "Confirm Password is required" }),
+});
+
+const registerSchema = baseRegisterSchema.refine(
+  (data) => data.password === data.confirm_password,
+  {
     message: "Passwords do not match",
     path: ["confirm_password"],
-  });
+  }
+);
 
+// ----- Fields -----
+const createFields = (schema: z.ZodObject<any>) =>
+  Object.keys(schema.shape).map((key) => ({
+    name: key,
+    inputType: key.includes("password")
+      ? ("password" as const)
+      : ("text" as const),
+    label: key.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+    required: true,
+  }));
+
+// ----- Hook -----
 export const useAuthForm = () => {
-  const loginForm = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const navigate = useNavigate();
+
+  const loginForm = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  const registerForm = useForm<z.infer<typeof registerFormSchema>>({
-    resolver: zodResolver(registerFormSchema),
+  const registerForm = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       password: "",
@@ -40,60 +56,23 @@ export const useAuthForm = () => {
     },
   });
 
-  const navigate = useNavigate();
+  const loginFields = createFields(loginSchema);
+  const registerFields = createFields(baseRegisterSchema);
 
-  const loginFields = [
-    {
-      name: "username",
-      inputType: "text" as const,
-      label: "Username",
-      required: true,
-    },
-    {
-      name: "password",
-      inputType: "password" as const,
-      label: "Password",
-      required: true,
-    },
-  ];
-
-  const registerFields = [
-    {
-      name: "username",
-      inputType: "text" as const,
-      label: "Username",
-      required: true,
-    },
-    {
-      name: "password",
-      inputType: "password" as const,
-      label: "Password",
-      required: true,
-    },
-    {
-      name: "confirm_password",
-      inputType: "password" as const,
-      label: "Confirm Password",
-      required: true,
-    },
-  ];
-
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
       const response = await AuthService.login(data);
-
       if (response.status === 200) {
         navigate("/material-inventory");
       }
     } catch (error) {
-      console.error("Submit error:", error);
+      console.error("Login error:", error);
     }
   };
 
-  const onSubmitRegister = async (data: z.infer<typeof registerFormSchema>) => {
+  const onSubmitRegister = async (data: z.infer<typeof registerSchema>) => {
     try {
       const { username, password } = data;
-
       const response = await AuthService.register({
         username,
         password,
@@ -104,7 +83,7 @@ export const useAuthForm = () => {
         navigate("/");
       }
     } catch (error) {
-      console.error("Submit error:", error);
+      console.error("Register error:", error);
     }
   };
 
