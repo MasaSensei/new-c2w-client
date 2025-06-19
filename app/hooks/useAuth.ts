@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { AuthService } from "~/services/auth.service";
 import { useNavigate } from "react-router";
+import { useState } from "react";
 
 // ----- Schema -----
 const loginSchema = z.object({
@@ -38,6 +39,7 @@ const createFields = (schema: z.ZodObject<any>) =>
 // ----- Hook -----
 export const useAuthForm = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -60,17 +62,23 @@ export const useAuthForm = () => {
   const registerFields = createFields(baseRegisterSchema);
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    setLoading(true);
     try {
       const response = await AuthService.login(data);
       if (response.status === 200) {
         navigate("/material-inventory");
       }
+      setLoading(false);
     } catch (error) {
       console.error("Login error:", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
   const onSubmitRegister = async (data: z.infer<typeof registerSchema>) => {
+    setLoading(true);
     try {
       const { username, password } = data;
       const response = await AuthService.register({
@@ -82,8 +90,12 @@ export const useAuthForm = () => {
       if (response.status === 201) {
         navigate("/");
       }
+      setLoading(false);
     } catch (error) {
       console.error("Register error:", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,6 +103,7 @@ export const useAuthForm = () => {
     loginFields,
     loginForm,
     onSubmit,
+    loading,
     registerFields,
     registerForm,
     onSubmitRegister,
