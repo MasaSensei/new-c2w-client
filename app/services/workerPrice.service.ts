@@ -5,7 +5,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const WorkerPriceService = {
   async create(data: any) {
     return axios.post(`${API_URL}/workers-prices`, data, {
-      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

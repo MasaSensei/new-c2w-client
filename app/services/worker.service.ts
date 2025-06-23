@@ -15,14 +15,11 @@ export const WorkersService = {
   },
 
   async get(id: number) {
-    return axios.get(`${API_URL}/workers/${id}`, {
-      withCredentials: true,
-    });
+    return axios.get(`${API_URL}/workers/${id}`, {});
   },
 
   async create(data: Worker) {
     return axios.post(`${API_URL}/workers`, data, {
-      withCredentials: true,
       headers: { "Content-Type": "application/json" },
     });
   },

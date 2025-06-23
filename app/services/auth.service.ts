@@ -11,18 +11,18 @@ export const AuthService = {
     return axios.post(`${API_URL}/auth/login`, data);
   },
 
-  async checkAuth() {
-    try {
-      const response = await axios.get(`${API_URL}/auth/check-auth`, {
-        withCredentials: true,
-      });
-      return response;
-    } catch (err) {
-      console.log("Auth check error:", err);
-    }
-  },
+  // async checkAuth() {
+  //   try {
+  //     const response = await axios.get(`${API_URL}/auth/check-auth`, {
+  //       withCredentials: true,
+  //     });
+  //     return response;
+  //   } catch (err) {
+  //     console.log("Auth check error:", err);
+  //   }
+  // },
 
   async logout() {
-    return axios.get(`${API_URL}/auth/logout`, { withCredentials: true });
+    return axios.get(`${API_URL}/auth/logout`);
   },
 };

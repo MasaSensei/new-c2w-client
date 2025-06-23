@@ -5,6 +5,7 @@ import { AuthService } from "~/services/auth.service";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { useAuth } from "~/stores/useAuth";
+import Swal from "sweetalert2";
 
 // ----- Schema -----
 const loginSchema = z.object({
@@ -72,9 +73,20 @@ export const useAuthForm = () => {
         const user = response.data.result.user;
         setAuth(token, user);
         navigate("/material-inventory");
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.message || "Login failed",
+        });
       }
       setLoading(false);
     } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Login failed",
+      });
       console.error("Login error:", error);
       setLoading(false);
     } finally {
