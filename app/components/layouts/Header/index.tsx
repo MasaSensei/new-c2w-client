@@ -1,16 +1,15 @@
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { Cores } from "~/components/core";
 import { useNavigate } from "react-router";
-import { AuthService } from "~/services/auth.service";
+import { useAuth } from "~/stores/useAuth";
 
 const Header = () => {
   const navigate = useNavigate();
   const logout = async () => {
     try {
-      const res = await AuthService.logout();
-      if (res.status === 200) {
-        navigate("/login");
-      }
+      const { logout } = useAuth.getState();
+      await logout();
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
