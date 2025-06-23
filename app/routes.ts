@@ -39,7 +39,6 @@ const simpleRoutes = [
   },
   { path: "login", file: "routes/(Auth)/login.tsx" },
   { path: "category", file: "routes/(MasterData)/category.tsx" },
-  { path: "register", file: "routes/(Auth)/register.tsx" },
   {
     path: "cutting-inventory",
     file: "routes/(CuttingInventory)/cuttingInventory.tsx",

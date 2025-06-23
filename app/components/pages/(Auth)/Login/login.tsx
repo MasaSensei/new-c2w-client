@@ -32,15 +32,6 @@ const LoginPage = () => {
           />
         </Form>
       )}
-
-      <div className="flex mt-2 justify-end">
-        <Link
-          to="/register"
-          className="text-sm text-lime-500 hover:text-lime-600"
-        >
-          Don&apos;t have an account?
-        </Link>
-      </div>
     </div>
   );
 };
