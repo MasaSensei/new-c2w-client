@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import type { Supplier } from "~/types/supplier";
 import { SuppliersService } from "~/services/supplier.service";
+import { useAuth } from "~/stores/useAuth";
 
 const formSchema = z.object({
   supplier: z.string().min(1, { message: "Supplier is required" }),
@@ -13,72 +14,85 @@ const formSchema = z.object({
   remarks: z.string().optional(),
 });
 
+const defaultValues = {
+  supplier: "",
+  phone: "",
+  address: "",
+  remarks: "",
+};
+
+const fields = [
+  {
+    name: "supplier",
+    label: "Supplier",
+    inputType: "text" as const,
+    placeholder: "Supplier Name",
+  },
+  {
+    name: "phone",
+    label: "Phone",
+    inputType: "number" as const,
+    placeholder: "Phone Number",
+  },
+  {
+    name: "address",
+    label: "Address",
+    inputType: "text" as const,
+    placeholder: "Address",
+  },
+  {
+    name: "remarks",
+    label: "Remarks",
+    inputType: "text" as const,
+    placeholder: "Remarks",
+  },
+];
+
+function setFormValues(
+  form: ReturnType<typeof useForm<z.infer<typeof formSchema>>>,
+  supplier: any | null
+) {
+  if (supplier) {
+    form.setValue("supplier", supplier.supplier_name);
+    form.setValue("phone", supplier.supplier_contact);
+    form.setValue("address", supplier.supplier_address);
+    form.setValue("remarks", supplier.remarks || "");
+  } else {
+    form.reset(defaultValues);
+  }
+}
+
 export const useSupplierForm = (fetchData: () => Promise<void>) => {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
     null
   );
+  const { token } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      supplier: "",
-      phone: "",
-      address: "",
-      remarks: "",
-    },
+    defaultValues,
   });
 
-  const fields = [
-    {
-      name: "supplier",
-      label: "Supplier",
-      inputType: "text" as const,
-      placeholder: "Supplier Name",
-    },
-    {
-      name: "phone",
-      label: "Phone",
-      inputType: "number" as const,
-      placeholder: "Phone Number",
-    },
-    {
-      name: "address",
-      label: "Address",
-      inputType: "text" as const,
-      placeholder: "Address",
-    },
-    {
-      name: "remarks",
-      label: "Remarks",
-      inputType: "text" as const,
-      placeholder: "Remarks",
-    },
-  ];
-
-  const handleEdit = (supplier: Supplier) => {
+  const handleEdit = (supplier: any) => {
     setSelectedSupplier(supplier);
-    form.setValue("supplier", supplier.name);
-    form.setValue("phone", supplier.number);
-    form.setValue("address", supplier.address);
-    form.setValue("remarks", supplier.remarks || "");
+    setFormValues(form, supplier);
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      const payload = {
+      const payload: Supplier = {
         name: data.supplier,
         number: data.phone.toString(),
         address: data.address,
         remarks: data.remarks || "-",
-        is_active: true,
       };
       if (selectedSupplier) {
         await SuppliersService.update(selectedSupplier.id as number, payload);
-        form.reset();
       } else {
-        await SuppliersService.create(payload);
+        await SuppliersService.create(payload, token ?? "");
       }
-      form.reset();
+      await fetchData();
       setSelectedSupplier(null);
+      form.reset(defaultValues);
     } catch (error) {
       console.error("Submit error:", error);
     }
@@ -98,6 +112,7 @@ export const useSupplierForm = (fetchData: () => Promise<void>) => {
     if (result.isConfirmed) {
       try {
         await SuppliersService.delete(supplier.id as number);
+        await fetchData();
         Swal.fire("Terhapus!", "Data Supplier berhasil dihapus.", "success");
       } catch (error) {
         Swal.fire("Gagal!", "Terjadi kesalahan saat menghapus data", "error");
@@ -107,37 +122,30 @@ export const useSupplierForm = (fetchData: () => Promise<void>) => {
   };
 
   useEffect(() => {
-    if (selectedSupplier) {
-      form.setValue("supplier", selectedSupplier.name);
-      form.setValue("phone", selectedSupplier.number);
-      form.setValue("address", selectedSupplier.address);
-      form.setValue("remarks", selectedSupplier.remarks || "");
-    } else {
-      form.reset();
-    }
+    setFormValues(form, selectedSupplier);
   }, [selectedSupplier]);
 
   return { form, fields, selectedSupplier, handleEdit, onSubmit, handleDelete };
 };
 
 export const useSupplierAction = () => {
-  const [data, setData] = useState<Supplier[]>([]);
+  const { token } = useAuth();
+  const [data, setData] = useState<any[]>([]);
 
   const fetchData = async () => {
     try {
-      const response = await SuppliersService.getAll();
-      if (!response.data.data) {
-        setData([]);
-      }
-      setData(response.data.data);
+      const response = await SuppliersService.getAll(token ?? "");
+      setData(response.data.result || []);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setData([]);
     }
   };
 
   useEffect(() => {
+    if (!token) return;
     fetchData();
-  }, []);
+  }, [token]);
 
   return { data, fetchData };
 };

@@ -7,28 +7,8 @@ export const sidebarItems = [
         link: "/supplier",
       },
       {
-        title: "Code",
-        link: "/code",
-      },
-      {
-        title: "Color",
-        link: "/color",
-      },
-      {
-        title: "Model",
-        link: "/model",
-      },
-      {
         title: "Item",
         link: "/item",
-      },
-      {
-        title: "Size",
-        link: "/size",
-      },
-      {
-        title: "Category",
-        link: "/category",
       },
     ],
   },

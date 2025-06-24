@@ -38,12 +38,13 @@ const SupplierPage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
+          isTableAuto
           headers={["No", "Name", "Phone", "Address", "Remarks"]}
-          bodies={data.map((supplier) => [
+          bodies={data.map((supplier: any) => [
             supplier.id,
-            supplier.name,
-            supplier.number,
-            supplier.address,
+            supplier.supplier_name,
+            supplier.supplier_contact,
+            supplier.supplier_address,
             supplier.remarks,
           ])}
           action={(idx) => {
