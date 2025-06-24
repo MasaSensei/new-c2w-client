@@ -12,7 +12,7 @@ export const SuppliersService = {
         offset: 0,
         count: 10,
         order: {
-          id: "desc",
+          id: "asc",
         },
       },
       {
@@ -33,9 +33,12 @@ export const SuppliersService = {
     });
   },
 
-  async update(id: number, data: Supplier) {
-    return axios.put(`${API_URL}/suppliers/${id}`, data, {
-      headers: { "Content-Type": "application/json" },
+  async update(data: Supplier, token: string) {
+    return axios.patch(`${API_URL}/data/Suppliers`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
   },
 

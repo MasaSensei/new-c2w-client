@@ -1,4 +1,9 @@
-import { ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+} from "lucide-react";
 import { useState } from "react";
 import { Input } from "~/components/ui/input";
 import {
@@ -13,6 +18,7 @@ import {
 import { useTableFilter } from "~/hooks/useTableFilter";
 import ClipLoader from "react-spinners/ClipLoader";
 import { cn } from "~/lib/utils";
+import { Button } from "~/components/ui/button";
 
 interface TableProps extends React.ComponentProps<typeof ShadcnTable> {
   headers: string[];
@@ -47,6 +53,20 @@ const Table: React.FC<TableProps> = ({
       prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
     );
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(filteredBodies.length / 10)); // assuming 10 rows per page
+
+  function handlePageChange(page: number) {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  }
+
+  // Paginate filteredBodies
+  const paginatedBodies = filteredBodies.slice(
+    (currentPage - 1) * 10,
+    currentPage * 10
+  );
 
   return (
     <ShadcnTable
@@ -169,7 +189,32 @@ const Table: React.FC<TableProps> = ({
               className="rounded-b-lg"
               colSpan={action ? headers.length + 1 : headers.length}
             >
-              {props.footer}
+              <div className="flex items-center justify-start gap-8 px-2 py-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="w-4 h-4 mr-1" />
+                  Prev
+                </Button>
+
+                <span className="text-sm">
+                  Page <strong>{currentPage}</strong> of{" "}
+                  <strong>{totalPages}</strong>
+                </span>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         </TableFooter>

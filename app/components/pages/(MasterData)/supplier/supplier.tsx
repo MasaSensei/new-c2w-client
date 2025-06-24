@@ -81,7 +81,7 @@ const SupplierPage = () => {
               </div>
             );
           }}
-          footer={<h1>Test</h1>}
+          footer
         />
       </Layouts.SectionLayouts>
     </Layouts.MainLayouts>

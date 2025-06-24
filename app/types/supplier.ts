@@ -1,14 +1,7 @@
-export type Supplier = {
-  id?: number;
-  name: string;
-  number: string;
-  address: string;
-  remarks: string;
-  is_active?: boolean;
-};
-
-export type ApiResponse = {
-  success: boolean;
-  data: Supplier[];
-  message: string;
-};
+export interface Supplier {
+  id?: number; // ← wajib ada
+  supplier_name: string;
+  supplier_contact: string;
+  supplier_address: string;
+  remarks?: string;
+}

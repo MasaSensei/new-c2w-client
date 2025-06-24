@@ -31,7 +31,7 @@ const fields = [
   {
     name: "phone",
     label: "Phone",
-    inputType: "number" as const,
+    inputType: "text" as const,
     placeholder: "Phone Number",
   },
   {
@@ -79,14 +79,17 @@ export const useSupplierForm = (fetchData: () => Promise<void>) => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      const payload: Supplier = {
-        name: data.supplier,
-        number: data.phone.toString(),
-        address: data.address,
-        remarks: data.remarks || "-",
+      const payload: any = {
+        object: {
+          id: selectedSupplier?.id,
+          supplier_name: data.supplier,
+          supplier_contact: data.phone.toString(),
+          supplier_address: data.address,
+          remarks: data.remarks || "-",
+        },
       };
       if (selectedSupplier) {
-        await SuppliersService.update(selectedSupplier.id as number, payload);
+        await SuppliersService.update(payload, token ?? "");
       } else {
         await SuppliersService.create(payload, token ?? "");
       }
