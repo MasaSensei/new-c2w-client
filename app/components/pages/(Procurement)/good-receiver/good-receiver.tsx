@@ -38,20 +38,20 @@ const GoodReceiverPage = () => {
           seachable
           isTableAuto
           headers={[
-            "Tanggal Penerimaan",
+            "Purchase ID",
+            "Supplier Name",
+            "Tanggal Tanggal Terima",
             "No Invoice",
-            "Id Po",
-            "Nama Supplier",
             "Status Penerimaan",
             "Total Rolls",
             "Total Yards",
             "Penerima",
           ]}
           bodies={data.map((data: any) => [
-            formatDate(data.tanggal_penerimaan),
-            data.no_invoice,
             data.po_id,
             data.supplier_name,
+            formatDate(data.tanggal_penerimaan),
+            data.no_invoice,
             data.status_penerimaan,
             data.total_rolls,
             data.total_yards,

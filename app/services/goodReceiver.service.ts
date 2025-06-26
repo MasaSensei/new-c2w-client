@@ -22,9 +22,26 @@ export const GoodReceiverService = {
       }
     );
   },
-  get(id: number) {
-    return axios.get(`${API_URL}/good-receive/list`, {});
+  getDetail(id: number, token: string) {
+    return axios.post(
+      `${API_URL}/good-receive/detail/${id}`,
+      {
+        query: [],
+        offset: 0,
+        count: 10,
+        order: {
+          id: "asc",
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   },
+
   create(data: any[]) {
     return axios.post(`${API_URL}/good-receive/list`, data, {
       headers: { "Content-Type": "application/json" },
