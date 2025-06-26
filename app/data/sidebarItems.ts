@@ -19,6 +19,10 @@ export const sidebarItems = [
         title: "Purchase List",
         link: "/purchase-list",
       },
+      {
+        title: "Good Receiver",
+        link: "/good-receiver",
+      },
     ],
   },
   {

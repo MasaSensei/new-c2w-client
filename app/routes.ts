@@ -7,10 +7,14 @@ const simpleRoutes = [
   { path: "color", file: "routes/(MasterData)/color.tsx" },
   { path: "item", file: "routes/(MasterData)/item.tsx" },
   { path: "supplier", file: "routes/supplier.tsx" },
-  { path: "purchase-list", file: "routes/purchaseList.tsx" },
+  { path: "purchase-list", file: "routes/(Procurement)/purchaseList.tsx" },
   {
     path: "purchase-list-detail/:purchaseListId",
     file: "routes/purchaseListDetail.tsx",
+  },
+  {
+    path: "good-receiver",
+    file: "routes/(Procurement)/good-receiver.tsx",
   },
   {
     path: "material-inventory",

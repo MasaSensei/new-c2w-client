@@ -307,7 +307,7 @@ const PurchaseListPage = () => {
             data.length > 0
               ? data.map((item: PurchaseList) => [
                   formatDate(item.tanggal),
-                  item.Supplier?.name,
+                  item.Supplier?.supplier_name,
                   item.invoice_number,
                   formatCurrency(item.nominal),
                   formatDate(item.jatuh_tempo),

@@ -1,7 +1,7 @@
 import { Layouts } from "~/components/layouts";
-import PurchaseListPage from "~/components/pages/purchase-list/purchaseList";
+import PurchaseListPage from "~/components/pages/(Procurement)/purchase-list/purchaseList";
 
-export default function Size() {
+export default function PurchaseList() {
   return (
     <Layouts.PrivateRoute>
       <PurchaseListPage />
