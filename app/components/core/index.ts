@@ -7,6 +7,7 @@ import CurrencyInput from "./CurrencyInput";
 import DatePicker from "./DatePicker";
 import DropDown from "./DropDown";
 import Pagination from "./Pagination";
+import Tabs from "./Tabs";
 
 export const Cores = {
   Button,
@@ -18,4 +19,5 @@ export const Cores = {
   CurrencyInput,
   DatePicker,
   DropDown,
+  Tabs,
 };
