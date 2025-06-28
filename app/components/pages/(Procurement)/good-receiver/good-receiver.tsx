@@ -1,10 +1,11 @@
-import { XIcon } from "lucide-react";
+import { Pen, Trash2, XIcon } from "lucide-react";
 import { useState } from "react";
 import { Cores } from "~/components/core";
 import { Fragments } from "~/components/fragments";
 import { Layouts } from "~/components/layouts";
 import { Form } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
+import { Button } from "~/components/ui/button";
 import {
   useGoodReceiverAction,
   useGoodReceiverForm,
@@ -13,7 +14,8 @@ import formatDate from "~/utils/formatDate";
 
 const GoodReceiverPage = () => {
   const { data } = useGoodReceiverAction();
-  const { form, fields } = useGoodReceiverForm();
+  const { form, fields, notZustandFields, notZustandForm } =
+    useGoodReceiverForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <Layouts.MainLayouts>
@@ -50,164 +52,70 @@ const GoodReceiverPage = () => {
                   <Form {...form}>
                     <>
                       <div className="col-span-4 p-4 rounded-lg">
-                        <Fragments.Form
-                          fields={fields}
-                          control={form.control}
-                          rowClassName="grid grid-cols-2 gap-4"
-                          className="flex gap-5"
-                          columnClassName={`first:col-span-2 nth-2:col-span-2 nth-3:col-span-2`}
-                          buttonType="submit"
-                          buttonName="Add Item"
-                          // additional={
-                          //   <>
-                          //     <Separator className="my-2.5" />
-                          //     <div className="gap-2 flex items-end justify-center">
-                          //       <div className="flex flex-col gap-2">
-                          //         <Label htmlFor="length_in_yard">Yard</Label>
-                          //         <Input
-                          //           className="bg-white"
-                          //           type="text"
-                          //           name="length_in_yard"
-                          //           value={tempRoll.length_in_yard}
-                          //           onChange={(e) =>
-                          //             setTempRoll({
-                          //               ...tempRoll,
-                          //               length_in_yard: e.target.value,
-                          //             })
-                          //           }
-                          //           placeholder="Length in Yard"
-                          //         />
-                          //       </div>
-                          //       <div className="flex flex-col gap-2">
-                          //         <Label htmlFor="total_roll">
-                          //           Yard Per Roll
-                          //         </Label>
-                          //         <Input
-                          //           className="bg-white"
-                          //           type="text"
-                          //           name="total_roll"
-                          //           value={tempRoll.total_roll}
-                          //           onChange={(e) =>
-                          //             setTempRoll({
-                          //               ...tempRoll,
-                          //               total_roll: e.target.value,
-                          //             })
-                          //           }
-                          //           placeholder="Yard Per Roll"
-                          //         />
-                          //       </div>
-                          //       <div className="flex items-center">
-                          //         <Button
-                          //           onClick={() => addRoll()}
-                          //           type="button"
-                          //           className="bg-lime-500 hover:bg-lime-600 cursor-pointer mx-auto text-white text-sm w-20"
-                          //         >
-                          //           Add
-                          //         </Button>
-                          //       </div>
-                          //     </div>
-                          //     <div className="mt-1.5 bg-white p-4">
-                          //       <Label className="text-sm mb-2">
-                          //         Roll Items
-                          //       </Label>
-                          //       {rollItems.length > 0 ? (
-                          //         <Cores.Table
-                          //           headers={[
-                          //             "Length in Yard",
-                          //             "Yard Per Roll",
-                          //           ]}
-                          //           bodies={rollItems.map((item) => [
-                          //             item.length_in_yard,
-                          //             item.total_roll,
-                          //           ])}
-                          //           action={(idx) => (
-                          //             <Cores.Button
-                          //               className="bg-transparent shadow-none hover:bg-transparent"
-                          //               onClick={() => {
-                          //                 removeRoll(idx);
-                          //                 setIsModalOpen(true);
-                          //               }}
-                          //               type="button"
-                          //             >
-                          //               <XIcon className="h-4 w-4 text-black" />
-                          //             </Cores.Button>
-                          //           )}
-                          //         />
-                          //       ) : (
-                          //         <span className="text-sm">No roll items</span>
-                          //       )}
-                          //     </div>
-                          //     <Button
-                          //       className="w-1/4 flex items-center justify-center bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer mx-auto text-white text-sm"
-                          //       onClick={() => addToTabel(form.getValues())}
-                          //       type="button"
-                          //     >
-                          //       Add Item
-                          //     </Button>
-                          //   </>
-                          // }
-                        />
+                        <div className="flex flex-col gap-4">
+                          <Fragments.Form
+                            fields={fields}
+                            control={form.control}
+                            rowClassName="grid grid-cols-2 gap-4"
+                            className="flex gap-5"
+                            columnClassName={`first:col-span-2 nth-2:col-span-2 nth-3:col-span-2 nth-4:col-span-1`}
+                            additional={
+                              <Button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="text-center"
+                              >
+                                Add Item
+                              </Button>
+                            }
+                          />
+                          <Fragments.Form
+                            fields={notZustandFields}
+                            control={notZustandForm.control}
+                            rowClassName="grid grid-cols-2 gap-4"
+                            className="flex gap-5 mt-5"
+                            columnClassName={`nth-3:col-span-2 nth-4:col-span-2`}
+                          />
+                        </div>
                       </div>
-                      {/* <div className="col-span-8">
-                        <h1 className="text-lg font-semibold -mt-10 mb-2.5">
-                          Items:
-                        </h1>
+                      <div className="col-span-8">
+                        <h1 className="text-lg font-semibold mt-5">Items:</h1>
                         <Cores.Table
                           isTableAuto
-                          headersClassName="text-xs  nth-3:text-end text-center"
+                          headersClassName="text-xs nth-3:text-end text-center"
                           headers={[
-                            "Bahan",
-                            "Total Item",
-                            "Sub Total",
-                            "Remarks",
+                            "Po Item",
+                            "Name",
+                            "Total Yard",
+                            "Total Rolls",
+                            "Price",
                           ]}
                           bodiesClassName="text-xs w-full  nth-3:text-end text-center"
-                          bodies={purchaseItemsWithLabel.map((item) => [
-                            `${item.item} (${item.color})`,
-                            item?.rollItems?.length,
-                            // item?.rollItems
-                            //   ?.map((i) => i.total_roll)
-                            //   .reduce((a, b) => Number(a) + Number(b), 0),
-                            // item.yard_per_roll + " yd",
-                            formatCurrency(item.sub_total),
-                            item.remarks,
-                          ])}
-                          details={(idx) => (
-                            <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                              <h4 className="font-semibold mb-2.5">
-                                Roll Items:{" "}
-                                {formatCurrency(
-                                  purchaseItemsWithLabel[idx]?.price_per_yard
-                                )}
-                                /yard
-                              </h4>
-                              <Cores.Table
-                                headers={["Yard", "Roll"]}
-                                className="w-96 overflow-x-auto"
-                                bodies={(
-                                  purchaseItemsWithLabel[idx]?.rollItems ?? []
-                                ).map((item) => [
-                                  item.length_in_yard,
-                                  item.total_roll,
-                                ])}
-                              />
-                            </div>
-                          )}
+                          bodies={[]}
                           action={(idx) => (
                             <div className="flex flex-row flex-wrap items-center gap-3 justify-center">
                               <Pen
-                                onClick={() => handleEditRoll(idx)}
+                                // onClick={() => handleEditRoll(idx)}
                                 className="text-black w-2.5 h-2.5 cursor-pointer"
                               />
                               <Trash2
-                                onClick={() => handleDeleteRoll(idx)}
+                                // onClick={() => handleDeleteRoll(idx)}
                                 className="text-black w-2.5 h-2.5 cursor-pointer"
                               />
                             </div>
                           )}
                         />
+                        <div className="mt-5 flex justify-center">
+                          <Button
+                            type="submit"
+                            onClick={() => setIsModalOpen(false)}
+                            className="w-3/4 bg-slate-700 hover:bg-slate-900 transition duration-300 ease-in-out cursor-pointer text-white text-sm"
+                          >
+                            Save
+                          </Button>
+                        </div>
                       </div>
-                      <div className="col-span-12 text-center">
+                      {/* <div className="col-span-12 text-center">
                         <Button
                           type="button"
                           onClick={() => {
