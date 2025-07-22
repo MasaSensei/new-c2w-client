@@ -17,7 +17,7 @@ const SupplierPage = () => {
           <Cores.Popup
             title="Add Supplier"
             button={
-              <Cores.Button className="bg-lime-500 hover:bg-lime-600">
+              <Cores.Button className="bg-[#0A54F8] hover:bg-[#0A54F8]">
                 Add
               </Cores.Button>
             }
@@ -39,7 +39,7 @@ const SupplierPage = () => {
         <Cores.Table
           seachable
           isTableAuto
-          headers={["No", "Name", "Phone", "Address", "Remarks"]}
+          headers={["Supplier ID", "Name", "Phone", "Address", "Remarks"]}
           bodies={data.map((supplier: any) => [
             supplier.id,
             supplier.supplier_name,
@@ -55,7 +55,7 @@ const SupplierPage = () => {
                   title="Edit Model"
                   button={
                     <Cores.Button
-                      className="bg-lime-500 hover:bg-lime-600"
+                      className="bg-[#0A54F8] hover:bg-[#0A54F8]"
                       onClick={() => handleEdit(currentData)}
                     >
                       Edit
@@ -72,12 +72,39 @@ const SupplierPage = () => {
                     </Form>
                   }
                 />
-                <Cores.Button
-                  onClick={() => handleDelete(currentData)}
-                  className="bg-red-500 hover:bg-red-600"
-                >
-                  Delete
-                </Cores.Button>
+                <Cores.Popup
+                  title="Delete Supplier"
+                  button={
+                    <Cores.Button className="bg-red-500 hover:bg-red-600">
+                      Delete
+                    </Cores.Button>
+                  }
+                  content={
+                    <div className="flex flex-col justify-center items-center gap-5">
+                      <div className="text-center text-[#818283]">
+                        <p>Are you sure want to delete</p>
+                        <p className="font-semibold text-[#818283]">
+                          {currentData.supplier_name}?
+                        </p>
+                      </div>
+                      <hr className="w-full text-[#818283]" />
+                      <div className="flex flex-row gap-5 w-full justify-center items-center">
+                        <Cores.Button
+                          // onClick={() => handleDelete(currentData)}
+                          className="bg-transparent border border-[#818283] text-[#818283] hover:bg-white"
+                        >
+                          Cancel
+                        </Cores.Button>
+                        <Cores.Button
+                          // onClick={() => handleDelete(currentData)}
+                          className="bg-red-500 hover:bg-red-600"
+                        >
+                          Confirm
+                        </Cores.Button>
+                      </div>
+                    </div>
+                  }
+                />
               </div>
             );
           }}

@@ -54,7 +54,7 @@ const Sidebar = () => {
                   <SidebarMenuItem>
                     <CollapsibleTrigger
                       className={
-                        "group-data-[state=open]/collapsible:bg-gray-100 cursor-pointer"
+                        "group-data-[state=open]/collapsible:bg-[#0A54F8] group-data-[state=open]/collapsible:text-white cursor-pointer"
                       }
                       asChild
                     >
@@ -67,8 +67,9 @@ const Sidebar = () => {
                       {item.menus.map((menu, idx) => (
                         <SidebarMenuSub
                           className={`${
-                            location.pathname === menu.link && "bg-lime-100"
-                          } hover:bg-gray-100 rounded`}
+                            location.pathname === menu.link &&
+                            "bg-[#3694FF] text-white"
+                          }`}
                           key={idx}
                         >
                           <Link className="w-full my-2" to={menu.link}>

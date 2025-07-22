@@ -30,7 +30,7 @@ const Popup: React.FC<PopupProps> = ({ title, ...props }) => {
         className={cn("overflow-y-auto", props.height, props.width)}
       >
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="text-center">{title}</DialogTitle>
           <DialogDescription>{props.description}</DialogDescription>
         </DialogHeader>
         {props.content}
