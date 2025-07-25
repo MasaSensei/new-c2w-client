@@ -39,7 +39,7 @@ const SupplierPage = () => {
         <Cores.Table
           seachable
           isTableAuto
-          headers={["Supplier ID", "Name", "Phone", "Address", "Remarks"]}
+          headers={["Supplier ID", "Name", "Phone", "Address", "Deskripsi"]}
           bodies={data.map((supplier: any) => [
             supplier.id,
             supplier.supplier_name,

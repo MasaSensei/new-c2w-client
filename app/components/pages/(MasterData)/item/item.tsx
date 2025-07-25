@@ -18,7 +18,7 @@ const ItemPage = () => {
           <Cores.Popup
             title="Add Code"
             button={
-              <Cores.Button className="bg-lime-500 hover:bg-lime-600">
+              <Cores.Button className="bg-[#0A54F8] hover:bg-[#0A54F8]">
                 Add
               </Cores.Button>
             }
@@ -39,9 +39,21 @@ const ItemPage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
-          headers={["Item", "Remarks"]}
+          headers={[
+            "Item ID",
+            "Supplier",
+            "Nama Bahan",
+            "Kode Bahan",
+            "Deskripsi",
+          ]}
           isLoading={isLoading}
-          bodies={data.map((item) => [item.item, item.remarks || "-"])}
+          bodies={data.map((item: any) => [
+            item.id,
+            item.supplier_name || "-",
+            item.item || "-",
+            item.item_code || "-",
+            item.remarks || "-",
+          ])}
           action={(idx) => (
             <div className="flex gap-2">
               <Cores.Button

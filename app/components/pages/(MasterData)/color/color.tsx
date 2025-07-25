@@ -18,7 +18,7 @@ const ColorPage = () => {
           <Cores.Popup
             title="Add Color"
             button={
-              <Cores.Button className="bg-lime-500 hover:bg-lime-600">
+              <Cores.Button className="bg-[#0A54F8] hover:bg-[#0A54F8]">
                 Add
               </Cores.Button>
             }
@@ -38,8 +38,27 @@ const ColorPage = () => {
       />
       <Layouts.SectionLayouts>
         <Cores.Table
-          headers={["Color", "Remarks"]}
-          bodies={data.map((item) => [item.color, item.remarks || "-"])}
+          isTableAuto
+          headers={[
+            "Color ID",
+            "Item ID",
+            "Supplier",
+            "Nama Bahan",
+            "Kode Bahan",
+            "Warna",
+            "Kode Warna",
+            "Deskripsi",
+          ]}
+          bodies={data.map((item: any) => [
+            item.id,
+            item.Item?.item,
+            item.Item?.Supplier?.name,
+            item.Item?.material,
+            item.Item?.material_code,
+            item.color,
+            item.color_code,
+            item.description,
+          ])}
           isLoading={isLoading}
           seachable
           action={(idx) => {

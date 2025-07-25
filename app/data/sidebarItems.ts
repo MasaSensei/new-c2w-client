@@ -10,6 +10,26 @@ export const sidebarItems = [
         title: "Item",
         link: "/item",
       },
+      {
+        title: "Color",
+        link: "/color",
+      },
+      {
+        title: "Item Color",
+        link: "/item-color",
+      },
+      {
+        title: "Size",
+        link: "/size",
+      },
+      {
+        title: "Model",
+        link: "/model",
+      },
+      {
+        title: "Accessories",
+        link: "/accessories",
+      },
     ],
   },
   {

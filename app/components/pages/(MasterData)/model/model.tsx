@@ -17,7 +17,7 @@ const ModelPage = () => {
           <Cores.Popup
             title="Add Model"
             button={
-              <Cores.Button className="bg-lime-500 hover:bg-lime-600">
+              <Cores.Button className="bg-[#0A54F8] hover:bg-[#0A54F8]">
                 Add
               </Cores.Button>
             }
@@ -38,8 +38,14 @@ const ModelPage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
-          headers={["Model", "Remarks"]}
-          bodies={data.map((model) => [model.model, model.remarks])}
+          isTableAuto
+          headers={["Model ID", "Nama Model", "Kode Model", "Remarks"]}
+          bodies={data.map((model: any) => [
+            model.id,
+            model.model,
+            model.code,
+            model.remarks,
+          ])}
           action={(idx) => {
             const currentData = data[idx];
             return (

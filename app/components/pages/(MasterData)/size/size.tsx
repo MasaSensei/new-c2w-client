@@ -17,7 +17,7 @@ const SizePage = () => {
           <Cores.Popup
             title="Add Size"
             button={
-              <Cores.Button className="bg-lime-500 hover:bg-lime-600">
+              <Cores.Button className="bg-[#0A54F8] hover:bg-[#0A54F8]">
                 Add
               </Cores.Button>
             }
@@ -37,8 +37,21 @@ const SizePage = () => {
       <Layouts.SectionLayouts>
         <Cores.Table
           seachable
-          headers={["Size", "Remarks"]}
-          bodies={data.map((size) => [size.size, size.remarks])}
+          isTableAuto
+          headers={[
+            "Size ID",
+            "Kategori",
+            "Nama Ukuran",
+            "Ukuran (cm)",
+            "Remarks",
+          ]}
+          bodies={data.map((size: any) => [
+            size.id,
+            size.category,
+            size.name,
+            size.size_cm,
+            size.remarks || "-",
+          ])}
           action={(idx) => {
             const currentData = data[idx];
             return (

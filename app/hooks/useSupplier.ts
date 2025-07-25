@@ -42,9 +42,9 @@ const fields = [
   },
   {
     name: "remarks",
-    label: "Remarks",
-    inputType: "text" as const,
-    placeholder: "Remarks",
+    label: "Deskripsi",
+    inputType: "textarea" as const,
+    placeholder: "Deskripsi (optional)",
   },
 ];
 
